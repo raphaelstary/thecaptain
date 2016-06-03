@@ -8,5 +8,6 @@ G.Files = {
     GAME_FONT: 'data/font.woff',
 
     GAME_DATA: 'data/game_data.json',
-    SCENES: 'data/scenes.json'
+    SCENES: 'data/scenes.json',
+    MAPS: 'data/maps.json'
 };
