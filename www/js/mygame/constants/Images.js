@@ -1,4 +1,5 @@
 G.Images = {
     FLOOR: 'floor',
-    PLAYER: 'player'
+    PLAYER: 'player',
+    SIGN: 'sign'
 };

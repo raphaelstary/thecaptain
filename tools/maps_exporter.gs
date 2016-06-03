@@ -40,6 +40,7 @@ var BackgroundTiles = {
     F: 'F' // floor
 };
 var ForegroundTiles = {
+    S: 'S', // sign
     P: 'P' // player
 };
 

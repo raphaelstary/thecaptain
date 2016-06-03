@@ -17,11 +17,16 @@ G.DomainGridHelper = (function () {
     var ForegroundTile = {
         // foreground tiles
         EMPTY: 0,
-        PLAYER: 'P'
+        PLAYER: 'P',
+        SIGN: 'S'
     };
 
     DomainGridHelper.prototype.getFloorTiles = function () {
         return this.__getTiles(BackgroundTile.FLOOR, true);
+    };
+    
+    DomainGridHelper.prototype.getSigns = function () {
+        return this.__getTiles(ForegroundTile.SIGN);
     };
 
     DomainGridHelper.prototype.getPlayer = function () {
