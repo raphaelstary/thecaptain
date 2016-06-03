@@ -36,7 +36,7 @@ G.WorldView = (function (Images) {
         }, this);
 
         if (callback)
-            callback();
+            this.timer.doLater(callback, 1);
     };
 
     WorldView.prototype.movePlayer = function (changeSet, callback) {
