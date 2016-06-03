@@ -4,13 +4,14 @@ G.PlayFactory = (function (Grid, GridHelper, GridViewHelper, DomainGridHelper, W
     "use strict";
 
     return {
-        createWorld: function (stage, timer, device, level) {
+        createWorld: function (stage, timer, device, level, possibleInteractionStart, possibleInteractionEnd,
+            interaction) {
             var grid = new Grid(level);
             var gridHelper = new GridHelper(grid, grid.xTiles, grid.yTiles);
             var gridViewHelper = new GridViewHelper(stage, device, grid.xTiles, grid.yTiles, zero, zero);
             var domainGridHelper = new DomainGridHelper(gridHelper, grid, grid.xTiles, grid.yTiles);
             var worldView = new WorldView(stage, timer, gridViewHelper);
-            return new World(worldView, grid, gridHelper, domainGridHelper, gridViewHelper);
+            return new World(worldView, grid, gridHelper, domainGridHelper, gridViewHelper, possibleInteractionStart, possibleInteractionEnd, interaction);
         },
         createPlayerController: function (world) {
             return new PlayerController(world);

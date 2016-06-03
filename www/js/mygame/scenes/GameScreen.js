@@ -1,4 +1,4 @@
-G.GameScreen = (function (PlayFactory, installPlayerKeyBoard) {
+G.GameScreen = (function (PlayFactory, installPlayerKeyBoard, Scenes, MVVMScene, DialogScreen) {
     "use strict";
 
     function GameScreen(services, map) {
@@ -30,9 +30,24 @@ G.GameScreen = (function (PlayFactory, installPlayerKeyBoard) {
         this.__paused = false;
         this.__itIsOver = false;
 
-        this.world = PlayFactory.createWorld(this.stage, this.timer, this.device, this.map);
-
         var self = this;
+
+        function possibleInteractionStart() {
+            self.interactSymbol.show = true;
+        }
+
+        function possibleInteractionEnd() {
+            self.interactSymbol.show = false;
+        }
+
+        function interaction() {
+            var dialogScreen = new MVVMScene(self.services, self.services.scenes[Scenes.DIALOG_SCREEN], new DialogScreen(self.services), Scenes.DIALOG_SCREEN);
+            dialogScreen.show();
+        }
+
+        this.world = PlayFactory.createWorld(this.stage, this.timer, this.device, this.map, possibleInteractionStart,
+            possibleInteractionEnd, interaction);
+
         this.world.init(function () {
             self.__resume();
         });
@@ -41,6 +56,8 @@ G.GameScreen = (function (PlayFactory, installPlayerKeyBoard) {
         this.__pause();
 
         this.keyBoardHandler = installPlayerKeyBoard(this.events, this.playerController);
+
+        this.interactSymbol.show = false;
     };
 
     GameScreen.prototype.preDestroy = function () {
@@ -49,4 +66,4 @@ G.GameScreen = (function (PlayFactory, installPlayerKeyBoard) {
     };
 
     return GameScreen;
-})(G.PlayFactory, G.installPlayerKeyBoard);
+})(G.PlayFactory, G.installPlayerKeyBoard, G.Scenes, H5.MVVMScene, G.DialogScreen);

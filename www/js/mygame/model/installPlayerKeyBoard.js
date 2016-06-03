@@ -6,6 +6,7 @@ G.installPlayerKeyBoard = (function (Event, Key) {
         var rightPressed = false;
         var upPressed = false;
         var downPressed = false;
+        var enterPressed = false;
 
         return events.subscribe(Event.KEY_BOARD, function (keyBoard) {
             if (keyBoard[Key.LEFT] && !leftPressed) {
@@ -34,6 +35,13 @@ G.installPlayerKeyBoard = (function (Event, Key) {
                 playerController.handleKeyDown();
             } else if (!keyBoard[Key.DOWN] && downPressed) {
                 downPressed = false;
+            }
+
+            if (keyBoard[Key.ENTER] && !enterPressed) {
+                enterPressed = true;
+                playerController.handleInteractionKey();
+            } else if (!keyBoard[Key.ENTER] && enterPressed) {
+                enterPressed = false;
             }
         });
     }

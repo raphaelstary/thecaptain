@@ -63,6 +63,12 @@ G.DomainGridHelper = (function () {
     DomainGridHelper.prototype.__isMovable = function (backgroundTileType) {
         return backgroundTileType === BackgroundTile.FLOOR;
     };
+    
+    DomainGridHelper.prototype.canPlayerInteract = function (player) {
+        return this.gridHelper.getNeighbors(player.u, player.v).some(function (neighbor) {
+            return neighbor.type === ForegroundTile.SIGN;
+        });
+    };
 
     DomainGridHelper.prototype.movePlayer = function (player, u, v) {
         this.grid.set(player.u, player.v, ForegroundTile.EMPTY);
