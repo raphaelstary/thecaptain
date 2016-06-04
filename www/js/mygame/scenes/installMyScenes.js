@@ -11,7 +11,7 @@ G.installMyScenes = (function (SceneManager, MVVMScene, StartScreen, Scenes, Tap
         var sceneManager = new SceneManager();
 
         var startScreen = new MVVMScene(sceneServices, sceneServices.scenes[Scenes.START_SCREEN], new StartScreen(sceneServices), Scenes.START_SCREEN);
-        var gameSceneModel = new GameScreen(sceneServices, sceneServices.maps['basic']);
+        var gameSceneModel = new GameScreen(sceneServices, sceneServices.worldData['map_basic'], sceneServices.worldData['signs']);
         var gameScreen = new MVVMScene(sceneServices, sceneServices.scenes[Scenes.GAME_SCREEN], gameSceneModel, Scenes.GAME_SCREEN);
         
         sceneManager.add(startScreen.show.bind(startScreen));

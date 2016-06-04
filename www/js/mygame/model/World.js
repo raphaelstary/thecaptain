@@ -12,7 +12,6 @@ G.World = (function () {
         this.possibleInteractionStart = possibleInteractionStart;
         this.possibleInteractionEnd = possibleInteractionEnd;
         this.interaction = interaction;
-        this.isInteractionPossible = false;
     }
 
     World.prototype.init = function (callback) {
@@ -21,11 +20,14 @@ G.World = (function () {
         this.worldView.drawLevel(this.player, this.domainGridHelper.getFloorTiles(), this.domainGridHelper.getSigns(),
             callback);
     };
-    
+
     World.prototype.interact = function (callback) {
-        this.interaction();
-        if (callback)
-            callback();
+        if (!this.interactiveTileInRange)
+            return false;
+
+        this.interaction(this.interactiveTileInRange.type, callback);
+
+        return true;
     };
 
     World.prototype.moveLeft = function (callback) {
@@ -54,12 +56,13 @@ G.World = (function () {
         function postMove() {
             // i donno ... flash smth or highlight smth
 
-            if (!self.isInteractionPossible && self.domainGridHelper.canPlayerInteract(player)) {
-                self.isInteractionPossible = true;
+            var possibleInteractiveTile = self.domainGridHelper.canPlayerInteract(player);
+            if (!self.interactiveTileInRange && possibleInteractiveTile) {
+                self.interactiveTileInRange = possibleInteractiveTile;
                 self.possibleInteractionStart();
             }
-            if (self.isInteractionPossible && !self.domainGridHelper.canPlayerInteract(player)) {
-                self.isInteractionPossible = false;
+            if (self.interactiveTileInRange && !possibleInteractiveTile) {
+                self.interactiveTileInRange = undefined;
                 self.possibleInteractionEnd();
             }
 

@@ -24,7 +24,7 @@ G.DomainGridHelper = (function () {
     DomainGridHelper.prototype.getFloorTiles = function () {
         return this.__getTiles(BackgroundTile.FLOOR, true);
     };
-    
+
     DomainGridHelper.prototype.getSigns = function () {
         return this.__getTiles(ForegroundTile.SIGN);
     };
@@ -63,11 +63,17 @@ G.DomainGridHelper = (function () {
     DomainGridHelper.prototype.__isMovable = function (backgroundTileType) {
         return backgroundTileType === BackgroundTile.FLOOR;
     };
-    
+
     DomainGridHelper.prototype.canPlayerInteract = function (player) {
-        return this.gridHelper.getNeighbors(player.u, player.v).some(function (neighbor) {
-            return neighbor.type === ForegroundTile.SIGN;
+        var interactiveTile = false;
+        this.gridHelper.getNeighbors(player.u, player.v).some(function (neighbor) {
+            if (neighbor.type[0] === ForegroundTile.SIGN) {
+                interactiveTile = neighbor;
+                return true;
+            }
+            return false;
         });
+        return interactiveTile;
     };
 
     DomainGridHelper.prototype.movePlayer = function (player, u, v) {

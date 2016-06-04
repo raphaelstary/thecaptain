@@ -3,7 +3,7 @@ G.MyGameResources = (function (AtlasResourceHelper, DeviceInfo, userAgent, resol
     "use strict";
 
     // your files
-    var scenes, maps, atlases = [], font;
+    var scenes, worldData, atlases = [], font;
 
     function registerFiles(resourceLoader) {
         // add your files to the resource loader for downloading
@@ -11,7 +11,7 @@ G.MyGameResources = (function (AtlasResourceHelper, DeviceInfo, userAgent, resol
         AtlasResourceHelper.register(resourceLoader, atlases, isMobile, resolveAtlasPaths);
 
         scenes = resourceLoader.addJSON(Files.SCENES);
-        maps = resourceLoader.addJSON(Files.MAPS);
+        worldData = resourceLoader.addJSON(Files.WORLD);
         font = resourceLoader.addFont(Files.GAME_FONT);
 
         return resourceLoader.getCount(); // number of registered files
@@ -31,7 +31,7 @@ G.MyGameResources = (function (AtlasResourceHelper, DeviceInfo, userAgent, resol
             // services created with downloaded files
             gfxCache: AtlasResourceHelper.process(atlases, width, height),
             scenes: scenes,
-            maps: maps
+            worldData: worldData
         };
     }
 

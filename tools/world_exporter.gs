@@ -3,7 +3,7 @@ function onOpen() {
     var menuEntries = [
         {
             name: "Export Levels",
-            functionName: "exportLevels"
+            functionName: "exportData"
         }
     ];
     ss.addMenu("Export JSON", menuEntries);
@@ -13,18 +13,47 @@ function makeTextBox(app, name) {
     return app.createTextArea().setWidth('100%').setHeight('200px').setId(name).setName(name);
 }
 
-function exportLevels() {
+function exportData() {
     var ss = SpreadsheetApp.getActiveSpreadsheet();
     var sheets = ss.getSheets();
     var sheetsData = {};
     for (var i = 0; i < sheets.length; i++) {
         var sheet = sheets[i];
-        var sheetName = sheet.getName();
-        if (startsWith(sheetName, 'map_')) {
-            sheetsData[sheetName.substring(4)] = getRows(sheet);
+        var map = exportMap(sheet);
+        if (map) {
+            sheetsData[sheet.getName()] = map;
+            continue;
+        }
+        var signs = exportSignData(sheet);
+        if (signs) {
+            sheetsData.signs = signs;
+            // continue;
         }
     }
     return displayText_(JSON.stringify(sheetsData));
+}
+
+function exportSignData(sheet) {
+    if (sheet.getName() != 'signs')
+        return false;
+
+    var dict = {};
+
+    var values = sheet.getSheetValues(2, 1, sheet.getLastRow(), 2);
+    for (var i = 0; i < values.length; i++) {
+        var row = values[i];
+        if (row[0])
+            dict[row[0]] = row[1];
+    }
+
+    return dict;
+}
+
+function exportMap(sheet) {
+    if (startsWith(sheet.getName(), 'map_')) {
+        return getRows(sheet);
+    }
+    return false;
 }
 
 function displayText_(text) {
@@ -75,8 +104,7 @@ function getTileCode(cellValues) {
         var cellValue = cellValues[i];
         for (var key in ForegroundTiles) {
             if (startsWith(cellValue, key)) {
-                var tile = ForegroundTiles[key];
-                return tile === ForegroundTiles.B ? tile + boxCounter++ : tile;
+                return cellValue;
             }
         }
     }
@@ -88,7 +116,7 @@ function getBackgroundTileCode(cellValues) {
         var cellValue = cellValues[i];
         for (var key in BackgroundTiles) {
             if (startsWith(cellValue, key))
-                return BackgroundTiles[key];
+                return cellValue;
         }
     }
     return 0;

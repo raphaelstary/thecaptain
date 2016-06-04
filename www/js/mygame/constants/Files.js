@@ -9,5 +9,5 @@ G.Files = {
 
     GAME_DATA: 'data/game_data.json',
     SCENES: 'data/scenes.json',
-    MAPS: 'data/maps.json'
+    WORLD: 'data/world.json'
 };
