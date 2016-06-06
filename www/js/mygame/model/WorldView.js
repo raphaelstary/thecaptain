@@ -1,4 +1,4 @@
-G.WorldView = (function (Images) {
+G.WorldView = (function (Images, Math) {
     "use strict";
 
     function WorldView(stage, timer, gridViewHelper) {
@@ -14,6 +14,7 @@ G.WorldView = (function (Images) {
     }
 
     WorldView.prototype.preDestroy = function () {
+        this.defaultDrawable.remove();
         this.player.remove();
         function removeElem(elem) {
             elem.remove();
@@ -24,12 +25,16 @@ G.WorldView = (function (Images) {
 
     WorldView.prototype.drawLevel = function (player, grassTiles, wayTiles, signs, callback) {
 
-        var defaultDrawable = this.gridViewHelper.create(1, 1, Images.WAY);
-        var defaultHeight = defaultDrawable.data.height;
+        this.defaultDrawable = this.gridViewHelper.create(1, 1, Images.WAY);
+        var defaultHeight = this.defaultDrawable.data.height;
         // defaultHeight += 2;
-        defaultDrawable.remove();
+        this.defaultDrawable.show = false;
 
-        this.player = this.gridViewHelper.create(player.u, player.v - 1, Images.PLAYER, defaultHeight);
+        var self = this;
+        this.player = this.gridViewHelper.create(player.u, player.v, Images.PLAYER, defaultHeight, undefined,
+            function () {
+                return -Math.floor(self.defaultDrawable.getHeight() / 3 * 2);
+            }, [this.defaultDrawable]);
 
         grassTiles.forEach(function (tile) {
             this.staticTiles.push(this.gridViewHelper.createBackground(tile.u, tile.v, Images.GRASS, 1, defaultHeight));
@@ -47,8 +52,12 @@ G.WorldView = (function (Images) {
     };
 
     WorldView.prototype.movePlayer = function (changeSet, callback) {
-        this.gridViewHelper.move(this.player, changeSet.newU, changeSet.newV - 1, this.moveSpeed, callback);
+        var self = this;
+        this.gridViewHelper.move(this.player, changeSet.newU, changeSet.newV, this.moveSpeed, callback, undefined,
+            function () {
+                return -Math.floor(self.defaultDrawable.getHeight() / 3 * 2);
+            }, [this.defaultDrawable]);
     };
 
     return WorldView;
-})(G.Images);
+})(G.Images, Math);
