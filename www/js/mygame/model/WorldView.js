@@ -44,7 +44,11 @@ G.WorldView = (function (Images, Math) {
         }, this);
 
         signs.forEach(function (tile) {
-            this.staticTiles.push(this.gridViewHelper.create(tile.u, tile.v, Images.SIGN, defaultHeight));
+            this.staticTiles.push(
+                this.gridViewHelper.createBackground(tile.u, tile.v, Images.SIGN, 2, defaultHeight, undefined,
+                    function () {
+                        return -Math.floor(self.defaultDrawable.getHeight() / 14);
+                    }, [this.defaultDrawable]));
         }, this);
 
         if (callback)
