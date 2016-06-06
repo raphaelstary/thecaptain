@@ -3,12 +3,11 @@ G.DialogScreen = (function (Event, Key) {
 
     function DialogScreen(services, text) {
         this.events = services.events;
+        this.timer = services.timer;
         this.text = text;
     }
 
     DialogScreen.prototype.postConstruct = function () {
-        this.dialogTxt.setText(this.text);
-
         this.itIsOver = false;
         var self = this;
         this.keyListener = this.events.subscribe(Event.KEY_BOARD, function (keyBoard) {
@@ -20,6 +19,18 @@ G.DialogScreen = (function (Event, Key) {
                 self.nextScene();
             }
         });
+
+        function writeNextCharacter(index) {
+            self.timer.doLater(function () {
+                self.dialogTxt.setText(self.dialogTxt.data.msg + self.text[index]);
+
+                if (index < self.text.length - 1)
+                    writeNextCharacter(index + 1);
+            }, 5);
+        }
+
+        self.dialogTxt.setText('');
+        writeNextCharacter(0);
     };
 
     DialogScreen.prototype.preDestroy = function () {
