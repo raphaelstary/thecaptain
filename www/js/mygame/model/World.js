@@ -1,13 +1,9 @@
 G.World = (function () {
     "use strict";
 
-    function World(worldView, grid, gridHelper, domainGridHelper, gridViewHelper, possibleInteractionStart,
-        possibleInteractionEnd, interaction) {
+    function World(worldView, domainGridHelper, possibleInteractionStart, possibleInteractionEnd, interaction) {
         this.worldView = worldView;
-        this.grid = grid;
-        this.gridHelper = gridHelper;
         this.domainGridHelper = domainGridHelper;
-        this.gridViewHelper = gridViewHelper;
 
         this.possibleInteractionStart = possibleInteractionStart;
         this.possibleInteractionEnd = possibleInteractionEnd;
@@ -17,7 +13,7 @@ G.World = (function () {
     World.prototype.init = function (callback) {
         this.player = this.domainGridHelper.getPlayer();
 
-        this.worldView.drawLevel(this.player, this.domainGridHelper.getGrassTiles(),
+        this.worldView.drawLevel(this.player, this.domainGridHelper.getNPCs(), this.domainGridHelper.getGrassTiles(),
             this.domainGridHelper.getWayTiles(), this.domainGridHelper.getSigns(), callback);
     };
 

@@ -4,5 +4,6 @@ G.Tiles = {
     GRASS: 'G',
     WAY: 'W',
     PLAYER: 'P',
-    SIGN: 'S'
+    SIGN: 'S',
+    NPC: 'N'
 };

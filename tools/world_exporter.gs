@@ -72,7 +72,8 @@ var BackgroundTiles = {
 };
 var ForegroundTiles = {
     S: 'S', // sign
-    P: 'P' // player
+    P: 'P', // player
+    N: 'N' // NPC
 };
 
 function getRows(sheet) {

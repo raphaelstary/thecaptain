@@ -24,6 +24,10 @@ G.DomainGridHelper = (function (Tiles) {
         return this.__getTiles(Tiles.SIGN);
     };
 
+    DomainGridHelper.prototype.getNPCs = function () {
+        return this.__getTiles(Tiles.NPC);
+    };
+    
     DomainGridHelper.prototype.getPlayer = function () {
         return this.__getTiles(Tiles.PLAYER)[0];
     };

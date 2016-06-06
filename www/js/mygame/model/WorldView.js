@@ -1,4 +1,4 @@
-G.WorldView = (function (Images, Math) {
+G.WorldView = (function (Images, Math, iterateEntries) {
     "use strict";
 
     function WorldView(stage, timer, gridViewHelper) {
@@ -9,8 +9,10 @@ G.WorldView = (function (Images, Math) {
         this.player = null;
 
         this.staticTiles = [];
+        this.npcs = {};
 
         this.moveSpeed = 10;
+        this.zIndexOffset = 2;
     }
 
     WorldView.prototype.preDestroy = function () {
@@ -21,9 +23,10 @@ G.WorldView = (function (Images, Math) {
         }
 
         this.staticTiles.forEach(removeElem);
+        iterateEntries(this.npcs, removeElem)
     };
 
-    WorldView.prototype.drawLevel = function (player, grassTiles, wayTiles, signs, callback) {
+    WorldView.prototype.drawLevel = function (player, npcs, grassTiles, wayTiles, signs, callback) {
 
         this.defaultDrawable = this.gridViewHelper.create(1, 1, Images.WAY);
         var defaultHeight = this.defaultDrawable.data.height;
@@ -31,10 +34,18 @@ G.WorldView = (function (Images, Math) {
         this.defaultDrawable.show = false;
 
         var self = this;
-        this.player = this.gridViewHelper.create(player.u, player.v, Images.PLAYER, defaultHeight, undefined,
-            function () {
+        this.player = this.gridViewHelper.createBackground(player.u, player.v, Images.PLAYER,
+            player.v + this.zIndexOffset, defaultHeight, undefined, function () {
                 return -Math.floor(self.defaultDrawable.getHeight() / 3 * 2);
             }, [this.defaultDrawable]);
+
+        npcs.forEach(function (npc) {
+            self.gridViewHelper.createBackground(npc.u, npc.v, Images.RED_MALE, npc.v + self.zIndexOffset,
+                defaultHeight, undefined, function () {
+                    return -Math.floor(self.defaultDrawable.getHeight() / 3 * 2);
+                }, [self.defaultDrawable]);
+
+        });
 
         grassTiles.forEach(function (tile) {
             this.staticTiles.push(this.gridViewHelper.createBackground(tile.u, tile.v, Images.GRASS, 1, defaultHeight));
@@ -61,7 +72,8 @@ G.WorldView = (function (Images, Math) {
             function () {
                 return -Math.floor(self.defaultDrawable.getHeight() / 3 * 2);
             }, [this.defaultDrawable]);
+        this.player.setZIndex(changeSet.newV + this.zIndexOffset);
     };
 
     return WorldView;
-})(G.Images, Math);
+})(G.Images, Math, H5.iterateEntries);
