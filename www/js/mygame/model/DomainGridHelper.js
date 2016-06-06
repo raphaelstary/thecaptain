@@ -1,4 +1,4 @@
-G.DomainGridHelper = (function () {
+G.DomainGridHelper = (function (Tiles) {
     "use strict";
 
     function DomainGridHelper(gridHelper, grid, xTiles, yTiles) {
@@ -8,29 +8,24 @@ G.DomainGridHelper = (function () {
         this.yTiles = yTiles;
     }
 
-    var BackgroundTile = {
-        // backgroud tiles
-        EMPTY: 0,
-        FLOOR: 'F'
-    };
-
-    var ForegroundTile = {
-        // foreground tiles
-        EMPTY: 0,
-        PLAYER: 'P',
-        SIGN: 'S'
-    };
-
     DomainGridHelper.prototype.getFloorTiles = function () {
-        return this.__getTiles(BackgroundTile.FLOOR, true);
+        return this.__getTiles(Tiles.FLOOR, true);
+    };
+
+    DomainGridHelper.prototype.getGrassTiles = function () {
+        return this.__getTiles(Tiles.GRASS, true);
+    };
+
+    DomainGridHelper.prototype.getWayTiles = function () {
+        return this.__getTiles(Tiles.WAY, true);
     };
 
     DomainGridHelper.prototype.getSigns = function () {
-        return this.__getTiles(ForegroundTile.SIGN);
+        return this.__getTiles(Tiles.SIGN);
     };
 
     DomainGridHelper.prototype.getPlayer = function () {
-        return this.__getTiles(ForegroundTile.PLAYER)[0];
+        return this.__getTiles(Tiles.PLAYER)[0];
     };
 
     DomainGridHelper.prototype.__getTiles = function (name, isBackground) {
@@ -55,19 +50,20 @@ G.DomainGridHelper = (function () {
         var isNeighborOfPlayer = this.gridHelper.isNeighbor(player.u, player.v, u, v);
         if (isNeighborOfPlayer) {
             var tileType = this.grid.get(u, v);
-            return tileType === ForegroundTile.EMPTY && this.__isMovable(this.grid.getBackground(u, v));
+            return tileType === Tiles.EMPTY && this.__isMovable(this.grid.getBackground(u, v));
         }
         return false;
     };
 
     DomainGridHelper.prototype.__isMovable = function (backgroundTileType) {
-        return backgroundTileType === BackgroundTile.FLOOR;
+        return backgroundTileType === Tiles.FLOOR || backgroundTileType === Tiles.GRASS ||
+            backgroundTileType === Tiles.WAY;
     };
 
     DomainGridHelper.prototype.canPlayerInteract = function (player) {
         var interactiveTile = false;
         this.gridHelper.getNeighbors(player.u, player.v).some(function (neighbor) {
-            if (neighbor.type[0] === ForegroundTile.SIGN) {
+            if (neighbor.type[0] === Tiles.SIGN) {
                 interactiveTile = neighbor;
                 return true;
             }
@@ -77,8 +73,8 @@ G.DomainGridHelper = (function () {
     };
 
     DomainGridHelper.prototype.movePlayer = function (player, u, v) {
-        this.grid.set(player.u, player.v, ForegroundTile.EMPTY);
-        this.grid.set(u, v, ForegroundTile.PLAYER);
+        this.grid.set(player.u, player.v, Tiles.EMPTY);
+        this.grid.set(u, v, Tiles.PLAYER);
         var change = {
             newU: u,
             newV: v,
@@ -91,4 +87,4 @@ G.DomainGridHelper = (function () {
     };
 
     return DomainGridHelper;
-})();
+})(G.Tiles);

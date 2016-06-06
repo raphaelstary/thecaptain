@@ -17,8 +17,8 @@ G.World = (function () {
     World.prototype.init = function (callback) {
         this.player = this.domainGridHelper.getPlayer();
 
-        this.worldView.drawLevel(this.player, this.domainGridHelper.getFloorTiles(), this.domainGridHelper.getSigns(),
-            callback);
+        this.worldView.drawLevel(this.player, this.domainGridHelper.getGrassTiles(),
+            this.domainGridHelper.getWayTiles(), this.domainGridHelper.getSigns(), callback);
     };
 
     World.prototype.interact = function (callback) {

@@ -66,7 +66,9 @@ function displayText_(text) {
 }
 
 var BackgroundTiles = {
-    F: 'F' // floor
+    F: 'F', // floor
+    G: 'G', // grass
+    W: 'W' // way / walk
 };
 var ForegroundTiles = {
     S: 'S', // sign

@@ -22,17 +22,20 @@ G.WorldView = (function (Images) {
         this.staticTiles.forEach(removeElem);
     };
 
-    WorldView.prototype.drawLevel = function (player, floorTiles, signs, callback) {
+    WorldView.prototype.drawLevel = function (player, grassTiles, wayTiles, signs, callback) {
 
-        var defaultDrawable = this.gridViewHelper.create(1, 1, Images.FLOOR);
+        var defaultDrawable = this.gridViewHelper.create(1, 1, Images.WAY);
         var defaultHeight = defaultDrawable.data.height;
         // defaultHeight += 2;
         defaultDrawable.remove();
 
-        this.player = this.gridViewHelper.create(player.u, player.v, Images.PLAYER, defaultHeight);
+        this.player = this.gridViewHelper.create(player.u, player.v - 1, Images.PLAYER, defaultHeight);
 
-        floorTiles.forEach(function (tile) {
-            this.staticTiles.push(this.gridViewHelper.createBackground(tile.u, tile.v, Images.FLOOR, 1, defaultHeight));
+        grassTiles.forEach(function (tile) {
+            this.staticTiles.push(this.gridViewHelper.createBackground(tile.u, tile.v, Images.GRASS, 1, defaultHeight));
+        }, this);
+        wayTiles.forEach(function (tile) {
+            this.staticTiles.push(this.gridViewHelper.createBackground(tile.u, tile.v, Images.WAY, 1, defaultHeight));
         }, this);
 
         signs.forEach(function (tile) {
@@ -44,7 +47,7 @@ G.WorldView = (function (Images) {
     };
 
     WorldView.prototype.movePlayer = function (changeSet, callback) {
-        this.gridViewHelper.move(this.player, changeSet.newU, changeSet.newV, this.moveSpeed, callback);
+        this.gridViewHelper.move(this.player, changeSet.newU, changeSet.newV - 1, this.moveSpeed, callback);
     };
 
     return WorldView;
