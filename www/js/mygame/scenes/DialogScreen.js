@@ -21,16 +21,24 @@ G.DialogScreen = (function (Event, Key) {
         });
 
         function writeNextCharacter(index) {
-            self.timer.doLater(function () {
-                self.dialogTxt.setText(self.dialogTxt.data.msg + self.text[index]);
+            self.dialogTxt.setText(self.dialogTxt.data.msg + self.text[index]);
 
-                if (index < self.text.length - 1)
-                    writeNextCharacter(index + 1);
-            }, 5);
+            if (index < self.text.length - 1)
+                startNextCharacterIteration(index + 1);
+        }
+
+        function startNextCharacterIteration(index) {
+            if (self.text[index] == ' ') {
+                writeNextCharacter(index);
+            } else {
+                self.timer.doLater(function () {
+                    writeNextCharacter(index);
+                }, 2);
+            }
         }
 
         self.dialogTxt.setText('');
-        writeNextCharacter(0);
+        startNextCharacterIteration(0);
     };
 
     DialogScreen.prototype.preDestroy = function () {
