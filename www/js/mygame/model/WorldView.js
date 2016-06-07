@@ -1,10 +1,11 @@
 G.WorldView = (function (Images, Math, iterateEntries) {
     "use strict";
 
-    function WorldView(stage, timer, gridViewHelper) {
+    function WorldView(stage, timer, gridViewHelper, npcInfo) {
         this.stage = stage;
         this.timer = timer;
         this.gridViewHelper = gridViewHelper;
+        this.npcInfo = npcInfo;
 
         this.player = null;
 
@@ -40,12 +41,11 @@ G.WorldView = (function (Images, Math, iterateEntries) {
             }, [this.defaultDrawable]);
 
         npcs.forEach(function (npc) {
-            self.gridViewHelper.createBackground(npc.u, npc.v, Images.RED_MALE, npc.v + self.zIndexOffset,
+            this.gridViewHelper.createBackground(npc.u, npc.v, this.npcInfo[npc.type], npc.v + this.zIndexOffset,
                 defaultHeight, undefined, function () {
                     return -Math.floor(self.defaultDrawable.getHeight() / 3 * 2);
-                }, [self.defaultDrawable]);
-
-        });
+                }, [this.defaultDrawable]);
+        }, this);
 
         grassTiles.forEach(function (tile) {
             this.staticTiles.push(this.gridViewHelper.createBackground(tile.u, tile.v, Images.GRASS, 1, defaultHeight));
