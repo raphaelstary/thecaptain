@@ -2,5 +2,6 @@ G.MapDataKey = {
     MAP_BASIC: 'map_basic',
 
     DIALOG: 'dialog',
-    NPC: 'npc'
+    NPC: 'npc',
+    DIRECTIONS: 'directions'
 };

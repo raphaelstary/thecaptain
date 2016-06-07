@@ -41,8 +41,8 @@ G.WorldView = (function (Images, Math, iterateEntries) {
             }, [this.defaultDrawable]);
 
         npcs.forEach(function (npc) {
-            this.gridViewHelper.createBackground(npc.u, npc.v, this.npcInfo[npc.type], npc.v + this.zIndexOffset,
-                defaultHeight, undefined, function () {
+            this.npcs[npc.type] = this.gridViewHelper.createBackground(npc.u, npc.v, this.npcInfo[npc.type],
+                npc.v + this.zIndexOffset, defaultHeight, undefined, function () {
                     return -Math.floor(self.defaultDrawable.getHeight() / 3 * 2);
                 }, [this.defaultDrawable]);
         }, this);
@@ -68,11 +68,19 @@ G.WorldView = (function (Images, Math, iterateEntries) {
 
     WorldView.prototype.movePlayer = function (changeSet, callback) {
         var self = this;
-        this.gridViewHelper.move(this.player, changeSet.newU, changeSet.newV, this.moveSpeed, callback, undefined,
-            function () {
-                return -Math.floor(self.defaultDrawable.getHeight() / 3 * 2);
-            }, [this.defaultDrawable]);
-        this.player.setZIndex(changeSet.newV + this.zIndexOffset);
+        if (changeSet.tile == 'P') {
+            this.gridViewHelper.move(this.player, changeSet.newU, changeSet.newV, this.moveSpeed, callback, undefined,
+                function () {
+                    return -Math.floor(self.defaultDrawable.getHeight() / 3 * 2);
+                }, [this.defaultDrawable]);
+            this.player.setZIndex(changeSet.newV + this.zIndexOffset);
+        } else {
+            this.gridViewHelper.move(this.npcs[changeSet.tile], changeSet.newU, changeSet.newV, this.moveSpeed, callback, undefined,
+                function () {
+                    return -Math.floor(self.defaultDrawable.getHeight() / 3 * 2);
+                }, [this.defaultDrawable]);
+            this.npcs[changeSet.tile].setZIndex(changeSet.newV + this.zIndexOffset);
+        }
     };
 
     return WorldView;

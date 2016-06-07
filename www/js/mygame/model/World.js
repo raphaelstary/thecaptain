@@ -1,20 +1,50 @@
-G.World = (function () {
+G.World = (function (iterateEntries) {
     "use strict";
 
-    function World(worldView, domainGridHelper, possibleInteractionStart, possibleInteractionEnd, interaction) {
+    function World(worldView, domainGridHelper, directions, possibleInteractionStart, possibleInteractionEnd,
+        interaction) {
         this.worldView = worldView;
         this.domainGridHelper = domainGridHelper;
+        this.directions = directions;
 
         this.possibleInteractionStart = possibleInteractionStart;
         this.possibleInteractionEnd = possibleInteractionEnd;
         this.interaction = interaction;
     }
 
+    World.prototype.update = function () {
+
+    };
+
     World.prototype.init = function (callback) {
         this.player = this.domainGridHelper.getPlayer();
 
-        this.worldView.drawLevel(this.player, this.domainGridHelper.getNPCs(), this.domainGridHelper.getGrassTiles(),
+        var npcs = this.domainGridHelper.getNPCs();
+        this.worldView.drawLevel(this.player, npcs, this.domainGridHelper.getGrassTiles(),
             this.domainGridHelper.getWayTiles(), this.domainGridHelper.getSigns(), callback);
+
+        iterateEntries(this.directions, function (npcDirections, npcId) {
+            var npc;
+            npcs.some(function (elem) {
+                if (elem.type == npcId) {
+                    npc = elem;
+                    return true;
+                }
+                return false;
+            });
+
+            var copy = npcDirections.slice();
+            var wayPoint = npcDirections.shift();
+            if (wayPoint.action == 'left') {
+                this.moveLeft(function () {
+                }, npc);
+            } else if (wayPoint.action == 'right') {
+                this.moveRight(function () {
+                }, npc);
+            } else if (wayPoint.action == 'wait') {
+
+            }
+        }, this);
     };
 
     World.prototype.interact = function (callback) {
@@ -26,20 +56,26 @@ G.World = (function () {
         return true;
     };
 
-    World.prototype.moveLeft = function (callback) {
-        return this.__move(this.player, this.player.u - 1, this.player.v, callback);
+    World.prototype.moveLeft = function (callback, entity) {
+        if (!entity)
+            return this.__move(this.player, this.player.u - 1, this.player.v, callback);
+        return this.__move(entity, entity.u - 1, entity.v, callback);
     };
 
-    World.prototype.moveRight = function (callback) {
-        return this.__move(this.player, this.player.u + 1, this.player.v, callback);
+    World.prototype.moveRight = function (callback, entity) {
+        if (!entity)
+            return this.__move(this.player, this.player.u + 1, this.player.v, callback);
+        return this.__move(entity, entity.u + 1, entity.v, callback);
     };
 
-    World.prototype.moveTop = function (callback) {
-        return this.__move(this.player, this.player.u, this.player.v - 1, callback);
+    World.prototype.moveTop = function (callback, entity) {
+        if (!entity)
+            return this.__move(this.player, this.player.u, this.player.v - 1, callback);
     };
 
-    World.prototype.moveBottom = function (callback) {
-        return this.__move(this.player, this.player.u, this.player.v + 1, callback);
+    World.prototype.moveBottom = function (callback, entity) {
+        if (!entity)
+            return this.__move(this.player, this.player.u, this.player.v + 1, callback);
     };
 
     World.prototype.__move = function (player, u, v, callback) {
@@ -79,4 +115,4 @@ G.World = (function () {
     };
 
     return World;
-})();
+})(H5.iterateEntries);
