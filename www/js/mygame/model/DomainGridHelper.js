@@ -8,10 +8,6 @@ G.DomainGridHelper = (function (Tiles) {
         this.yTiles = yTiles;
     }
 
-    DomainGridHelper.prototype.getFloorTiles = function () {
-        return this.__getTiles(Tiles.FLOOR, true);
-    };
-
     DomainGridHelper.prototype.getGrassTiles = function () {
         return this.__getTiles(Tiles.GRASS, true);
     };
@@ -27,7 +23,7 @@ G.DomainGridHelper = (function (Tiles) {
     DomainGridHelper.prototype.getNPCs = function () {
         return this.__getTiles(Tiles.NPC);
     };
-    
+
     DomainGridHelper.prototype.getPlayer = function () {
         return this.__getTiles(Tiles.PLAYER)[0];
     };
@@ -60,20 +56,23 @@ G.DomainGridHelper = (function (Tiles) {
     };
 
     DomainGridHelper.prototype.__isMovable = function (backgroundTileType) {
-        return backgroundTileType === Tiles.FLOOR || backgroundTileType === Tiles.GRASS ||
-            backgroundTileType === Tiles.WAY;
+        return backgroundTileType === Tiles.GRASS || backgroundTileType === Tiles.WAY;
     };
 
     DomainGridHelper.prototype.canPlayerInteract = function (player) {
         var interactiveTile = false;
         this.gridHelper.getNeighbors(player.u, player.v).some(function (neighbor) {
-            if (neighbor.type[0] === Tiles.SIGN) {
+            if (this.__isInteractionPossible(neighbor.type)) {
                 interactiveTile = neighbor;
                 return true;
             }
             return false;
-        });
+        }, this);
         return interactiveTile;
+    };
+
+    DomainGridHelper.prototype.__isInteractionPossible = function (tileType) {
+        return tileType[0] === Tiles.SIGN || tileType[0] === Tiles.NPC;
     };
 
     DomainGridHelper.prototype.movePlayer = function (player, u, v) {

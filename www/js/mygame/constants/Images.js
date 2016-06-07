@@ -1,5 +1,4 @@
 G.Images = {
-    FLOOR: 'floor',
     GRASS: 'grass',
     PLAYER: 'green_shirt_male',
     SIGN: 'sign',

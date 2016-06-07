@@ -1,7 +1,7 @@
 G.GameScreen = (function (PlayFactory, installPlayerKeyBoard, Scenes, MVVMScene, DialogScreen) {
     "use strict";
 
-    function GameScreen(services, map, signs) {
+    function GameScreen(services, map, dialog) {
         this.device = services.device;
         this.events = services.events;
         this.sceneStorage = services.sceneStorage;
@@ -10,7 +10,7 @@ G.GameScreen = (function (PlayFactory, installPlayerKeyBoard, Scenes, MVVMScene,
 
         this.scenes = services.scenes;
         this.map = map;
-        this.signs = signs;
+        this.dialog = dialog;
         this.services = services;
 
         this.__paused = false;
@@ -41,8 +41,8 @@ G.GameScreen = (function (PlayFactory, installPlayerKeyBoard, Scenes, MVVMScene,
             self.interactSymbol.show = false;
         }
 
-        function interaction(signId, callback) {
-            var dialogScreen = new DialogScreen(self.services, self.signs[signId]);
+        function interaction(dialogId, callback) {
+            var dialogScreen = new DialogScreen(self.services, self.dialog[dialogId]);
             var dialogScene = new MVVMScene(self.services, self.services.scenes[Scenes.DIALOG_SCREEN], dialogScreen, Scenes.DIALOG_SCREEN);
             dialogScene.show(callback);
         }

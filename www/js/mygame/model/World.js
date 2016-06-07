@@ -53,6 +53,10 @@ G.World = (function () {
             // i donno ... flash smth or highlight smth
 
             var possibleInteractiveTile = self.domainGridHelper.canPlayerInteract(player);
+
+            if (possibleInteractiveTile && self.interactiveTileInRange) {
+                self.interactiveTileInRange = possibleInteractiveTile;
+            }
             if (!self.interactiveTileInRange && possibleInteractiveTile) {
                 self.interactiveTileInRange = possibleInteractiveTile;
                 self.possibleInteractionStart();

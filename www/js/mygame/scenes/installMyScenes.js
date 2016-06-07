@@ -1,4 +1,4 @@
-G.installMyScenes = (function (SceneManager, MVVMScene, StartScreen, Scenes, TapManager, Event, GameScreen) {
+G.installMyScenes = (function (SceneManager, MVVMScene, StartScreen, Scenes, TapManager, Event, GameScreen, MapDataKey) {
     "use strict";
 
     function installMyScenes(sceneServices) {
@@ -11,7 +11,7 @@ G.installMyScenes = (function (SceneManager, MVVMScene, StartScreen, Scenes, Tap
         var sceneManager = new SceneManager();
 
         var startScreen = new MVVMScene(sceneServices, sceneServices.scenes[Scenes.START_SCREEN], new StartScreen(sceneServices), Scenes.START_SCREEN);
-        var gameSceneModel = new GameScreen(sceneServices, sceneServices.worldData['map_basic'], sceneServices.worldData['signs']);
+        var gameSceneModel = new GameScreen(sceneServices, sceneServices.worldData[MapDataKey.MAP_BASIC], sceneServices.worldData[MapDataKey.DIALOG]);
         var gameScreen = new MVVMScene(sceneServices, sceneServices.scenes[Scenes.GAME_SCREEN], gameSceneModel, Scenes.GAME_SCREEN);
         
         sceneManager.add(startScreen.show.bind(startScreen));
@@ -21,4 +21,4 @@ G.installMyScenes = (function (SceneManager, MVVMScene, StartScreen, Scenes, Tap
     }
 
     return installMyScenes;
-})(H5.SceneManager, H5.MVVMScene, G.StartScreen, G.Scenes, H5.TapManager, H5.Event, G.GameScreen);
+})(H5.SceneManager, H5.MVVMScene, G.StartScreen, G.Scenes, H5.TapManager, H5.Event, G.GameScreen, G.MapDataKey);
