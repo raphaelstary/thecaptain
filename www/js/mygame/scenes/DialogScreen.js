@@ -35,27 +35,27 @@ G.DialogScreen = (function (Event, Key, Width, Height) {
             }
         });
 
-        function writeNextCharacter(text, index) {
+        function writeNextCharacter(paragraph, index) {
             if (skip) {
-                self.dialogTxt.setText(text);
+                self.dialogTxt.setText(paragraph.text);
                 typing = false;
                 return;
             }
-            self.dialogTxt.setText(self.dialogTxt.data.msg + text[index]);
+            self.dialogTxt.setText(self.dialogTxt.data.msg + paragraph.text[index]);
 
-            if (index < text.length - 1) {
-                startNextCharacterIteration(text, index + 1);
+            if (index < paragraph.text.length - 1) {
+                startNextCharacterIteration(paragraph, index + 1);
             } else {
                 typing = false;
             }
         }
 
-        function startNextCharacterIteration(text, index) {
-            if (text[index] == ' ') {
-                writeNextCharacter(text, index);
+        function startNextCharacterIteration(paragraph, index) {
+            if (paragraph.text[index] == ' ') {
+                writeNextCharacter(paragraph, index);
             } else {
                 self.timer.doLater(function () {
-                    writeNextCharacter(text, index);
+                    writeNextCharacter(paragraph, index);
                 }, 2);
             }
         }
