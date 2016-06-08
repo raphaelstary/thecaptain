@@ -11,7 +11,7 @@ G.PlayFactory = (function (Grid, GridHelper, GridViewHelper, DomainGridHelper, W
             var gridViewHelper = new GridViewHelper(stage, device, grid.xTiles, grid.yTiles, zero, zero);
             var domainGridHelper = new DomainGridHelper(gridHelper, grid, grid.xTiles, grid.yTiles);
             var worldView = new WorldView(stage, timer, gridViewHelper, npcInfo);
-            return new World(worldView, domainGridHelper, directions, possibleInteractionStart, possibleInteractionEnd, interaction);
+            return new World(worldView, domainGridHelper, timer, directions, possibleInteractionStart, possibleInteractionEnd, interaction);
         },
         createPlayerController: function (world) {
             return new PlayerController(world);
