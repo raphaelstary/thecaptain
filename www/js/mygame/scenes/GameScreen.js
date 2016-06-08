@@ -1,4 +1,4 @@
-G.GameScreen = (function (PlayFactory, installPlayerKeyBoard, Scenes, MVVMScene, DialogScreen) {
+G.GameScreen = (function (PlayFactory, installPlayerKeyBoard, Scenes, MVVMScene, DialogScreen, Tiles) {
     "use strict";
 
     function GameScreen(services, map, dialog, npc, directions) {
@@ -35,7 +35,12 @@ G.GameScreen = (function (PlayFactory, installPlayerKeyBoard, Scenes, MVVMScene,
 
         var self = this;
 
-        function possibleInteractionStart() {
+        function possibleInteractionStart(dialogId) {
+            if (dialogId[0] == Tiles.NPC) {
+                self.interactSymbol.setText('talk');
+            } else if (dialogId[0] == Tiles.SIGN) {
+                self.interactSymbol.setText('read');
+            }
             self.interactSymbol.show = true;
         }
 
@@ -70,4 +75,4 @@ G.GameScreen = (function (PlayFactory, installPlayerKeyBoard, Scenes, MVVMScene,
     };
 
     return GameScreen;
-})(G.PlayFactory, G.installPlayerKeyBoard, G.Scenes, H5.MVVMScene, G.DialogScreen);
+})(G.PlayFactory, G.installPlayerKeyBoard, G.Scenes, H5.MVVMScene, G.DialogScreen, G.Tiles);

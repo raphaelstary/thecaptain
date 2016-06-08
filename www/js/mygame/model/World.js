@@ -131,7 +131,7 @@ G.World = (function (iterateEntries) {
             }
             if (!self.interactiveTileInRange && possibleInteractiveTile) {
                 self.interactiveTileInRange = possibleInteractiveTile;
-                self.possibleInteractionStart();
+                self.possibleInteractionStart(possibleInteractiveTile.type);
             }
             if (self.interactiveTileInRange && !possibleInteractiveTile) {
                 self.interactiveTileInRange = undefined;
