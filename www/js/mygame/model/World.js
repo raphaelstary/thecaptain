@@ -16,6 +16,8 @@ G.World = (function (iterateEntries) {
     }
 
     World.prototype.init = function (callback) {
+        this.__interacting = false;
+
         this.player = this.domainGridHelper.getPlayer();
 
         var npcs = this.domainGridHelper.getNPCs();
@@ -34,6 +36,11 @@ G.World = (function (iterateEntries) {
     };
 
     World.prototype.autoMoveNPC = function (entity, nextWayPoints) {
+        if (this.__interacting) {
+            this.timer.doLater(this.autoMoveNPC.bind(this, entity, nextWayPoints), this.oneCyle * 2);
+            return;
+        }
+
         var self = this;
 
         function handleNextWayPoint() {
@@ -74,7 +81,13 @@ G.World = (function (iterateEntries) {
         if (!this.interactiveTileInRange)
             return false;
 
-        this.interaction(this.interactiveTileInRange.type, callback);
+        this.__interacting = true;
+        var self = this;
+        this.interaction(this.interactiveTileInRange.type, function () {
+            self.__interacting = false;
+            if (callback)
+                callback();
+        });
 
         return true;
     };
