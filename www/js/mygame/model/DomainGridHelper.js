@@ -77,7 +77,7 @@ G.DomainGridHelper = (function (Tiles) {
 
     DomainGridHelper.prototype.movePlayer = function (player, u, v) {
         this.grid.set(player.u, player.v, Tiles.EMPTY);
-        this.grid.set(u, v, Tiles.PLAYER);
+        this.grid.set(u, v, player.type);
         var change = {
             newU: u,
             newV: v,

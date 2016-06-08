@@ -103,17 +103,15 @@ G.World = (function (iterateEntries) {
         return this.__move(entity, entity.u, entity.v + 1, callback);
     };
 
-    World.prototype.__move = function (player, u, v, callback) {
-        var canMove = this.domainGridHelper.canPlayerMove(player, u, v);
+    World.prototype.__move = function (entity, u, v, callback) {
+        var canMove = this.domainGridHelper.canPlayerMove(entity, u, v);
         if (!canMove)
             return false;
 
         var self = this;
 
         function postMove() {
-            // i donno ... flash smth or highlight smth
-
-            var possibleInteractiveTile = self.domainGridHelper.canPlayerInteract(player);
+            var possibleInteractiveTile = self.domainGridHelper.canPlayerInteract(self.player);
 
             if (possibleInteractiveTile && self.interactiveTileInRange) {
                 self.interactiveTileInRange = possibleInteractiveTile;
@@ -132,7 +130,7 @@ G.World = (function (iterateEntries) {
         }
 
         if (canMove) {
-            var change = this.domainGridHelper.movePlayer(player, u, v);
+            var change = this.domainGridHelper.movePlayer(entity, u, v);
             this.worldView.movePlayer(change, postMove);
         }
 
