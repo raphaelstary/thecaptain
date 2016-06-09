@@ -18,10 +18,13 @@ G.DialogScreen = (function (Event, Key, Width, Height, OptionScreen, MVVMScene, 
         var chosenOption;
         var self = this;
 
+        this.continueSign.setText('skip');
+
         function startNextParagraph() {
             typing = true;
             skip = false;
             self.dialogTxt.setText('');
+            self.continueSign.setText('skip');
             startNextCharacterIteration(self.textPragraphs.shift(), 0);
         }
 
@@ -64,11 +67,16 @@ G.DialogScreen = (function (Event, Key, Width, Height, OptionScreen, MVVMScene, 
             }
         }
 
+        function endOfTyping(paragraph) {
+            self.dialogTxt.setText(paragraph.text);
+            self.continueSign.setText('continue');
+            typing = false;
+            showOptionScreen(paragraph);
+        }
+
         function writeNextCharacter(paragraph, index) {
             if (skip) {
-                self.dialogTxt.setText(paragraph.text);
-                typing = false;
-                showOptionScreen(paragraph);
+                endOfTyping(paragraph);
                 return;
             }
             self.dialogTxt.setText(self.dialogTxt.data.msg + paragraph.text[index]);
@@ -76,8 +84,7 @@ G.DialogScreen = (function (Event, Key, Width, Height, OptionScreen, MVVMScene, 
             if (index < paragraph.text.length - 1) {
                 startNextCharacterIteration(paragraph, index + 1);
             } else {
-                typing = false;
-                showOptionScreen(paragraph);
+                endOfTyping(paragraph);
             }
         }
 
