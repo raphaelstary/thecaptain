@@ -1,4 +1,4 @@
-G.GameScreen = (function (PlayFactory, installPlayerKeyBoard, Scenes, MVVMScene, DialogScreen, Tiles) {
+G.GameScreen = (function (PlayFactory, installPlayerKeyBoard, Scenes, MVVMScene, DialogScreen, Tiles, Event) {
     "use strict";
 
     function GameScreen(services, map, dialog, npc, directions) {
@@ -61,6 +61,8 @@ G.GameScreen = (function (PlayFactory, installPlayerKeyBoard, Scenes, MVVMScene,
             self.__resume();
         });
 
+        this.cameraListener = this.events.subscribe(Event.TICK_CAMERA, this.world.updateCamera.bind(this.world));
+
         this.playerController = PlayFactory.createPlayerController(this.world);
         this.__pause();
 
@@ -71,8 +73,9 @@ G.GameScreen = (function (PlayFactory, installPlayerKeyBoard, Scenes, MVVMScene,
 
     GameScreen.prototype.preDestroy = function () {
         this.events.unsubscribe(this.keyBoardHandler);
+        this.events.unsubscribe(this.cameraListener);
         this.world.worldView.preDestroy();
     };
 
     return GameScreen;
-})(G.PlayFactory, G.installPlayerKeyBoard, G.Scenes, H5.MVVMScene, G.DialogScreen, G.Tiles);
+})(G.PlayFactory, G.installPlayerKeyBoard, G.Scenes, H5.MVVMScene, G.DialogScreen, G.Tiles, H5.Event);

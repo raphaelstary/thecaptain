@@ -1,11 +1,9 @@
 G.DomainGridHelper = (function (Tiles) {
     "use strict";
 
-    function DomainGridHelper(gridHelper, grid, xTiles, yTiles) {
+    function DomainGridHelper(gridHelper, grid) {
         this.gridHelper = gridHelper;
         this.grid = grid;
-        this.xTiles = xTiles;
-        this.yTiles = yTiles;
     }
 
     DomainGridHelper.prototype.getGrassTiles = function () {
@@ -31,8 +29,8 @@ G.DomainGridHelper = (function (Tiles) {
     DomainGridHelper.prototype.__getTiles = function (name, isBackground) {
         var parts = [];
 
-        for (var y = 0; y < this.yTiles; y++) {
-            for (var x = 0; x < this.xTiles; x++) {
+        for (var y = 0; y < this.grid.yTiles; y++) {
+            for (var x = 0; x < this.grid.xTiles; x++) {
                 var tile = !isBackground ? this.grid.get(x, y) : this.grid.getBackground(x, y);
                 if (tile[0] === name)
                     parts.push({

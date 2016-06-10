@@ -1,10 +1,11 @@
 G.World = (function (iterateEntries) {
     "use strict";
 
-    function World(worldView, domainGridHelper, timer, directions, possibleInteractionStart, possibleInteractionEnd,
-        interaction) {
+    function World(worldView, domainGridHelper, camera, timer, directions, possibleInteractionStart,
+        possibleInteractionEnd, interaction) {
         this.worldView = worldView;
         this.domainGridHelper = domainGridHelper;
+        this.camera = camera;
         this.timer = timer;
         this.directions = directions;
 
@@ -15,14 +16,32 @@ G.World = (function (iterateEntries) {
         this.oneCyle = 60;
     }
 
+    World.prototype.updateCamera = function () {
+        this.camera.move(this.player.entity);
+        
+        this.allTiles.forEach(function (tile) {
+            this.camera.calcScreenPosition(tile.entity, tile.drawable);
+        }, this);
+    };
+
     World.prototype.init = function (callback) {
         this.__interacting = false;
 
         this.player = this.domainGridHelper.getPlayer();
 
         var npcs = this.domainGridHelper.getNPCs();
-        this.worldView.drawLevel(this.player, npcs, this.domainGridHelper.getGrassTiles(),
-            this.domainGridHelper.getWayTiles(), this.domainGridHelper.getSigns(), callback);
+        var grassTiles = this.domainGridHelper.getGrassTiles();
+        var wayTiles = this.domainGridHelper.getWayTiles();
+        var signs = this.domainGridHelper.getSigns();
+
+        this.allTiles = [];
+        this.allTiles.push.apply(this.allTiles, npcs);
+        this.allTiles.push.apply(this.allTiles, grassTiles);
+        this.allTiles.push.apply(this.allTiles, wayTiles);
+        this.allTiles.push.apply(this.allTiles, signs);
+        this.allTiles.push(this.player);
+
+        this.worldView.drawLevel(this.player, npcs, grassTiles, wayTiles, signs, callback);
 
         iterateEntries(this.directions, function (npcDirections, npcId) {
             npcs.some(function (npc) {

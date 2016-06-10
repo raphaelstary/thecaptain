@@ -1,5 +1,5 @@
-G.PlayFactory = (function (Grid, GridHelper, GridViewHelper, DomainGridHelper, World, WorldView, PlayerController,
-    zero) {
+G.PlayFactory = (function (Grid, GridHelper, GridViewHelper, DomainGridHelper, World, WorldView, PlayerController, zero,
+    Camera, createDefaultViewPort) {
 
     "use strict";
 
@@ -7,14 +7,16 @@ G.PlayFactory = (function (Grid, GridHelper, GridViewHelper, DomainGridHelper, W
         createWorld: function (stage, timer, device, map, npcInfo, directions, possibleInteractionStart,
             possibleInteractionEnd, interaction) {
             var grid = new Grid(map);
-            var gridHelper = new GridHelper(grid, grid.xTiles, grid.yTiles);
-            var gridViewHelper = new GridViewHelper(stage, device, grid.xTiles, grid.yTiles, zero, zero);
-            var domainGridHelper = new DomainGridHelper(gridHelper, grid, grid.xTiles, grid.yTiles);
+            var gridHelper = new GridHelper(grid);
+            var gridViewHelper = new GridViewHelper(stage, device, 16, 9, zero, zero);
+            var domainGridHelper = new DomainGridHelper(gridHelper, grid);
             var worldView = new WorldView(stage, timer, gridViewHelper, npcInfo);
-            return new World(worldView, domainGridHelper, timer, directions, possibleInteractionStart, possibleInteractionEnd, interaction);
+            var camera = new Camera(createDefaultViewPort(stage));
+            return new World(worldView, domainGridHelper, camera, timer, directions, possibleInteractionStart, possibleInteractionEnd, interaction);
         },
         createPlayerController: function (world) {
             return new PlayerController(world);
         }
     };
-})(H5.Grid, H5.GridHelper, H5.GridViewHelper, G.DomainGridHelper, G.World, G.WorldView, G.PlayerController, H5.zero);
+})(H5.Grid, H5.GridHelper, H5.GridViewHelper, G.DomainGridHelper, G.World, G.WorldView, G.PlayerController, H5.zero,
+    G.Camera, G.createDefaultViewPort);
