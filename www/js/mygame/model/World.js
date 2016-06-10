@@ -16,9 +16,26 @@ G.World = (function (iterateEntries) {
         this.oneCyle = 60;
     }
 
+    World.prototype.__updateEntitiesZIndex = function () {
+        var zIndex = 1;
+        this.npcs.concat(this.player)
+            .filter(function (entityWrapper) {
+                return entityWrapper.drawable.show;
+            })
+            .sort(function (a, b) {
+                return a.v - b.v;
+            })
+            .reduce(function (prevV, entity) {
+                if (prevV < entity.v)
+                    zIndex++;
+                entity.drawable.setZIndex(zIndex);
+                return entity.v;
+            }, 0);
+    };
+
     World.prototype.updateCamera = function () {
         this.camera.move(this.player.entity);
-        
+
         this.allTiles.forEach(function (tile) {
             this.camera.calcScreenPosition(tile.entity, tile.drawable);
         }, this);
@@ -29,22 +46,22 @@ G.World = (function (iterateEntries) {
 
         this.player = this.domainGridHelper.getPlayer();
 
-        var npcs = this.domainGridHelper.getNPCs();
+        this.npcs = this.domainGridHelper.getNPCs();
         var grassTiles = this.domainGridHelper.getGrassTiles();
         var wayTiles = this.domainGridHelper.getWayTiles();
         var signs = this.domainGridHelper.getSigns();
 
         this.allTiles = [];
-        this.allTiles.push.apply(this.allTiles, npcs);
+        this.allTiles.push.apply(this.allTiles, this.npcs);
         this.allTiles.push.apply(this.allTiles, grassTiles);
         this.allTiles.push.apply(this.allTiles, wayTiles);
         this.allTiles.push.apply(this.allTiles, signs);
         this.allTiles.push(this.player);
 
-        this.worldView.drawLevel(this.player, npcs, grassTiles, wayTiles, signs, callback);
+        this.worldView.drawLevel(this.player, this.npcs, grassTiles, wayTiles, signs, callback);
 
         iterateEntries(this.directions, function (npcDirections, npcId) {
-            npcs.some(function (npc) {
+            this.npcs.some(function (npc) {
                 if (npc.type == npcId) {
                     this.autoMoveNPC(npc, npcDirections.slice());
                     return true;
@@ -143,6 +160,8 @@ G.World = (function (iterateEntries) {
         var self = this;
 
         function postMove() {
+            self.__updateEntitiesZIndex();
+            
             var possibleInteractiveTile = self.domainGridHelper.canPlayerInteract(self.player);
 
             if (possibleInteractiveTile && self.interactiveTileInRange) {
