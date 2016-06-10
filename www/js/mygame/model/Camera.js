@@ -18,7 +18,7 @@ G.Camera = (function () {
     Camera.prototype.calcScreenPosition = function (entity, drawable) {
         if (entity.getEndX() < this.viewPort.getCornerX() || entity.getCornerX() > this.viewPort.getEndX() ||
             entity.getEndY() < this.viewPort.getCornerY() || entity.getCornerY() > this.viewPort.getEndY()) {
-            
+
             drawable.show = false;
             return;
         }
@@ -27,12 +27,6 @@ G.Camera = (function () {
 
         drawable.x = entity.x - this.viewPort.getCornerX() * this.viewPort.scale;
         drawable.y = entity.y - this.viewPort.getCornerY() * this.viewPort.scale;
-        drawable.rotation = this.viewPort.rotation + entity.rotation;
-        drawable.scale = entity.scale * this.viewPort.scale;
-        drawable.flipHorizontally = entity.flipHorizontally;
-        drawable.flipHorizontally = this.viewPort.flipHorizontally;
-        drawable.flipVertically = entity.flipVertically;
-        drawable.flipVertically = this.viewPort.flipVertically;
     };
 
     Camera.prototype.move = function (anchor) {
