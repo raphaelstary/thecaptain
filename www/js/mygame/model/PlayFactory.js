@@ -11,7 +11,8 @@ G.PlayFactory = (function (Grid, GridHelper, GridViewHelper, DomainGridHelper, W
             var gridViewHelper = new GridViewHelper(stage, device, 16, 9, zero, zero);
             var domainGridHelper = new DomainGridHelper(gridHelper, grid);
             var worldView = new WorldView(stage, timer, gridViewHelper, npcInfo);
-            var camera = new Camera(createDefaultViewPort(stage));
+            var maxCameraPosition = gridViewHelper.getPosition(grid.xTiles - 9, grid.yTiles - 5);
+            var camera = new Camera(createDefaultViewPort(stage), maxCameraPosition.x, maxCameraPosition.y);
             return new World(worldView, domainGridHelper, camera, timer, directions, possibleInteractionStart, possibleInteractionEnd, interaction);
         },
         createPlayerController: function (world) {

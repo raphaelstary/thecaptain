@@ -1,7 +1,7 @@
 G.Camera = (function () {
     "use strict";
 
-    function Camera(viewPort, minX, minY, maxX, maxY) {
+    function Camera(viewPort, maxX, maxY) {
         this.viewPort = viewPort;
 
         // introducing a 3rd universe:
@@ -9,15 +9,18 @@ G.Camera = (function () {
         // 2nd px screen coordinates (x,y)
         // 3rd px space coordinates (x,y) 
         // - while screen coords are relative, space coords are an absolute representation of tiles in px
-        this.minX = minX;
-        this.minY = minY;
+        
+        this.minX = this.viewPort.getWidthHalf();
+        this.minY = this.viewPort.getHeightHalf();
         this.maxX = maxX;
         this.maxY = maxY;
     }
 
     Camera.prototype.calcScreenPosition = function (entity, drawable) {
-        if (entity.getEndX() < this.viewPort.getCornerX() || entity.getCornerX() > this.viewPort.getEndX() ||
-            entity.getEndY() < this.viewPort.getCornerY() || entity.getCornerY() > this.viewPort.getEndY()) {
+        var cornerX = this.viewPort.getCornerX();
+        var cornerY = this.viewPort.getCornerY();
+        if (entity.getEndX() < cornerX || entity.getCornerX() > this.viewPort.getEndX() ||
+            entity.getEndY() < cornerY || entity.getCornerY() > this.viewPort.getEndY()) {
 
             drawable.show = false;
             return;
@@ -25,22 +28,22 @@ G.Camera = (function () {
 
         drawable.show = true;
 
-        drawable.x = entity.x - this.viewPort.getCornerX() * this.viewPort.scale;
-        drawable.y = entity.y - this.viewPort.getCornerY() * this.viewPort.scale;
+        drawable.x = entity.x - cornerX * this.viewPort.scale;
+        drawable.y = entity.y - cornerY * this.viewPort.scale;
     };
 
     Camera.prototype.move = function (anchor) {
         this.viewPort.x = anchor.x;
         this.viewPort.y = anchor.y;
 
-        // if (this.viewPort.x < this.minX)
-        //     this.viewPort.x = this.minX;
-        // if (this.viewPort.x > this.maxX)
-        //     this.viewPort.x = this.maxX;
-        // if (this.viewPort.y < this.minY)
-        //     this.viewPort.y = this.minY;
-        // if (this.viewPort.y > this.maxY)
-        //     this.viewPort.y = this.maxY;
+        if (this.viewPort.x < this.minX)
+            this.viewPort.x = this.minX;
+        if (this.viewPort.x > this.maxX)
+            this.viewPort.x = this.maxX;
+        if (this.viewPort.y < this.minY)
+            this.viewPort.y = this.minY;
+        if (this.viewPort.y > this.maxY)
+            this.viewPort.y = this.maxY;
     };
 
     return Camera;
