@@ -8,7 +8,7 @@ G.Camera = (function () {
         // 1st grid tiles (u,v)
         // 2nd px screen coordinates (x,y)
         // 3rd px space coordinates (x,y) 
-        // - while screen coords are relative, space coords are an absolute representation of tiles in px
+        // - while screen coordinates are relative, space coordinates are an absolute representation of tiles in px
         
         this.minX = this.viewPort.getWidthHalf();
         this.minY = this.viewPort.getHeightHalf();
