@@ -1,4 +1,4 @@
-G.DomainGridHelper = (function (Tiles) {
+G.DomainGridHelper = (function (Tiles, Strings) {
     "use strict";
 
     function DomainGridHelper(gridHelper, grid) {
@@ -7,41 +7,27 @@ G.DomainGridHelper = (function (Tiles) {
     }
 
     DomainGridHelper.prototype.getGrassTiles = function () {
-        return this.__getTiles(Tiles.GRASS, true);
+        return this.gridHelper.getTiles(Tiles.GRASS, true);
     };
 
     DomainGridHelper.prototype.getWayTiles = function () {
-        return this.__getTiles(Tiles.WAY, true);
+        return this.gridHelper.getTiles(Tiles.WAY, true);
     };
 
     DomainGridHelper.prototype.getSigns = function () {
-        return this.__getTiles(Tiles.SIGN);
+        return this.gridHelper.getTiles(Tiles.SIGN);
     };
 
     DomainGridHelper.prototype.getNPCs = function () {
-        return this.__getTiles(Tiles.NPC);
+        return this.gridHelper.getTiles(Tiles.NPC);
     };
 
     DomainGridHelper.prototype.getPlayer = function () {
-        return this.__getTiles(Tiles.PLAYER)[0];
+        return this.gridHelper.getTiles(Tiles.PLAYER)[0];
     };
 
-    DomainGridHelper.prototype.__getTiles = function (name, isBackground) {
-        var parts = [];
-
-        for (var y = 0; y < this.grid.yTiles; y++) {
-            for (var x = 0; x < this.grid.xTiles; x++) {
-                var tile = !isBackground ? this.grid.get(x, y) : this.grid.getBackground(x, y);
-                if (tile[0] === name)
-                    parts.push({
-                        u: x,
-                        v: y,
-                        type: tile
-                    });
-            }
-        }
-
-        return parts;
+    DomainGridHelper.prototype.getPortalTileOfPrevMap = function (name) {
+        return this.gridHelper.getTile(name, true);
     };
 
     DomainGridHelper.prototype.canPlayerMove = function (player, u, v) {
@@ -54,7 +40,8 @@ G.DomainGridHelper = (function (Tiles) {
     };
 
     DomainGridHelper.prototype.__isMovable = function (backgroundTileType) {
-        return backgroundTileType === Tiles.GRASS || backgroundTileType === Tiles.WAY;
+        return backgroundTileType === Tiles.GRASS || backgroundTileType === Tiles.WAY ||
+            (backgroundTileType && Strings.startsWidth(backgroundTileType, Tiles.MAP));
     };
 
     DomainGridHelper.prototype.canPlayerInteract = function (player) {
@@ -87,5 +74,13 @@ G.DomainGridHelper = (function (Tiles) {
         return change;
     };
 
+    DomainGridHelper.prototype.isPlayerOnPortal = function (entity) {
+        var tile = this.grid.getBackground(entity.u, entity.v);
+        if (Strings.startsWidth(tile, Tiles.MAP)) {
+            return tile;
+        }
+        return false;
+    };
+
     return DomainGridHelper;
-})(G.Tiles);
+})(G.Tiles, H5.Strings);

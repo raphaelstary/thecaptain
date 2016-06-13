@@ -12,11 +12,24 @@ G.installMyScenes = (function (SceneManager, MVVMScene, StartScreen, Scenes, Tap
         var sceneManager = new SceneManager();
 
         var startScreen = new MVVMScene(sceneServices, sceneServices.scenes[Scenes.START_SCREEN], new StartScreen(sceneServices), Scenes.START_SCREEN);
-        var gameSceneModel = new GameScreen(sceneServices, sceneServices.worldData[MapDataKey.MAP_BASIC], sceneServices.worldData[MapDataKey.DIALOG], sceneServices.worldData[MapDataKey.NPC], sceneServices.worldData[MapDataKey.DIRECTIONS]);
-        var gameScreen = new MVVMScene(sceneServices, sceneServices.scenes[Scenes.GAME_SCREEN], gameSceneModel, Scenes.GAME_SCREEN);
 
         sceneManager.add(startScreen.show.bind(startScreen));
-        sceneManager.add(gameScreen.show.bind(gameScreen));
+
+        sceneManager.add(function () {
+            var scene = createMapScene(MapDataKey.MAP_BASIC);
+            scene.show(mapCallback);
+        });
+
+        function mapCallback(mapInfo) {
+            var scene = createMapScene(mapInfo.nextMap, mapInfo.prevMap);
+            scene.show(mapCallback);
+        }
+
+        function createMapScene(nextMapKey, prevMapKey) {
+            var gameSceneModel = new GameScreen(sceneServices, sceneServices.worldData[nextMapKey], sceneServices.worldData[MapDataKey.DIALOG], sceneServices.worldData[MapDataKey.NPC], sceneServices.worldData[MapDataKey.DIRECTIONS], nextMapKey, prevMapKey);
+
+            return new MVVMScene(sceneServices, sceneServices.scenes[Scenes.GAME_SCREEN], gameSceneModel, Scenes.GAME_SCREEN);
+        }
 
         return sceneManager;
     }

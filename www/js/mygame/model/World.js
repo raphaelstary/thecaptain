@@ -2,7 +2,7 @@ G.World = (function (iterateEntries) {
     "use strict";
 
     function World(worldView, domainGridHelper, camera, timer, directions, possibleInteractionStart,
-        possibleInteractionEnd, interaction) {
+        possibleInteractionEnd, interaction, endMap, prevMapKey) {
         this.worldView = worldView;
         this.domainGridHelper = domainGridHelper;
         this.camera = camera;
@@ -12,6 +12,8 @@ G.World = (function (iterateEntries) {
         this.possibleInteractionStart = possibleInteractionStart;
         this.possibleInteractionEnd = possibleInteractionEnd;
         this.interaction = interaction;
+        this.endMap = endMap;
+        this.prevMapKey = prevMapKey;
 
         this.oneCyle = 60;
     }
@@ -45,6 +47,10 @@ G.World = (function (iterateEntries) {
         this.__interacting = false;
 
         this.player = this.domainGridHelper.getPlayer();
+        if (this.prevMapKey) {
+            var prevMapPortal = this.domainGridHelper.getPortalTileOfPrevMap(this.prevMapKey);
+            this.domainGridHelper.movePlayer(this.player, prevMapPortal.u, prevMapPortal.v);
+        }
 
         this.npcs = this.domainGridHelper.getNPCs();
         var grassTiles = this.domainGridHelper.getGrassTiles();
@@ -161,7 +167,7 @@ G.World = (function (iterateEntries) {
 
         function postMove() {
             self.__updateEntitiesZIndex();
-            
+
             var possibleInteractiveTile = self.domainGridHelper.canPlayerInteract(self.player);
 
             if (possibleInteractiveTile && self.interactiveTileInRange) {
@@ -174,6 +180,11 @@ G.World = (function (iterateEntries) {
             if (self.interactiveTileInRange && !possibleInteractiveTile) {
                 self.interactiveTileInRange = undefined;
                 self.possibleInteractionEnd();
+            }
+
+            var nextMap = self.domainGridHelper.isPlayerOnPortal(entity);
+            if (nextMap) {
+                self.endMap(nextMap);
             }
 
             if (callback)

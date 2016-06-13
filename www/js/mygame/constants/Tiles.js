@@ -4,5 +4,6 @@ G.Tiles = {
     WAY: 'W',
     PLAYER: 'P',
     SIGN: 'S',
-    NPC: 'N'
+    NPC: 'N',
+    MAP: 'map'
 };

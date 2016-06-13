@@ -1,7 +1,7 @@
 G.GameScreen = (function (PlayFactory, installPlayerKeyBoard, Scenes, MVVMScene, DialogScreen, Tiles, Event) {
     "use strict";
 
-    function GameScreen(services, map, dialog, npc, directions) {
+    function GameScreen(services, map, dialog, npc, directions, mapKey, prevMapKey) {
         this.device = services.device;
         this.events = services.events;
         this.sceneStorage = services.sceneStorage;
@@ -13,6 +13,8 @@ G.GameScreen = (function (PlayFactory, installPlayerKeyBoard, Scenes, MVVMScene,
         this.dialog = dialog;
         this.npc = npc;
         this.directions = directions;
+        this.mapKey = mapKey;
+        this.prevMapKey = prevMapKey;
         this.services = services;
 
         this.__paused = false;
@@ -36,6 +38,9 @@ G.GameScreen = (function (PlayFactory, installPlayerKeyBoard, Scenes, MVVMScene,
         var self = this;
 
         function possibleInteractionStart(dialogId) {
+            if (self.__itIsOver)
+                return;
+
             if (dialogId[0] == Tiles.NPC) {
                 self.interactSymbol.setText('talk');
             } else if (dialogId[0] == Tiles.SIGN) {
@@ -45,19 +50,40 @@ G.GameScreen = (function (PlayFactory, installPlayerKeyBoard, Scenes, MVVMScene,
         }
 
         function possibleInteractionEnd() {
+            if (self.__itIsOver)
+                return;
+
             self.interactSymbol.show = false;
         }
 
         function interaction(dialogId, callback) {
+            if (self.__itIsOver)
+                return;
+
             var dialogScreen = new DialogScreen(self.services, self.dialog[dialogId]);
             var dialogScene = new MVVMScene(self.services, self.services.scenes[Scenes.DIALOG_SCREEN], dialogScreen, Scenes.DIALOG_SCREEN);
             dialogScene.show(callback);
         }
 
+        function endMap(nextMap) {
+            if (self.__itIsOver)
+                return;
+
+            self.__pause();
+            self.__itIsOver = true;
+            self.nextScene({
+                nextMap: nextMap,
+                prevMap: self.mapKey
+            });
+        }
+
         this.world = PlayFactory.createWorld(this.stage, this.timer, this.device, this.map, this.npc, this.directions,
-            possibleInteractionStart, possibleInteractionEnd, interaction);
+            possibleInteractionStart, possibleInteractionEnd, interaction, endMap, this.prevMapKey);
 
         this.world.init(function () {
+            if (self.__itIsOver)
+                return;
+
             self.__resume();
         });
 
