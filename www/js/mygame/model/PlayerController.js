@@ -16,44 +16,46 @@ G.PlayerController = (function () {
         this.__paused = false;
     };
 
-    PlayerController.prototype.__myCallback = function () {
+    PlayerController.prototype.__myCallback = function (callback) {
         this.moving = false;
+        if (callback)
+            callback();
     };
 
-    PlayerController.prototype.handleKeyLeft = function () {
+    PlayerController.prototype.handleKeyLeft = function (callback) {
         if (this.__paused)
             return;
         if (this.moving)
             return;
 
-        this.moving = this.world.moveLeft(this.__myCallback.bind(this));
+        this.moving = this.world.moveLeft(this.__myCallback.bind(this, callback));
     };
 
-    PlayerController.prototype.handleKeyRight = function () {
+    PlayerController.prototype.handleKeyRight = function (callback) {
         if (this.__paused)
             return;
         if (this.moving)
             return;
 
-        this.moving = this.world.moveRight(this.__myCallback.bind(this));
+        this.moving = this.world.moveRight(this.__myCallback.bind(this, callback));
     };
 
-    PlayerController.prototype.handleKeyUp = function () {
+    PlayerController.prototype.handleKeyUp = function (callback) {
         if (this.__paused)
             return;
         if (this.moving)
             return;
 
-        this.moving = this.world.moveTop(this.__myCallback.bind(this));
+        this.moving = this.world.moveTop(this.__myCallback.bind(this, callback));
     };
 
-    PlayerController.prototype.handleKeyDown = function () {
+    PlayerController.prototype.handleKeyDown = function (callback) {
         if (this.__paused)
             return;
         if (this.moving)
             return;
 
-        this.moving = this.world.moveBottom(this.__myCallback.bind(this));
+        this.moving = this.world.moveBottom(this.__myCallback.bind(this, callback));
     };
 
     PlayerController.prototype.handleInteractionKey = function () {
