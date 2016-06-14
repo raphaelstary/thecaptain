@@ -35,6 +35,28 @@ G.OptionScreen = (function (Event, Key, DialogOption) {
             }
         });
 
+        this.gamePadListener = this.events.subscribe(Event.GAME_PAD, function (gamePad) {
+            if (self.itIsOver)
+                return;
+
+            if (gamePad.isDPadUpPressed() || gamePad.isDPadDownPressed()) {
+                if (selection == DialogOption.A) {
+                    selection = DialogOption.B;
+                    self.selectionB.show = true;
+                    self.selectionA.show = false;
+                } else {
+                    selection = DialogOption.A;
+                    self.selectionB.show = false;
+                    self.selectionA.show = true;
+                }
+            }
+
+            if (gamePad.isAPressed() || gamePad.isStartPressed()) {
+                self.itIsOver = true;
+                self.nextScene(selection);
+            }
+        });
+
         self.textA.setText(this.optionA);
         self.textB.setText(this.optionB);
 
@@ -43,6 +65,7 @@ G.OptionScreen = (function (Event, Key, DialogOption) {
 
     OptionScreen.prototype.preDestroy = function () {
         this.events.unsubscribe(this.keyListener);
+        this.events.unsubscribe(this.gamePadListener);
     };
 
     return OptionScreen;

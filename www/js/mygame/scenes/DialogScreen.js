@@ -51,6 +51,20 @@ G.DialogScreen = (function (Event, Key, Width, Height, OptionScreen, MVVMScene, 
             }
         });
 
+        this.gamePadListener = this.events.subscribe(Event.GAME_PAD, function (gamePad) {
+            if (self.itIsOver || !active)
+                return;
+
+            if (gamePad.isAPressed() || gamePad.isStartPressed()) {
+                if (typing) {
+                    // skip typing
+                    skip = true;
+                } else {
+                    continueWithNextParagraphOrQuit();
+                }
+            }
+        });
+
         function showOptionScreen(paragraph) {
             if (needToShowOptionScreen) {
                 needToShowOptionScreen = false;
@@ -115,6 +129,7 @@ G.DialogScreen = (function (Event, Key, Width, Height, OptionScreen, MVVMScene, 
 
     DialogScreen.prototype.preDestroy = function () {
         this.events.unsubscribe(this.keyListener);
+        this.events.unsubscribe(this.gamePadListener);
     };
 
     return DialogScreen;

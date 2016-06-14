@@ -17,10 +17,21 @@ G.StartScreen = (function (Event, Key) {
                 self.nextScene();
             }
         });
+
+        this.gamePadListener = this.events.subscribe(Event.GAME_PAD, function (gamePad) {
+            if (self.itIsOver)
+                return;
+
+            if (gamePad.isAPressed() || gamePad.isStartPressed()) {
+                self.itIsOver = true;
+                self.nextScene();
+            }
+        });
     };
 
     StartScreen.prototype.preDestroy = function () {
         this.events.unsubscribe(this.keyListener);
+        this.events.unsubscribe(this.gamePadListener);
     };
 
     return StartScreen;
