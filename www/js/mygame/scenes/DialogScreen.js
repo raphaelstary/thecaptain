@@ -112,9 +112,23 @@ G.DialogScreen = (function (Event, Key, Width, Height, OptionScreen, MVVMScene, 
                 if (paragraph.optionA) {
                     needToShowOptionScreen = true;
                 }
-                if (paragraph.condition && paragraph.condition != chosenOption) {
-                    continueWithNextParagraphOrQuit();
-                    return;
+
+                if (paragraph.condition || paragraph.conditionNegated) {
+
+                    var isConditionAnAnswer = paragraph.condition &&
+                        (paragraph.condition == DialogOption.A || paragraph.condition == DialogOption.B);
+                    if (isConditionAnAnswer && paragraph.condition != chosenOption) {
+                        continueWithNextParagraphOrQuit();
+                        return;
+                    }
+                    if (!isConditionAnAnswer && paragraph.condition && !self.flags[paragraph.condition]) {
+                        continueWithNextParagraphOrQuit();
+                        return;
+                    }
+                    if (!isConditionAnAnswer && paragraph.conditionNegated && self.flags[paragraph.conditionNegated]) {
+                        continueWithNextParagraphOrQuit();
+                        return;
+                    }
                 }
             }
 
