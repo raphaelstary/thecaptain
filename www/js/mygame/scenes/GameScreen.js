@@ -2,7 +2,7 @@ G.GameScreen = (function (PlayFactory, installPlayerKeyBoard, installPlayerGameP
     Tiles, Event) {
     "use strict";
 
-    function GameScreen(services, map, dialog, npc, directions, mapKey, prevMapKey) {
+    function GameScreen(services, map, dialog, npc, directions, mapKey, prevMapKey, flags) {
         this.device = services.device;
         this.events = services.events;
         this.sceneStorage = services.sceneStorage;
@@ -16,6 +16,7 @@ G.GameScreen = (function (PlayFactory, installPlayerKeyBoard, installPlayerGameP
         this.directions = directions;
         this.mapKey = mapKey;
         this.prevMapKey = prevMapKey;
+        this.flags = flags;
         this.services = services;
 
         this.__paused = false;
@@ -61,7 +62,7 @@ G.GameScreen = (function (PlayFactory, installPlayerKeyBoard, installPlayerGameP
             if (self.__itIsOver)
                 return;
 
-            var dialogScreen = new DialogScreen(self.services, self.dialog[dialogId]);
+            var dialogScreen = new DialogScreen(self.services, self.dialog[dialogId], self.flags);
             var dialogScene = new MVVMScene(self.services, self.services.scenes[Scenes.DIALOG_SCREEN], dialogScreen, Scenes.DIALOG_SCREEN);
             dialogScene.show(callback);
         }

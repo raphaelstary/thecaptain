@@ -1,10 +1,11 @@
-G.DialogScreen = (function (Event, Key, Width, Height, OptionScreen, MVVMScene, Scenes) {
+G.DialogScreen = (function (Event, Key, Width, Height, OptionScreen, MVVMScene, Scenes, DialogOption) {
     "use strict";
 
-    function DialogScreen(services, textPragraphs) {
+    function DialogScreen(services, textPragraphs, flags) {
         this.events = services.events;
         this.timer = services.timer;
         this.textPragraphs = textPragraphs.slice();
+        this.flags = flags;
 
         this.services = services;
     }
@@ -74,7 +75,11 @@ G.DialogScreen = (function (Event, Key, Width, Height, OptionScreen, MVVMScene, 
                 var optionScene = new MVVMScene(self.services, self.services.scenes[Scenes.OPTION_SCREEN], optionScreen, Scenes.OPTION_SCREEN);
                 optionScene.show(function (selection) {
                     chosenOption = selection;
-
+                    if (paragraph.setterOptionA && selection == DialogOption.A) {
+                        self.flags[paragraph.setterOptionA] = true;
+                    } else if (paragraph.setterOptionB && selection == DialogOption.B) {
+                        self.flags[paragraph.setterOptionB] = true;
+                    }
                     active = true;
                     continueWithNextParagraphOrQuit();
                 });
@@ -133,4 +138,4 @@ G.DialogScreen = (function (Event, Key, Width, Height, OptionScreen, MVVMScene, 
     };
 
     return DialogScreen;
-})(H5.Event, H5.Key, H5.Width, H5.Height, G.OptionScreen, H5.MVVMScene, G.Scenes);
+})(H5.Event, H5.Key, H5.Width, H5.Height, G.OptionScreen, H5.MVVMScene, G.Scenes, G.DialogOption);
