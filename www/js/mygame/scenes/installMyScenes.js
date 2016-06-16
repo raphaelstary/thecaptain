@@ -6,6 +6,12 @@ G.installMyScenes = (function (SceneManager, MVVMScene, StartScreen, Scenes, Tap
         // create your scenes and add them to the scene manager
 
         var flags = {};
+        var gameCallbacks = {};
+
+        gameCallbacks['ice_cream_achievement'] = function () {
+            console.log('ICE CREAM ACHIEVEMENT UNLOCKED');
+        };
+
         var tap = new TapManager();
         sceneServices.tap = tap;
         sceneServices.events.subscribe(Event.POINTER, tap.inputChanged.bind(tap));
@@ -27,7 +33,7 @@ G.installMyScenes = (function (SceneManager, MVVMScene, StartScreen, Scenes, Tap
         }
 
         function createMapScene(nextMapKey, prevMapKey) {
-            var gameSceneModel = new GameScreen(sceneServices, sceneServices.worldData[nextMapKey], sceneServices.worldData[MapDataKey.DIALOG], sceneServices.worldData[MapDataKey.NPC], sceneServices.worldData[MapDataKey.DIRECTIONS], nextMapKey, prevMapKey, flags);
+            var gameSceneModel = new GameScreen(sceneServices, sceneServices.worldData[nextMapKey], sceneServices.worldData[MapDataKey.DIALOG], sceneServices.worldData[MapDataKey.NPC], sceneServices.worldData[MapDataKey.DIRECTIONS], nextMapKey, prevMapKey, flags, gameCallbacks);
 
             return new MVVMScene(sceneServices, sceneServices.scenes[Scenes.GAME_SCREEN], gameSceneModel, Scenes.GAME_SCREEN);
         }

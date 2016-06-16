@@ -1,11 +1,12 @@
 G.DialogScreen = (function (Event, Key, Width, Height, OptionScreen, MVVMScene, Scenes, DialogOption) {
     "use strict";
 
-    function DialogScreen(services, textPragraphs, flags) {
+    function DialogScreen(services, textPragraphs, flags, callbacks) {
         this.events = services.events;
         this.timer = services.timer;
         this.textPragraphs = textPragraphs.slice();
         this.flags = flags;
+        this.callbacks = callbacks;
 
         this.services = services;
     }
@@ -79,6 +80,13 @@ G.DialogScreen = (function (Event, Key, Width, Height, OptionScreen, MVVMScene, 
                         self.flags[paragraph.setterOptionA] = true;
                     } else if (paragraph.setterOptionB && selection == DialogOption.B) {
                         self.flags[paragraph.setterOptionB] = true;
+                    }
+                    if (paragraph.callbackOptionA && selection == DialogOption.A &&
+                        self.callbacks[paragraph.callbackOptionA]) {
+                        self.callbacks[paragraph.callbackOptionA]();
+                    } else if (paragraph.callbackOptionB && selection == DialogOption.B &&
+                        self.callbacks[paragraph.callbackOptionB]) {
+                        self.callbacks[paragraph.callbackOptionB]();
                     }
                     active = true;
                     continueWithNextParagraphOrQuit();
