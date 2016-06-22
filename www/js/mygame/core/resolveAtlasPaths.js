@@ -90,4 +90,4 @@ G.resolveAtlasPaths = (function (ATLAS_BASE_NAME, GFX_PATH, DATA_PATH, GFX_FORMA
     }
 
     return resolveAtlasPaths;
-})(G.Files.ATLAS_BASE_NAME, G.Files.GFX_PATH, G.Files.DATA_PATH, G.Files.GFX_FORMAT, G.Files.DATA_FORMAT);
+})(G.File.ATLAS_BASE_NAME, G.File.GFX_PATH, G.File.DATA_PATH, G.File.GFX_FORMAT, G.File.DATA_FORMAT);

@@ -1,7 +1,7 @@
-G.DialogScreen = (function (Event, Key, Width, Height, OptionScreen, MVVMScene, Scenes, DialogOption) {
+G.Dialog = (function (Event, Key, Width, Height, Option, MVVMScene, Scene, DialogOption) {
     "use strict";
 
-    function DialogScreen(services, textPragraphs, flags, callbacks) {
+    function Dialog(services, textPragraphs, flags, callbacks) {
         this.events = services.events;
         this.timer = services.timer;
         this.textPragraphs = textPragraphs.slice();
@@ -11,7 +11,7 @@ G.DialogScreen = (function (Event, Key, Width, Height, OptionScreen, MVVMScene, 
         this.services = services;
     }
 
-    DialogScreen.prototype.postConstruct = function () {
+    Dialog.prototype.postConstruct = function () {
         this.itIsOver = false;
         var typing = true;
         var skip = false;
@@ -72,8 +72,8 @@ G.DialogScreen = (function (Event, Key, Width, Height, OptionScreen, MVVMScene, 
                 needToShowOptionScreen = false;
                 active = false;
 
-                var optionScreen = new OptionScreen(self.services, paragraph.optionA, paragraph.optionB);
-                var optionScene = new MVVMScene(self.services, self.services.scenes[Scenes.OPTION_SCREEN], optionScreen, Scenes.OPTION_SCREEN);
+                var optionScreen = new Option(self.services, paragraph.optionA, paragraph.optionB);
+                var optionScene = new MVVMScene(self.services, self.services.scenes[Scene.OPTION], optionScreen, Scene.OPTION);
                 optionScene.show(function (selection) {
                     chosenOption = selection;
                     if (paragraph.setterOptionA && selection == DialogOption.A) {
@@ -154,10 +154,10 @@ G.DialogScreen = (function (Event, Key, Width, Height, OptionScreen, MVVMScene, 
         startNextParagraph();
     };
 
-    DialogScreen.prototype.preDestroy = function () {
+    Dialog.prototype.preDestroy = function () {
         this.events.unsubscribe(this.keyListener);
         this.events.unsubscribe(this.gamePadListener);
     };
 
-    return DialogScreen;
-})(H5.Event, H5.Key, H5.Width, H5.Height, G.OptionScreen, H5.MVVMScene, G.Scenes, G.DialogOption);
+    return Dialog;
+})(H5.Event, H5.Key, H5.Width, H5.Height, G.Option, H5.MVVMScene, G.Scene, G.DialogOption);

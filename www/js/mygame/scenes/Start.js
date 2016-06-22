@@ -1,11 +1,11 @@
-G.StartScreen = (function (Event, Key) {
+G.Start = (function (Event, Key) {
     "use strict";
 
-    function StartScreen(services) {
+    function Start(services) {
         this.events = services.events;
     }
 
-    StartScreen.prototype.postConstruct = function () {
+    Start.prototype.postConstruct = function () {
         this.itIsOver = false;
         var self = this;
         this.keyListener = this.events.subscribe(Event.KEY_BOARD, function (keyBoard) {
@@ -29,10 +29,10 @@ G.StartScreen = (function (Event, Key) {
         });
     };
 
-    StartScreen.prototype.preDestroy = function () {
+    Start.prototype.preDestroy = function () {
         this.events.unsubscribe(this.keyListener);
         this.events.unsubscribe(this.gamePadListener);
     };
 
-    return StartScreen;
+    return Start;
 })(H5.Event, H5.Key);

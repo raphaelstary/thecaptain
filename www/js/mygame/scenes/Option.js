@@ -1,7 +1,7 @@
-G.OptionScreen = (function (Event, Key, DialogOption) {
+G.Option = (function (Event, Key, DialogOption) {
     "use strict";
 
-    function OptionScreen(services, optionA, optionB) {
+    function Option(services, optionA, optionB) {
         this.events = services.events;
         this.timer = services.timer;
 
@@ -9,7 +9,7 @@ G.OptionScreen = (function (Event, Key, DialogOption) {
         this.optionB = optionB;
     }
 
-    OptionScreen.prototype.postConstruct = function () {
+    Option.prototype.postConstruct = function () {
         this.itIsOver = false;
         var selection = DialogOption.A;
         var self = this;
@@ -63,10 +63,10 @@ G.OptionScreen = (function (Event, Key, DialogOption) {
         self.selectionB.show = false;
     };
 
-    OptionScreen.prototype.preDestroy = function () {
+    Option.prototype.preDestroy = function () {
         this.events.unsubscribe(this.keyListener);
         this.events.unsubscribe(this.gamePadListener);
     };
 
-    return OptionScreen;
+    return Option;
 })(H5.Event, H5.Key, G.DialogOption);

@@ -1,4 +1,4 @@
-G.MyGameResources = (function (AtlasResourceHelper, DeviceInfo, userAgent, resolveAtlasPaths, Files, width, height,
+G.MyGameResources = (function (AtlasResourceHelper, DeviceInfo, userAgent, resolveAtlasPaths, File, width, height,
     addFontToDOM, URL, UI) {
     "use strict";
 
@@ -10,9 +10,9 @@ G.MyGameResources = (function (AtlasResourceHelper, DeviceInfo, userAgent, resol
         var isMobile = new DeviceInfo(userAgent, 1, 1, 1).isMobile;
         AtlasResourceHelper.register(resourceLoader, atlases, isMobile, resolveAtlasPaths);
 
-        scenes = resourceLoader.addJSON(Files.SCENES);
-        worldData = resourceLoader.addJSON(Files.WORLD);
-        font = resourceLoader.addFont(Files.GAME_FONT);
+        scenes = resourceLoader.addJSON(File.SCENES);
+        worldData = resourceLoader.addJSON(File.WORLD);
+        font = resourceLoader.addFont(File.GAME_FONT);
 
         return resourceLoader.getCount(); // number of registered files
     }
@@ -39,5 +39,5 @@ G.MyGameResources = (function (AtlasResourceHelper, DeviceInfo, userAgent, resol
         create: registerFiles,
         process: processFiles
     };
-})(H5.AtlasResourceHelper, H5.DeviceInfo, window.navigator.userAgent, G.resolveAtlasPaths, G.Files, window.innerWidth,
+})(H5.AtlasResourceHelper, H5.Device, window.navigator.userAgent, G.resolveAtlasPaths, G.File, window.innerWidth,
     window.innerHeight, H5.addFontToDOM, window.URL || window.webkitURL, G.UI);

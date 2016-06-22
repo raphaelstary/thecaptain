@@ -1,5 +1,5 @@
 G.PlayFactory = (function (Grid, GridHelper, GridViewHelper, DomainGridHelper, World, WorldView, PlayerController, zero,
-    Camera, createDefaultViewPort) {
+    Camera, createViewPort) {
 
     "use strict";
 
@@ -12,7 +12,7 @@ G.PlayFactory = (function (Grid, GridHelper, GridViewHelper, DomainGridHelper, W
             var domainGridHelper = new DomainGridHelper(gridHelper, grid);
             var worldView = new WorldView(stage, timer, gridViewHelper, npcInfo);
             var maxCameraPosition = gridViewHelper.getPosition(grid.xTiles - 9, grid.yTiles - 5);
-            var camera = new Camera(createDefaultViewPort(stage), maxCameraPosition.x, maxCameraPosition.y);
+            var camera = new Camera(createViewPort(stage), maxCameraPosition.x, maxCameraPosition.y);
             return new World(worldView, domainGridHelper, camera, timer, directions, possibleInteractionStart, possibleInteractionEnd, interaction, endMap, prevMapKey);
         },
         createPlayerController: function (world) {
@@ -20,4 +20,4 @@ G.PlayFactory = (function (Grid, GridHelper, GridViewHelper, DomainGridHelper, W
         }
     };
 })(H5.Grid, H5.GridHelper, H5.GridViewHelper, G.DomainGridHelper, G.World, G.WorldView, G.PlayerController, H5.zero,
-    G.Camera, G.createDefaultViewPort);
+    G.Camera, G.createViewPort);

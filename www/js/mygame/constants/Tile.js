@@ -1,4 +1,4 @@
-G.Tiles = {
+G.Tile = {
     EMPTY: 0,
     GRASS: 'G',
     WAY: 'W',

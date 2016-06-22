@@ -1,8 +1,7 @@
-G.GameScreen = (function (PlayFactory, installPlayerKeyBoard, installPlayerGamePad, Scenes, MVVMScene, DialogScreen,
-    Tiles, Event) {
+G.Game = (function (PlayFactory, installPlayerKeyBoard, installPlayerGamePad, Scene, MVVMScene, Dialog, Tile, Event) {
     "use strict";
 
-    function GameScreen(services, map, dialog, npc, directions, mapKey, prevMapKey, flags, gameCallbacks) {
+    function Game(services, map, dialog, npc, directions, mapKey, prevMapKey, flags, gameCallbacks) {
         this.device = services.device;
         this.events = services.events;
         this.sceneStorage = services.sceneStorage;
@@ -24,17 +23,17 @@ G.GameScreen = (function (PlayFactory, installPlayerKeyBoard, installPlayerGameP
         this.__itIsOver = false;
     }
 
-    GameScreen.prototype.__pause = function () {
+    Game.prototype.__pause = function () {
         this.playerController.pause();
         this.__paused = true;
     };
 
-    GameScreen.prototype.__resume = function () {
+    Game.prototype.__resume = function () {
         this.playerController.resume();
         this.__paused = false;
     };
 
-    GameScreen.prototype.postConstruct = function () {
+    Game.prototype.postConstruct = function () {
         this.__paused = false;
         this.__itIsOver = false;
 
@@ -44,9 +43,9 @@ G.GameScreen = (function (PlayFactory, installPlayerKeyBoard, installPlayerGameP
             if (self.__itIsOver)
                 return;
 
-            if (dialogId[0] == Tiles.NPC) {
+            if (dialogId[0] == Tile.NPC) {
                 self.interactSymbol.setText('talk');
-            } else if (dialogId[0] == Tiles.SIGN) {
+            } else if (dialogId[0] == Tile.SIGN) {
                 self.interactSymbol.setText('read');
             }
             self.interactSymbol.show = true;
@@ -63,8 +62,8 @@ G.GameScreen = (function (PlayFactory, installPlayerKeyBoard, installPlayerGameP
             if (self.__itIsOver)
                 return;
 
-            var dialogScreen = new DialogScreen(self.services, self.dialog[dialogId], self.flags, self.gameCallbacks);
-            var dialogScene = new MVVMScene(self.services, self.services.scenes[Scenes.DIALOG_SCREEN], dialogScreen, Scenes.DIALOG_SCREEN);
+            var dialogScreen = new Dialog(self.services, self.dialog[dialogId], self.flags, self.gameCallbacks);
+            var dialogScene = new MVVMScene(self.services, self.services.scenes[Scene.DIALOG], dialogScreen, Scene.DIALOG);
             dialogScene.show(callback);
         }
 
@@ -101,13 +100,12 @@ G.GameScreen = (function (PlayFactory, installPlayerKeyBoard, installPlayerGameP
         this.interactSymbol.show = false;
     };
 
-    GameScreen.prototype.preDestroy = function () {
+    Game.prototype.preDestroy = function () {
         this.events.unsubscribe(this.keyBoardHandler);
         this.events.unsubscribe(this.gamePadHandler);
         this.events.unsubscribe(this.cameraListener);
         this.world.worldView.preDestroy();
     };
 
-    return GameScreen;
-})(G.PlayFactory, G.installPlayerKeyBoard, G.installPlayerGamePad, G.Scenes, H5.MVVMScene, G.DialogScreen, G.Tiles,
-    H5.Event);
+    return Game;
+})(G.PlayFactory, G.installPlayerKeyBoard, G.installPlayerGamePad, G.Scene, H5.MVVMScene, G.Dialog, G.Tile, H5.Event);

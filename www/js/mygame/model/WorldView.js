@@ -1,4 +1,4 @@
-G.WorldView = (function (Images, Math, iterateEntries, Tiles) {
+G.WorldView = (function (Image, Math, iterateEntries, Tile) {
     "use strict";
 
     function WorldView(stage, timer, gridViewHelper, npcInfo) {
@@ -29,12 +29,12 @@ G.WorldView = (function (Images, Math, iterateEntries, Tiles) {
 
     WorldView.prototype.drawLevel = function (player, npcs, grassTiles, wayTiles, signs, callback) {
 
-        this.defaultDrawable = this.gridViewHelper.create(1, 1, Images.WAY);
+        this.defaultDrawable = this.gridViewHelper.create(1, 1, Image.WAY);
         this.defaultDrawable.show = false;
 
-        player.entity = this.__createEntity(player, Images.PLAYER);
+        player.entity = this.__createEntity(player, Image.PLAYER);
         player.entity.show = false;
-        player.drawable = this.__createEntity(player, Images.PLAYER);
+        player.drawable = this.__createEntity(player, Image.PLAYER);
 
         this.player = player;
 
@@ -47,25 +47,25 @@ G.WorldView = (function (Images, Math, iterateEntries, Tiles) {
         }, this);
 
         grassTiles.forEach(function (tile) {
-            tile.entity = this.__createStatic(tile, Images.GRASS, 1);
+            tile.entity = this.__createStatic(tile, Image.GRASS, 1);
             tile.entity.show = false;
-            tile.drawable = this.__createStatic(tile, Images.GRASS, 1);
+            tile.drawable = this.__createStatic(tile, Image.GRASS, 1);
 
             this.staticTiles.push(tile);
         }, this);
 
         wayTiles.forEach(function (tile) {
-            tile.entity = this.__createStatic(tile, Images.WAY, 1);
+            tile.entity = this.__createStatic(tile, Image.WAY, 1);
             tile.entity.show = false;
-            tile.drawable = this.__createStatic(tile, Images.WAY, 1);
+            tile.drawable = this.__createStatic(tile, Image.WAY, 1);
 
             this.staticTiles.push(tile);
         }, this);
 
         signs.forEach(function (tile) {
-            tile.entity = this.__createStatic(tile, Images.SIGN, 2, true);
+            tile.entity = this.__createStatic(tile, Image.SIGN, 2, true);
             tile.entity.show = false;
-            tile.drawable = this.__createStatic(tile, Images.SIGN, 2, true);
+            tile.drawable = this.__createStatic(tile, Image.SIGN, 2, true);
 
             this.staticTiles.push(tile);
         }, this);
@@ -91,10 +91,10 @@ G.WorldView = (function (Images, Math, iterateEntries, Tiles) {
     };
 
     WorldView.prototype.movePlayer = function (changeSet, callback) {
-        if (changeSet.tile == Tiles.PLAYER) {
+        if (changeSet.tile == Tile.PLAYER) {
             this.__moveEntity(this.player.entity, changeSet, callback);
 
-        } else if (changeSet.tile[0] == Tiles.NPC) {
+        } else if (changeSet.tile[0] == Tile.NPC) {
             this.__moveEntity(this.npcs[changeSet.tile].entity, changeSet, callback);
         }
     };
@@ -109,4 +109,4 @@ G.WorldView = (function (Images, Math, iterateEntries, Tiles) {
     };
 
     return WorldView;
-})(G.Images, Math, H5.iterateEntries, G.Tiles);
+})(G.Image, Math, H5.iterateEntries, G.Tile);

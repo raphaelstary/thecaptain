@@ -1,5 +1,5 @@
-G.MapDataKey = {
-    MAP_BASIC: 'map_basic',
+G.MapKey = {
+    BASIC: 'map_basic',
 
     DIALOG: 'dialog',
     NPC: 'npc',

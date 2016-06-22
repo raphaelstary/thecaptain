@@ -1,4 +1,4 @@
-G.Images = {
+G.Image = {
     GRASS: 'grass',
     PLAYER: 'green_shirt_male',
     SIGN: 'sign',

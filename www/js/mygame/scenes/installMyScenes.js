@@ -1,8 +1,7 @@
-G.installMyScenes = (function (SceneManager, MVVMScene, StartScreen, Scenes, TapManager, Event, GameScreen,
-    MapDataKey) {
+G.installMyScenes = (function (Scenes, MVVMScene, Start, Scene, Event, Game, MapKey) {
     "use strict";
 
-    function installMyScenes(sceneServices) {
+    function installMyScenes(services) {
         // create your scenes and add them to the scene manager
 
         var flags = {};
@@ -12,18 +11,14 @@ G.installMyScenes = (function (SceneManager, MVVMScene, StartScreen, Scenes, Tap
             console.log('ICE CREAM ACHIEVEMENT UNLOCKED');
         };
 
-        var tap = new TapManager();
-        sceneServices.tap = tap;
-        sceneServices.events.subscribe(Event.POINTER, tap.inputChanged.bind(tap));
+        var scenes = new Scenes();
 
-        var sceneManager = new SceneManager();
+        var startScreen = new MVVMScene(services, services.scenes[Scene.START], new Start(services), Scene.START);
 
-        var startScreen = new MVVMScene(sceneServices, sceneServices.scenes[Scenes.START_SCREEN], new StartScreen(sceneServices), Scenes.START_SCREEN);
+        scenes.add(startScreen.show.bind(startScreen));
 
-        sceneManager.add(startScreen.show.bind(startScreen));
-
-        sceneManager.add(function () {
-            var scene = createMapScene(MapDataKey.MAP_BASIC);
+        scenes.add(function () {
+            var scene = createMapScene(MapKey.BASIC);
             scene.show(mapCallback);
         });
 
@@ -33,13 +28,13 @@ G.installMyScenes = (function (SceneManager, MVVMScene, StartScreen, Scenes, Tap
         }
 
         function createMapScene(nextMapKey, prevMapKey) {
-            var gameSceneModel = new GameScreen(sceneServices, sceneServices.worldData[nextMapKey], sceneServices.worldData[MapDataKey.DIALOG], sceneServices.worldData[MapDataKey.NPC], sceneServices.worldData[MapDataKey.DIRECTIONS], nextMapKey, prevMapKey, flags, gameCallbacks);
+            var gameSceneModel = new Game(services, services.worldData[nextMapKey], services.worldData[MapKey.DIALOG], services.worldData[MapKey.NPC], services.worldData[MapKey.DIRECTIONS], nextMapKey, prevMapKey, flags, gameCallbacks);
 
-            return new MVVMScene(sceneServices, sceneServices.scenes[Scenes.GAME_SCREEN], gameSceneModel, Scenes.GAME_SCREEN);
+            return new MVVMScene(services, services.scenes[Scene.GAME], gameSceneModel, Scene.GAME);
         }
 
-        return sceneManager;
+        return scenes;
     }
 
     return installMyScenes;
-})(H5.SceneManager, H5.MVVMScene, G.StartScreen, G.Scenes, H5.TapManager, H5.Event, G.GameScreen, G.MapDataKey);
+})(H5.Scenes, H5.MVVMScene, G.Start, G.Scene, H5.Event, G.Game, G.MapKey);

@@ -1,4 +1,4 @@
-G.Files = {
+G.File = {
     GFX_PATH: 'gfx/',
     DATA_PATH: 'data/',
     ATLAS_BASE_NAME: 'atlas',
