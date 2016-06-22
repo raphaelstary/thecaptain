@@ -28,7 +28,7 @@ G.installMyScenes = (function (Scenes, MVVMScene, Start, Scene, Event, Game, Map
         }
 
         function createMapScene(nextMapKey, prevMapKey) {
-            var gameSceneModel = new Game(services, services.worldData[nextMapKey], services.worldData[MapKey.DIALOG], services.worldData[MapKey.NPC], services.worldData[MapKey.DIRECTIONS], nextMapKey, prevMapKey, flags, gameCallbacks);
+            var gameSceneModel = new Game(services, services.world[nextMapKey], services.world[MapKey.DIALOG], services.world[MapKey.NPC], services.world[MapKey.DIRECTIONS], nextMapKey, prevMapKey, flags, gameCallbacks);
 
             return new MVVMScene(services, services.scenes[Scene.GAME], gameSceneModel, Scene.GAME);
         }
