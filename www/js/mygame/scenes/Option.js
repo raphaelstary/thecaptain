@@ -3,7 +3,6 @@ G.Option = (function (Event, Key, DialogOption) {
 
     function Option(services, optionA, optionB) {
         this.events = services.events;
-        this.timer = services.timer;
 
         this.optionA = optionA;
         this.optionB = optionB;
