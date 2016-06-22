@@ -1,4 +1,4 @@
-G.installMyScenes = (function (Scenes, MVVMScene, Start, Scene, Event, Game, MapKey) {
+G.installMyScenes = (function (Scenes, MVVMScene, Start, Scene, Event, Game, MapKey, Bridge) {
     "use strict";
 
     function installMyScenes(services) {
@@ -13,14 +13,14 @@ G.installMyScenes = (function (Scenes, MVVMScene, Start, Scene, Event, Game, Map
 
         var scenes = new Scenes();
 
-        var startScreen = new MVVMScene(services, services.scenes[Scene.START], new Start(services), Scene.START);
+        var start = new MVVMScene(services, services.scenes[Scene.START], new Start(services), Scene.START);
 
-        scenes.add(startScreen.show.bind(startScreen));
+        scenes.add(start.show.bind(start));
 
-        scenes.add(function () {
-            var scene = createMapScene(MapKey.BASIC);
-            scene.show(mapCallback);
-        });
+        // scenes.add(function () {
+        //     var scene = createMapScene(MapKey.BASIC);
+        //     scene.show(mapCallback);
+        // });
 
         function mapCallback(mapInfo) {
             var scene = createMapScene(mapInfo.nextMap, mapInfo.prevMap);
@@ -33,8 +33,12 @@ G.installMyScenes = (function (Scenes, MVVMScene, Start, Scene, Event, Game, Map
             return new MVVMScene(services, services.scenes[Scene.GAME], gameSceneModel, Scene.GAME);
         }
 
+        var bridge = new Bridge(services);
+
+        scenes.add(bridge.show.bind(bridge));
+
         return scenes;
     }
 
     return installMyScenes;
-})(H5.Scenes, H5.MVVMScene, G.Start, G.Scene, H5.Event, G.Game, G.MapKey);
+})(H5.Scenes, H5.MVVMScene, G.Start, G.Scene, H5.Event, G.Game, G.MapKey, G.Bridge);
