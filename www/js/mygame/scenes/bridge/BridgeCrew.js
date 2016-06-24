@@ -1,16 +1,16 @@
 G.BridgeCrew = (function (Event, Key) {
     "use strict";
 
-    function BridgeCrew(services, engineering, tactics, navigation, weapons, science, communication, showOrders) {
+    function BridgeCrew(services, crew, showOrders) {
         this.events = services.events;
 
         this.name = name;
-        this.engineering = engineering;
-        this.tactics = tactics;
-        this.navigation = navigation;
-        this.weapons = weapons;
-        this.science = science;
-        this.communication = communication;
+        this.engineering = crew.engineering;
+        this.tactics = crew.tactics;
+        this.navigation = crew.navigation;
+        this.weapons = crew.weapons;
+        this.science = crew.science;
+        this.communication = crew.communication;
 
         this.showOrders = showOrders;
     }

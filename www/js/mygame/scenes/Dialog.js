@@ -5,8 +5,8 @@ G.Dialog = (function (Event, Key, Width, Height, Option, MVVMScene, Scene, Dialo
         this.events = services.events;
         this.timer = services.timer;
         this.textPragraphs = textPragraphs.slice();
-        this.flags = flags;
-        this.callbacks = callbacks;
+        this.flags = flags || {};
+        this.callbacks = callbacks || {};
 
         this.services = services;
     }

@@ -7,6 +7,11 @@ G.installMyScenes = (function (Scenes, MVVMScene, Start, Scene, Event, Game, Map
         var flags = {};
         var gameCallbacks = {};
 
+        var maps = services.world;
+        var dialogs = services.world[MapKey.DIALOG];
+        var npcs = services.world[MapKey.NPC];
+        var directions = services.world[MapKey.DIRECTIONS];
+
         gameCallbacks['ice_cream_achievement'] = function () {
             console.log('ICE CREAM ACHIEVEMENT UNLOCKED');
         };
@@ -28,14 +33,114 @@ G.installMyScenes = (function (Scenes, MVVMScene, Start, Scene, Event, Game, Map
         }
 
         function createMapScene(nextMapKey, prevMapKey) {
-            var gameSceneModel = new Game(services, services.world[nextMapKey], services.world[MapKey.DIALOG], services.world[MapKey.NPC], services.world[MapKey.DIRECTIONS], nextMapKey, prevMapKey, flags, gameCallbacks);
+
+            var gameSceneModel = new Game(services, maps[nextMapKey], dialogs, npcs, directions, nextMapKey, prevMapKey, flags, gameCallbacks);
 
             return new MVVMScene(services, services.scenes[Scene.GAME], gameSceneModel, Scene.GAME);
         }
 
-        var bridge = new Bridge(services);
+        // ##### start bridge scene
 
-        scenes.add(bridge.show.bind(bridge));
+        var crew = {
+            engineering: {
+                name: 'Lt.Cmdr. Scott',
+                position: 'Engineering Officer',
+                commands: [
+                    {
+                        name: 'Laser',
+                        count: 100,
+                        max: 100
+                    }, {
+                        name: 'Torpedo',
+                        count: 5,
+                        max: 5
+                    }
+                ]
+            },
+            tactics: {
+                name: 'Lt. Giotto',
+                position: 'Tactical Officer', // or maybe? Operations Officer
+                commands: [
+                    {
+                        name: 'Laser',
+                        count: 100,
+                        max: 100
+                    }, {
+                        name: 'Torpedo',
+                        count: 5,
+                        max: 5
+                    }
+                ]
+            },
+            navigation: {
+                name: 'Lt. Sulu',
+                position: 'Navigation Officer',
+                commands: [
+                    {
+                        name: 'Laser',
+                        count: 100,
+                        max: 100
+                    }, {
+                        name: 'Torpedo',
+                        count: 5,
+                        max: 5
+                    }
+                ]
+            },
+            weapons: {
+                name: 'Ens. Checkov',
+                position: 'Weapons Officer',
+                commands: [
+                    {
+                        name: 'Laser',
+                        count: 100,
+                        max: 100
+                    }, {
+                        name: 'Torpedo',
+                        count: 5,
+                        max: 5
+                    }
+                ]
+            },
+            science: {
+                name: 'Lt.Cmdr. Spock',
+                position: 'Science Officer',
+                commands: [
+                    {
+                        name: 'Laser',
+                        count: 100,
+                        max: 100
+                    }, {
+                        name: 'Torpedo',
+                        count: 5,
+                        max: 5
+                    }
+                ]
+            },
+            communication: {
+                name: 'Lt. Uhura',
+                position: 'Communications Officer',
+                commands: [
+                    {
+                        name: 'Laser',
+                        count: 100,
+                        max: 100
+                    }, {
+                        name: 'Torpedo',
+                        count: 5,
+                        max: 5
+                    }
+                ]
+            }
+        };
+
+        scenes.add(function () {
+            var bridge = new Bridge(services, crew, dialogs);
+            bridge.show();
+            bridge.setShields(50, 100);
+            bridge.setHull(20, 100);
+            bridge.setEnergy(100, 100);
+        });
 
         return scenes;
     }
