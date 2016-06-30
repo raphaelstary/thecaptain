@@ -68,7 +68,12 @@ G.createShipFight = (function (Bridge, ShipFight) {
                             property: 'shields',
                             value: 'max'
                         }
-                    ]
+                    ],
+                    precondition: {
+                        property: 'energy',
+                        value: 50,
+                        dialog: 'low_energy'
+                    }
                 }, {
                     type: 'setter',
                     name: 'shields down',
@@ -81,7 +86,12 @@ G.createShipFight = (function (Bridge, ShipFight) {
                             property: 'energy',
                             value: 30
                         }
-                    ]
+                    ],
+                    precondition: {
+                        property: 'shields',
+                        value: 1,
+                        dialog: 'no_shields'
+                    }
 
                 }, {
                     type: 'dialog',
@@ -120,12 +130,17 @@ G.createShipFight = (function (Bridge, ShipFight) {
                             property: 'damage',
                             value: 5
                         }
-                    ]
+                    ],
+                    precondition: {
+                        property: 'energy',
+                        value: 20,
+                        dialog: 'low_energy'
+                    }
                 }, {
                     type: 'setter',
                     name: 'Torpedo',
                     dialog: 'torpedo',
-                    count: 5,
+                    count: 1,
                     max: 5,
                     actions: [
                         {
@@ -135,7 +150,12 @@ G.createShipFight = (function (Bridge, ShipFight) {
                             property: 'damage',
                             value: 20
                         }
-                    ]
+                    ],
+                    precondition: {
+                        property: 'energy',
+                        value: 5,
+                        dialog: 'low_energy'
+                    }
                 }
             ]
         },
