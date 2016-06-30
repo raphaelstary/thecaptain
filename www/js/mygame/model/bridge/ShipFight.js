@@ -11,11 +11,7 @@ G.ShipFight = (function (range) {
     ShipFight.prototype.start = function () {
         this.bridge.show();
 
-        this.bridge.setShields(this.ship.shields, this.ship.shieldsMax);
-        this.bridge.setHull(this.ship.hull, this.ship.hullMax);
-        this.bridge.setEnergy(this.ship.energy, this.ship.energyMax);
-        this.bridge.setShieldsEnemy(this.enemy.shields, this.enemy.shields);
-        this.bridge.setHullEnemy(this.enemy.hull, this.enemy.hull);
+        this.__updateView();
 
         this.__dialog('FS1', this.waitForOrders.bind(this));
     };
@@ -25,28 +21,52 @@ G.ShipFight = (function (range) {
     };
 
     ShipFight.prototype.processOrder = function (command) {
-        if (command.type != 'attack')
+        if (command.type == 'setter') {
+            this.__dialog(command.dialog, this.execute.bind(this, command));
             return;
+        }
 
-        this.__dialog('laser', this.attack.bind(this, command));
+        if (command.type == 'dialog') {
+            this.__dialog(command.dialog, this.waitForOrders.bind(this));
+            // return;
+        }
     };
 
-    ShipFight.prototype.attack = function (command) {
+    ShipFight.prototype.execute = function (command) {
         if (command.count !== undefined)
             command.count--;
 
-        if (command.energy !== undefined) {
-            // decrease energy
-        }
+        command.actions.forEach(function (action) {
+            if (action.property == 'damage') {
+                this.__hit(this.enemy, action.value, this.bridge.setShieldsEnemy.bind(this.bridge),
+                    this.bridge.setHullEnemy.bind(this.bridge));
+                return;
+            }
 
-        this.__hit(this.enemy, command.damage, this.bridge.setShieldsEnemy.bind(this.bridge),
-            this.bridge.setHullEnemy.bind(this.bridge));
+            if (action.value == 'max') {
+                this.ship[action.property] = this.ship[action.property + 'Max'];
+            } else if (action.value == 'min') {
+                this.ship[action.property] = 0;
+            } else {
+                this.ship[action.property] += action.value;
+            }
+
+            this.__updateView();
+        }, this);
 
         if (this.enemy.hull > 1) {
             this.__chainDialog('critical_hit', 'effective', this.initCounterAttack.bind(this));
         } else {
             this.__chainDialog('critical_hit', 'effective', this.success.bind(this));
         }
+    };
+
+    ShipFight.prototype.__updateView = function () {
+        this.bridge.setShields(this.ship.shields, this.ship.shieldsMax);
+        this.bridge.setHull(this.ship.hull, this.ship.hullMax);
+        this.bridge.setEnergy(this.ship.energy, this.ship.energyMax);
+        this.bridge.setShieldsEnemy(this.enemy.shields, this.enemy.shields);
+        this.bridge.setHullEnemy(this.enemy.hull, this.enemy.hull);
     };
 
     ShipFight.prototype.initCounterAttack = function () {
@@ -75,8 +95,10 @@ G.ShipFight = (function (range) {
             ship.shields = 0;
         }
 
-        if (damage > 0) {
+        if (ship.hull > damage) {
             ship.hull -= damage;
+        } else {
+            ship.hull = 0;
         }
 
         shieldsViewFn(ship.shields);
