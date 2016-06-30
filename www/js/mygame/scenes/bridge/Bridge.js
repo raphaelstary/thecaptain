@@ -67,7 +67,9 @@ G.Bridge = (function (MVVMScene, BridgeScreen, BridgeCrew, BridgeOrders, Scene, 
     Bridge.prototype.__showOrders = function (officer) {
         var name = officer.name + ' - ' + officer.position;
         var args = officer.commands.map(function (command) {
-            return command.name + ' - ' + command.count + ' of ' + command.max;
+            if (command.count !== undefined && command.max !== undefined)
+                return command.name + ' - ' + command.count + ' of ' + command.max;
+            return command.name;
         });
         args.unshift(name);
 

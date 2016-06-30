@@ -1,4 +1,4 @@
-G.installMyScenes = (function (Scenes, MVVMScene, Start, Scene, Event, Game, MapKey, Bridge) {
+G.installMyScenes = (function (Scenes, MVVMScene, Start, Scene, Event, Game, MapKey, createShipFight) {
     "use strict";
 
     function installMyScenes(services) {
@@ -40,110 +40,13 @@ G.installMyScenes = (function (Scenes, MVVMScene, Start, Scene, Event, Game, Map
         }
 
         // ##### start bridge scene
-
-        var crew = {
-            engineering: {
-                name: 'Lt.Cmdr. Scott',
-                position: 'Engineering Officer',
-                commands: [
-                    {
-                        name: 'Laser',
-                        count: 100,
-                        max: 100
-                    }, {
-                        name: 'Torpedo',
-                        count: 5,
-                        max: 5
-                    }
-                ]
-            },
-            tactics: {
-                name: 'Lt. Giotto',
-                position: 'Tactical Officer', // or maybe? Operations Officer
-                commands: [
-                    {
-                        name: 'Laser',
-                        count: 100,
-                        max: 100
-                    }, {
-                        name: 'Torpedo',
-                        count: 5,
-                        max: 5
-                    }
-                ]
-            },
-            navigation: {
-                name: 'Lt. Sulu',
-                position: 'Navigation Officer',
-                commands: [
-                    {
-                        name: 'Laser',
-                        count: 100,
-                        max: 100
-                    }, {
-                        name: 'Torpedo',
-                        count: 5,
-                        max: 5
-                    }
-                ]
-            },
-            weapons: {
-                name: 'Ens. Checkov',
-                position: 'Weapons Officer',
-                commands: [
-                    {
-                        name: 'Laser',
-                        count: 100,
-                        max: 100
-                    }, {
-                        name: 'Torpedo',
-                        count: 5,
-                        max: 5
-                    }
-                ]
-            },
-            science: {
-                name: 'Lt.Cmdr. Spock',
-                position: 'Science Officer',
-                commands: [
-                    {
-                        name: 'Laser',
-                        count: 100,
-                        max: 100
-                    }, {
-                        name: 'Torpedo',
-                        count: 5,
-                        max: 5
-                    }
-                ]
-            },
-            communication: {
-                name: 'Lt. Uhura',
-                position: 'Communications Officer',
-                commands: [
-                    {
-                        name: 'Laser',
-                        count: 100,
-                        max: 100
-                    }, {
-                        name: 'Torpedo',
-                        count: 5,
-                        max: 5
-                    }
-                ]
-            }
-        };
-
         scenes.add(function () {
-            var bridge = new Bridge(services, crew, dialogs);
-            bridge.show();
-            bridge.setShields(50, 100);
-            bridge.setHull(20, 100);
-            bridge.setEnergy(100, 100);
+            var fight = createShipFight(services, dialogs);
+            fight.start();
         });
 
         return scenes;
     }
 
     return installMyScenes;
-})(H5.Scenes, H5.MVVMScene, G.Start, G.Scene, H5.Event, G.Game, G.MapKey, G.Bridge);
+})(H5.Scenes, H5.MVVMScene, G.Start, G.Scene, H5.Event, G.Game, G.MapKey, G.createShipFight);
