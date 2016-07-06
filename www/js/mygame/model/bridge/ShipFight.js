@@ -1,4 +1,4 @@
-G.ShipFight = (function (range) {
+G.ShipFight = (function (range, isNaN, Math) {
     "use strict";
 
     function ShipFight(bridgeView, dialogs, ship, enemy) {
@@ -31,9 +31,16 @@ G.ShipFight = (function (range) {
             command.count--;
         }
 
-        if (command.precondition && this.ship[command.precondition.property] < command.precondition.value) {
-            this.__dialog(command.precondition.dialog, this.waitForOrders.bind(this));
-            return;
+        if (command.precondition) {
+            if (isNaN(command.precondition.value) && command.precondition.value == 'not_max' &&
+                this.ship[command.precondition.property] == this.ship[command.precondition.property + 'Max']) {
+                this.__dialog(command.precondition.dialog, this.waitForOrders.bind(this));
+                return;
+
+            } else if (this.ship[command.precondition.property] < command.precondition.value) {
+                this.__dialog(command.precondition.dialog, this.waitForOrders.bind(this));
+                return;
+            }
         }
 
         if (command.type == 'setter') {
@@ -62,7 +69,8 @@ G.ShipFight = (function (range) {
             } else if (action.value == 'min') {
                 this.ship[action.property] = 0;
             } else {
-                this.ship[action.property] += action.value;
+                this.ship[action.property] = Math.min(this.ship[action.property + 'Max'],
+                    this.ship[action.property] + action.value);
             }
 
             this.__updateView();
@@ -92,6 +100,12 @@ G.ShipFight = (function (range) {
     };
 
     ShipFight.prototype.counterAttack = function (command) {
+        if (this.ship.defense) {
+            this.ship.defense = 0;
+            this.__dialog('miss', this.waitForOrders.bind(this));
+            return;
+        }
+
         this.__hit(this.ship, command.damage, this.bridge.setShields.bind(this.bridge),
             this.bridge.setHull.bind(this.bridge));
 
@@ -154,4 +168,4 @@ G.ShipFight = (function (range) {
     }
 
     return ShipFight;
-})(H5.range);
+})(H5.range, isNaN, Math);
