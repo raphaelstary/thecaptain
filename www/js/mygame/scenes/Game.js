@@ -21,14 +21,29 @@ G.Game = (function (PlayFactory, installPlayerKeyBoard, installPlayerGamePad, Sc
 
         this.__paused = false;
         this.__itIsOver = false;
+        this.__stop = false;
     }
 
+    Game.prototype.pause = function () {
+        this.__pause();
+        this.__stop = true;
+    };
+
+    Game.prototype.resume = function () {
+        this.__stop = false;
+        this.__resume();
+    };
+
     Game.prototype.__pause = function () {
+        if (this.__stop)
+            return;
         this.playerController.pause();
         this.__paused = true;
     };
 
     Game.prototype.__resume = function () {
+        if (this.__stop)
+            return;
         this.playerController.resume();
         this.__paused = false;
     };
@@ -36,6 +51,7 @@ G.Game = (function (PlayFactory, installPlayerKeyBoard, installPlayerGamePad, Sc
     Game.prototype.postConstruct = function () {
         this.__paused = false;
         this.__itIsOver = false;
+        this.__stop = false;
 
         var self = this;
 
