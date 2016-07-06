@@ -114,7 +114,7 @@ G.createShipFight = (function (Bridge, ShipFight) {
             ]
         },
         navigation: {
-            name: 'Lt. Sashimi',
+            name: 'Lt. Satoshi',
             position: 'Navigation Officer',
             commands: [
                 {
