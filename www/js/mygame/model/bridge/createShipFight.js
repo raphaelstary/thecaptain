@@ -13,7 +13,9 @@ G.createShipFight = (function (Bridge, ShipFight) {
         hull: 90,
         hullMax: 90,
         energy: 100,
-        energyMax: 100
+        energyMax: 100,
+        defense: 0,
+        defenseMax: 1
     };
 
     var enemy = {
@@ -34,26 +36,37 @@ G.createShipFight = (function (Bridge, ShipFight) {
 
     var crew = {
         engineering: {
-            name: 'Lt.Cmdr. Scott',
+            name: 'Lt.Cmdr. Scotch',
             position: 'Engineering Officer',
             commands: [
                 {
-                    type: 'engineering',
-                    name: 'more e. shields'
+                    type: 'setter',
+                    name: 'recharge e.',
+                    dialog: 'recharge_energy',
+                    actions: [
+                        {
+                            property: 'energy',
+                            value: 50
+                        }
+                    ],
+                    precondition: {
+                        property: 'energy',
+                        value: 'not_max',
+                        dialog: 'energy_max'
+                    }
                 }, {
-                    type: 'engineering',
-                    name: 'less e. shields'
+                    type: 'dialog',
+                    name: 'e. to lasers',
+                    dialog: 'energy'
                 }, {
-                    type: 'engineering',
-                    name: 'more e. lasers'
-                }, {
-                    type: 'engineering',
-                    name: 'less e. lasers'
+                    type: 'dialog',
+                    name: 'e. to shields',
+                    dialog: 'energy'
                 }
             ]
         },
         tactics: {
-            name: 'Lt. Giotto',
+            name: 'Lt. Buonanotte',
             position: 'Tactical Officer', // or maybe? Operations Officer
             commands: [
                 {
@@ -72,7 +85,7 @@ G.createShipFight = (function (Bridge, ShipFight) {
                     precondition: {
                         property: 'energy',
                         value: 50,
-                        dialog: 'low_energy'
+                        dialog: 'energy_low'
                     }
                 }, {
                     type: 'setter',
@@ -101,7 +114,7 @@ G.createShipFight = (function (Bridge, ShipFight) {
             ]
         },
         navigation: {
-            name: 'Lt. Sulu',
+            name: 'Lt. Sashimi',
             position: 'Navigation Officer',
             commands: [
                 {
@@ -109,13 +122,30 @@ G.createShipFight = (function (Bridge, ShipFight) {
                     name: 'hyper space',
                     dialog: 'hyper_space'
                 }, {
-                    type: 'navigation',
-                    name: 'barrel roll'
+                    type: 'setter',
+                    name: 'barrel roll',
+                    dialog: 'barrel_roll',
+                    count: 5,
+                    max: 5,
+                    actions: [
+                        {
+                            property: 'energy',
+                            value: -20
+                        }, {
+                            property: 'defense',
+                            value: 'max'
+                        }
+                    ],
+                    precondition: {
+                        property: 'energy',
+                        value: 20,
+                        dialog: 'energy_low'
+                    }
                 }
             ]
         },
         weapons: {
-            name: 'Ens. Checkov',
+            name: 'Ens. Sputnik',
             position: 'Weapons Officer',
             commands: [
                 {
@@ -134,13 +164,13 @@ G.createShipFight = (function (Bridge, ShipFight) {
                     precondition: {
                         property: 'energy',
                         value: 20,
-                        dialog: 'low_energy'
+                        dialog: 'energy_low'
                     }
                 }, {
                     type: 'setter',
                     name: 'Torpedo',
                     dialog: 'torpedo',
-                    count: 1,
+                    count: 5,
                     max: 5,
                     actions: [
                         {
@@ -154,13 +184,13 @@ G.createShipFight = (function (Bridge, ShipFight) {
                     precondition: {
                         property: 'energy',
                         value: 5,
-                        dialog: 'low_energy'
+                        dialog: 'energy_low'
                     }
                 }
             ]
         },
         science: {
-            name: 'Lt.Cmdr. Spock',
+            name: 'Lt.Cmdr. Pocks',
             position: 'Science Officer',
             commands: [
                 {
@@ -175,7 +205,7 @@ G.createShipFight = (function (Bridge, ShipFight) {
             ]
         },
         communication: {
-            name: 'Lt. Uhura',
+            name: 'Lt. Aruhu',
             position: 'Communications Officer',
             commands: [
                 {
