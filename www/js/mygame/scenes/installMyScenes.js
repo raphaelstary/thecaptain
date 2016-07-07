@@ -12,8 +12,8 @@ G.installMyScenes = (function (Scenes, MVVMScene, Start, Scene, Event, Game, Map
         var npcs = services.world[MapKey.NPC];
         var directions = services.world[MapKey.DIRECTIONS];
 
-        gameCallbacks['ice_cream_achievement'] = function () {
-            console.log('ICE CREAM ACHIEVEMENT UNLOCKED');
+        gameCallbacks[MapKey.REPAIR_SHIP] = function () {
+            console.log('setting all values to max');
         };
 
         var scenes = new Scenes();
