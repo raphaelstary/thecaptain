@@ -6,5 +6,7 @@ G.MapKey = {
     
     DIALOG: 'dialog',
     NPC: 'npc',
+    WALLS: 'walls',
+    BACKGROUND: 'background',
     DIRECTIONS: 'directions'
 };

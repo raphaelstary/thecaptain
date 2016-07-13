@@ -22,7 +22,7 @@ G.World = (function (iterateEntries) {
         var zIndex = 1;
         this.npcs.concat(this.player)
             .filter(function (entityWrapper) {
-                return entityWrapper.drawable.show;
+                return !entityWrapper.hidden && entityWrapper.drawable.show;
             })
             .sort(function (a, b) {
                 return a.v - b.v;
@@ -39,7 +39,8 @@ G.World = (function (iterateEntries) {
         this.camera.move(this.player.entity);
 
         this.allTiles.forEach(function (tile) {
-            this.camera.calcScreenPosition(tile.entity, tile.drawable);
+            if (!tile.hidden)
+                this.camera.calcScreenPosition(tile.entity, tile.drawable);
         }, this);
     };
 
@@ -53,18 +54,16 @@ G.World = (function (iterateEntries) {
         }
 
         this.npcs = this.domainGridHelper.getNPCs();
-        var grassTiles = this.domainGridHelper.getGrassTiles();
-        var wayTiles = this.domainGridHelper.getWayTiles();
-        var signs = this.domainGridHelper.getSigns();
+        var walls = this.domainGridHelper.getWalls();
+        var backgroundTiles = this.domainGridHelper.getBackgroundTiles();
 
         this.allTiles = [];
         this.allTiles.push.apply(this.allTiles, this.npcs);
-        this.allTiles.push.apply(this.allTiles, grassTiles);
-        this.allTiles.push.apply(this.allTiles, wayTiles);
-        this.allTiles.push.apply(this.allTiles, signs);
+        this.allTiles.push.apply(this.allTiles, walls);
+        this.allTiles.push.apply(this.allTiles, backgroundTiles);
         this.allTiles.push(this.player);
 
-        this.worldView.drawLevel(this.player, this.npcs, grassTiles, wayTiles, signs, callback);
+        this.worldView.drawLevel(this.player, this.npcs, walls, backgroundTiles, callback);
 
         iterateEntries(this.directions, function (npcDirections, npcId) {
             this.npcs.some(function (npc) {
@@ -96,19 +95,19 @@ G.World = (function (iterateEntries) {
         var wayPoint = nextWayPoints.shift();
 
         var success = false;
-        if (wayPoint == 'left') {
+        if (wayPoint.direction == 'left') {
             success = this.moveLeft(handleNextWayPoint, entity);
 
-        } else if (wayPoint == 'right') {
+        } else if (wayPoint.direction == 'right') {
             success = this.moveRight(handleNextWayPoint, entity);
 
-        } else if (wayPoint == 'up') {
+        } else if (wayPoint.direction == 'up') {
             success = this.moveTop(handleNextWayPoint, entity);
 
-        } else if (wayPoint == 'down') {
+        } else if (wayPoint.direction == 'down') {
             success = this.moveBottom(handleNextWayPoint, entity);
 
-        } else if (wayPoint == 'wait') {
+        } else if (wayPoint.direction == 'wait') {
             success = true;
             this.timer.doLater(handleNextWayPoint, this.oneCyle);
         }
@@ -116,6 +115,8 @@ G.World = (function (iterateEntries) {
         if (!success) {
             nextWayPoints.unshift(wayPoint);
             this.timer.doLater(handleNextWayPoint, this.oneCyle);
+        } else {
+            this.worldView.changeState(entity.drawable, wayPoint.asset);
         }
     };
 
@@ -135,26 +136,42 @@ G.World = (function (iterateEntries) {
     };
 
     World.prototype.moveLeft = function (callback, entity) {
-        if (!entity)
-            return this.__move(this.player, this.player.u - 1, this.player.v, callback);
+        if (!entity) {
+            var success = this.__move(this.player, this.player.u - 1, this.player.v, callback);
+            if (success)
+                this.worldView.changePlayerStateToLeft();
+            return success;
+        }
         return this.__move(entity, entity.u - 1, entity.v, callback);
     };
 
     World.prototype.moveRight = function (callback, entity) {
-        if (!entity)
-            return this.__move(this.player, this.player.u + 1, this.player.v, callback);
+        if (!entity) {
+            var success = this.__move(this.player, this.player.u + 1, this.player.v, callback);
+            if (success)
+                this.worldView.changePlayerStateToRight();
+            return success;
+        }
         return this.__move(entity, entity.u + 1, entity.v, callback);
     };
 
     World.prototype.moveTop = function (callback, entity) {
-        if (!entity)
-            return this.__move(this.player, this.player.u, this.player.v - 1, callback);
+        if (!entity) {
+            var success = this.__move(this.player, this.player.u, this.player.v - 1, callback);
+            if (success)
+                this.worldView.changePlayerStateToUp();
+            return success;
+        }
         return this.__move(entity, entity.u, entity.v - 1, callback);
     };
 
     World.prototype.moveBottom = function (callback, entity) {
-        if (!entity)
-            return this.__move(this.player, this.player.u, this.player.v + 1, callback);
+        if (!entity) {
+            var success = this.__move(this.player, this.player.u, this.player.v + 1, callback);
+            if (success)
+                this.worldView.changePlayerStateToDown();
+            return success;
+        }
         return this.__move(entity, entity.u, entity.v + 1, callback);
     };
 

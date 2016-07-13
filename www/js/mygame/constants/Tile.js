@@ -1,9 +1,11 @@
 G.Tile = {
     EMPTY: 0,
-    GRASS: 'G',
-    WAY: 'W',
+
     PLAYER: 'P',
-    SIGN: 'S',
+
     NPC: 'N',
+    WALL: 'W',
+    BACKGROUND: 'B',
+
     MAP: 'map'
 };

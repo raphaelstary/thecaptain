@@ -1,7 +1,7 @@
-G.Game = (function (PlayFactory, installPlayerKeyBoard, installPlayerGamePad, Scene, MVVMScene, Dialog, Tile, Event) {
+G.Game = (function (PlayFactory, installPlayerKeyBoard, installPlayerGamePad, Scene, MVVMScene, Dialog, Tile, Event, Strings) {
     "use strict";
 
-    function Game(services, map, dialog, npc, directions, mapKey, prevMapKey, flags, gameCallbacks) {
+    function Game(services, map, dialog, npc, walls, background, directions, mapKey, prevMapKey, flags, gameCallbacks) {
         this.device = services.device;
         this.events = services.events;
         this.sceneStorage = services.sceneStorage;
@@ -12,6 +12,8 @@ G.Game = (function (PlayFactory, installPlayerKeyBoard, installPlayerGamePad, Sc
         this.map = map;
         this.dialog = dialog;
         this.npc = npc;
+        this.walls = walls;
+        this.background = background;
         this.directions = directions;
         this.mapKey = mapKey;
         this.prevMapKey = prevMapKey;
@@ -59,10 +61,10 @@ G.Game = (function (PlayFactory, installPlayerKeyBoard, installPlayerGamePad, Sc
             if (self.__itIsOver)
                 return;
 
-            if (dialogId[0] == Tile.NPC) {
-                self.interactSymbol.setText('talk');
-            } else if (dialogId[0] == Tile.SIGN) {
+            if (Strings.startsWidth(dialogId, Tile.NPC + 'S')) {
                 self.interactSymbol.setText('read');
+            } else if (Strings.startsWidth(dialogId, Tile.NPC)) {
+                self.interactSymbol.setText('talk');
             }
             self.interactSymbol.show = true;
         }
@@ -95,8 +97,9 @@ G.Game = (function (PlayFactory, installPlayerKeyBoard, installPlayerGamePad, Sc
             });
         }
 
-        this.world = PlayFactory.createWorld(this.stage, this.timer, this.device, this.map, this.npc, this.directions,
-            possibleInteractionStart, possibleInteractionEnd, interaction, endMap, this.prevMapKey);
+        this.world = PlayFactory.createWorld(this.stage, this.timer, this.device, this.map, this.npc, this.walls,
+            this.background, this.directions, possibleInteractionStart, possibleInteractionEnd, interaction, endMap,
+            this.prevMapKey);
 
         this.world.init(function () {
             if (self.__itIsOver)
@@ -124,4 +127,4 @@ G.Game = (function (PlayFactory, installPlayerKeyBoard, installPlayerGamePad, Sc
     };
 
     return Game;
-})(G.PlayFactory, G.installPlayerKeyBoard, G.installPlayerGamePad, G.Scene, H5.MVVMScene, G.Dialog, G.Tile, H5.Event);
+})(G.PlayFactory, G.installPlayerKeyBoard, G.installPlayerGamePad, G.Scene, H5.MVVMScene, G.Dialog, G.Tile, H5.Event, H5.Strings);

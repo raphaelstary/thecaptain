@@ -1,11 +1,13 @@
 G.WorldView = (function (Image, Math, iterateEntries, Tile) {
     "use strict";
 
-    function WorldView(stage, timer, gridViewHelper, npcInfo) {
+    function WorldView(stage, timer, gridViewHelper, npcInfo, wallInfo, backgroundInfo) {
         this.stage = stage;
         this.timer = timer;
         this.gridViewHelper = gridViewHelper;
         this.npcInfo = npcInfo;
+        this.wallInfo = wallInfo;
+        this.backgroundInfo = backgroundInfo;
 
         this.player = null;
 
@@ -27,18 +29,23 @@ G.WorldView = (function (Image, Math, iterateEntries, Tile) {
         iterateEntries(this.npcs, removeElem);
     };
 
-    WorldView.prototype.drawLevel = function (player, npcs, grassTiles, wayTiles, signs, callback) {
+    WorldView.prototype.drawLevel = function (player, npcs, walls, backgroundTiles, callback) {
 
-        this.defaultDrawable = this.gridViewHelper.create(1, 1, Image.WAY);
+        this.defaultDrawable = this.gridViewHelper.create(1, 1, Image.CLOUD);
         this.defaultDrawable.show = false;
 
-        player.entity = this.__createEntity(player, Image.PLAYER);
+        player.entity = this.__createEntity(player, Image.SHIP_FRONT);
         player.entity.show = false;
-        player.drawable = this.__createEntity(player, Image.PLAYER);
+        player.drawable = this.__createEntity(player, Image.SHIP_FRONT);
 
         this.player = player;
 
         npcs.forEach(function (npc) {
+            if (!this.npcInfo[npc.type]) {
+                npc.hidden = true;
+                return;
+            }
+
             npc.entity = this.__createEntity(npc, this.npcInfo[npc.type]);
             npc.entity.show = false;
             npc.drawable = this.__createEntity(npc, this.npcInfo[npc.type]);
@@ -46,26 +53,18 @@ G.WorldView = (function (Image, Math, iterateEntries, Tile) {
             this.npcs[npc.type] = npc;
         }, this);
 
-        grassTiles.forEach(function (tile) {
-            tile.entity = this.__createStatic(tile, Image.GRASS, 1);
+        walls.forEach(function (tile) {
+            tile.entity = this.__createStatic(tile, this.wallInfo[tile.type], 2, true);
             tile.entity.show = false;
-            tile.drawable = this.__createStatic(tile, Image.GRASS, 1);
+            tile.drawable = this.__createStatic(tile, this.wallInfo[tile.type], 2, true);
 
             this.staticTiles.push(tile);
         }, this);
 
-        wayTiles.forEach(function (tile) {
-            tile.entity = this.__createStatic(tile, Image.WAY, 1);
+        backgroundTiles.forEach(function (tile) {
+            tile.entity = this.__createStatic(tile, this.backgroundInfo[tile.type], 1);
             tile.entity.show = false;
-            tile.drawable = this.__createStatic(tile, Image.WAY, 1);
-
-            this.staticTiles.push(tile);
-        }, this);
-
-        signs.forEach(function (tile) {
-            tile.entity = this.__createStatic(tile, Image.SIGN, 2, true);
-            tile.entity.show = false;
-            tile.drawable = this.__createStatic(tile, Image.SIGN, 2, true);
+            tile.drawable = this.__createStatic(tile, this.backgroundInfo[tile.type], 1);
 
             this.staticTiles.push(tile);
         }, this);
@@ -75,18 +74,10 @@ G.WorldView = (function (Image, Math, iterateEntries, Tile) {
     };
 
     WorldView.prototype.__createEntity = function (tile, img) {
-        return this.gridViewHelper.create(tile.u, tile.v, img, this.defaultDrawable.data.height, undefined,
-            this.__personYOffset.bind(this), [this.defaultDrawable])
+        return this.gridViewHelper.create(tile.u, tile.v, img, this.defaultDrawable.data.height);
     };
 
-    WorldView.prototype.__createStatic = function (tile, img, zIndex, yOffset) {
-        var self = this;
-        if (yOffset)
-            return this.gridViewHelper.createBackground(tile.u, tile.v, img, zIndex, this.defaultDrawable.data.height,
-                undefined, function () {
-                    return -Math.floor(self.defaultDrawable.getHeight() / 14);
-                }, [this.defaultDrawable]);
-
+    WorldView.prototype.__createStatic = function (tile, img, zIndex) {
         return this.gridViewHelper.createBackground(tile.u, tile.v, img, zIndex, this.defaultDrawable.data.height);
     };
 
@@ -100,12 +91,27 @@ G.WorldView = (function (Image, Math, iterateEntries, Tile) {
     };
 
     WorldView.prototype.__moveEntity = function (entity, changeSet, callback) {
-        this.gridViewHelper.move(entity, changeSet.newU, changeSet.newV, this.moveSpeed, callback, undefined,
-            this.__personYOffset.bind(this), [this.defaultDrawable]);
+        this.gridViewHelper.move(entity, changeSet.newU, changeSet.newV, this.moveSpeed, callback);
     };
 
-    WorldView.prototype.__personYOffset = function () {
-        return -Math.floor(this.defaultDrawable.getHeight() / 3 * 2);
+    WorldView.prototype.changeState = function (entity, assetName) {
+        entity.data = this.stage.getGraphic(assetName);
+    };
+
+    WorldView.prototype.changePlayerStateToLeft = function () {
+        this.changeState(this.player.drawable, Image.SHIP_LEFT);
+    };
+
+    WorldView.prototype.changePlayerStateToRight = function () {
+        this.changeState(this.player.drawable, Image.SHIP_RIGHT);
+    };
+
+    WorldView.prototype.changePlayerStateToUp = function () {
+        this.changeState(this.player.drawable, Image.SHIP_BACK);
+    };
+
+    WorldView.prototype.changePlayerStateToDown = function () {
+        this.changeState(this.player.drawable, Image.SHIP_FRONT);
     };
 
     return WorldView;

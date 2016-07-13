@@ -6,16 +6,12 @@ G.DomainGridHelper = (function (Tile, Strings) {
         this.grid = grid;
     }
 
-    DomainGridHelper.prototype.getGrassTiles = function () {
-        return this.gridHelper.getTiles(Tile.GRASS, true);
+    DomainGridHelper.prototype.getBackgroundTiles = function () {
+        return this.gridHelper.getTiles(Tile.BACKGROUND, true);
     };
 
-    DomainGridHelper.prototype.getWayTiles = function () {
-        return this.gridHelper.getTiles(Tile.WAY, true);
-    };
-
-    DomainGridHelper.prototype.getSigns = function () {
-        return this.gridHelper.getTiles(Tile.SIGN);
+    DomainGridHelper.prototype.getWalls = function () {
+        return this.gridHelper.getTiles(Tile.WALL);
     };
 
     DomainGridHelper.prototype.getNPCs = function () {
@@ -40,8 +36,8 @@ G.DomainGridHelper = (function (Tile, Strings) {
     };
 
     DomainGridHelper.prototype.__isMovable = function (backgroundTileType) {
-        return backgroundTileType === Tile.GRASS || backgroundTileType === Tile.WAY ||
-            (backgroundTileType && Strings.startsWidth(backgroundTileType, Tile.MAP));
+        return backgroundTileType && (Strings.startsWidth(backgroundTileType, Tile.BACKGROUND) ||
+            Strings.startsWidth(backgroundTileType, Tile.MAP));
     };
 
     DomainGridHelper.prototype.canPlayerInteract = function (player) {
@@ -57,7 +53,7 @@ G.DomainGridHelper = (function (Tile, Strings) {
     };
 
     DomainGridHelper.prototype.__isInteractionPossible = function (tileType) {
-        return tileType[0] === Tile.SIGN || tileType[0] === Tile.NPC;
+        return tileType[0] === Tile.NPC;
     };
 
     DomainGridHelper.prototype.movePlayer = function (player, u, v) {
