@@ -25,14 +25,15 @@ G.installMyScenes = (function (Scenes, MVVMScene, Start, Scene, Event, Game, Map
         scenes.add(start.show.bind(start));
 
         scenes.add(function () {
-            var game = showMapScene(MapKey.OUTPOST);
+            var game = showMapScene('map_blue');
+            // var game = showMapScene(MapKey.OUTPOST);
 
-            game.pause();
-            var dialogScreen = new Dialog(services, dialogs['admirals_orders']);
-            var dialogScene = new MVVMScene(services, services.scenes[Scene.DIALOG], dialogScreen, Scene.DIALOG);
-            dialogScene.show(function () {
-                game.resume();
-            });
+            // game.pause();
+            // var dialogScreen = new Dialog(services, dialogs['admirals_orders']);
+            // var dialogScene = new MVVMScene(services, services.scenes[Scene.DIALOG], dialogScreen, Scene.DIALOG);
+            // dialogScene.show(function () {
+            //     game.resume();
+            // });
         });
 
         function mapCallback(mapInfo) {
