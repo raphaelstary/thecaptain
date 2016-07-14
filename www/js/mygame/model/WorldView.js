@@ -54,6 +54,10 @@ G.WorldView = (function (Image, Math, iterateEntries, Tile) {
         }, this);
 
         walls.forEach(function (tile) {
+            if (!this.wallInfo[tile.type]) {
+                tile.hidden = true;
+                return;
+            }
             tile.entity = this.__createStatic(tile, this.wallInfo[tile.type], 2, true);
             tile.entity.show = false;
             tile.drawable = this.__createStatic(tile, this.wallInfo[tile.type], 2, true);
@@ -98,19 +102,19 @@ G.WorldView = (function (Image, Math, iterateEntries, Tile) {
         entity.data = this.stage.getGraphic(assetName);
     };
 
-    WorldView.prototype.changePlayerStateToLeft = function () {
+    WorldView.prototype.turnPlayerLeft = function () {
         this.changeState(this.player.drawable, Image.SHIP_LEFT);
     };
 
-    WorldView.prototype.changePlayerStateToRight = function () {
+    WorldView.prototype.turnPlayerRight = function () {
         this.changeState(this.player.drawable, Image.SHIP_RIGHT);
     };
 
-    WorldView.prototype.changePlayerStateToUp = function () {
+    WorldView.prototype.turnPlayerUp = function () {
         this.changeState(this.player.drawable, Image.SHIP_BACK);
     };
 
-    WorldView.prototype.changePlayerStateToDown = function () {
+    WorldView.prototype.turnPlayerDown = function () {
         this.changeState(this.player.drawable, Image.SHIP_FRONT);
     };
 

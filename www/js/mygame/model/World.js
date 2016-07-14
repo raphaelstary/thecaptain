@@ -139,7 +139,7 @@ G.World = (function (iterateEntries) {
         if (!entity) {
             var success = this.__move(this.player, this.player.u - 1, this.player.v, callback);
             if (success)
-                this.worldView.changePlayerStateToLeft();
+                this.worldView.turnPlayerLeft();
             return success;
         }
         return this.__move(entity, entity.u - 1, entity.v, callback);
@@ -149,7 +149,7 @@ G.World = (function (iterateEntries) {
         if (!entity) {
             var success = this.__move(this.player, this.player.u + 1, this.player.v, callback);
             if (success)
-                this.worldView.changePlayerStateToRight();
+                this.worldView.turnPlayerRight();
             return success;
         }
         return this.__move(entity, entity.u + 1, entity.v, callback);
@@ -159,7 +159,7 @@ G.World = (function (iterateEntries) {
         if (!entity) {
             var success = this.__move(this.player, this.player.u, this.player.v - 1, callback);
             if (success)
-                this.worldView.changePlayerStateToUp();
+                this.worldView.turnPlayerUp();
             return success;
         }
         return this.__move(entity, entity.u, entity.v - 1, callback);
@@ -169,7 +169,7 @@ G.World = (function (iterateEntries) {
         if (!entity) {
             var success = this.__move(this.player, this.player.u, this.player.v + 1, callback);
             if (success)
-                this.worldView.changePlayerStateToDown();
+                this.worldView.turnPlayerDown();
             return success;
         }
         return this.__move(entity, entity.u, entity.v + 1, callback);
