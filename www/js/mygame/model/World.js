@@ -1,13 +1,14 @@
 G.World = (function (iterateEntries) {
     "use strict";
 
-    function World(worldView, domainGridHelper, camera, timer, directions, possibleInteractionStart,
+    function World(worldView, domainGridHelper, camera, timer, directions, flags, possibleInteractionStart,
         possibleInteractionEnd, interaction, endMap, prevMapKey) {
         this.worldView = worldView;
         this.domainGridHelper = domainGridHelper;
         this.camera = camera;
         this.timer = timer;
         this.directions = directions;
+        this.flags = flags;
 
         this.possibleInteractionStart = possibleInteractionStart;
         this.possibleInteractionEnd = possibleInteractionEnd;
@@ -44,6 +45,11 @@ G.World = (function (iterateEntries) {
         }, this);
     };
 
+    function removeUnmetConditions(waypoint) {
+        return !((waypoint.condition && !this.flags[waypoint.condition]) ||
+        (waypoint.conditionNegated && this.flags[waypoint.conditionNegated]));
+    }
+
     World.prototype.init = function (callback) {
         this.__interacting = false;
 
@@ -66,9 +72,13 @@ G.World = (function (iterateEntries) {
         this.worldView.drawLevel(this.player, this.npcs, walls, backgroundTiles, callback);
 
         iterateEntries(this.directions, function (npcDirections, npcId) {
+            var directions = npcDirections.filter(removeUnmetConditions, this);
+            if (directions.length < 1)
+                return;
+
             this.npcs.some(function (npc) {
                 if (npc.type == npcId) {
-                    this.autoMoveNPC(npc, npcDirections.slice());
+                    this.autoMoveNPC(npc, directions);
                     return true;
                 }
                 return false;
@@ -88,7 +98,7 @@ G.World = (function (iterateEntries) {
             if (nextWayPoints.length > 0) {
                 self.autoMoveNPC(entity, nextWayPoints);
             } else {
-                self.autoMoveNPC(entity, self.directions[entity.type].slice());
+                self.autoMoveNPC(entity, self.directions[entity.type].filter(removeUnmetConditions, self));
             }
         }
 

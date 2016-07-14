@@ -4,8 +4,8 @@ G.PlayFactory = (function (Grid, GridHelper, GridViewHelper, DomainGridHelper, W
     "use strict";
 
     return {
-        createWorld: function (stage, timer, device, map, npcInfo, wallInfo, backgroundInfo, directions, possibleInteractionStart,
-            possibleInteractionEnd, interaction, endMap, prevMapKey) {
+        createWorld: function (stage, timer, device, map, npcInfo, wallInfo, backgroundInfo, directions, flags,
+                               possibleInteractionStart, possibleInteractionEnd, interaction, endMap, prevMapKey) {
             var grid = new Grid(map);
             var gridHelper = new GridHelper(grid);
             var gridViewHelper = new GridViewHelper(stage, device, 16, 9, zero, zero);
@@ -13,7 +13,7 @@ G.PlayFactory = (function (Grid, GridHelper, GridViewHelper, DomainGridHelper, W
             var worldView = new WorldView(stage, timer, gridViewHelper, npcInfo, wallInfo, backgroundInfo);
             var maxCameraPosition = gridViewHelper.getPosition(grid.xTiles - 9, grid.yTiles - 5);
             var camera = new Camera(createViewPort(stage), maxCameraPosition.x, maxCameraPosition.y);
-            return new World(worldView, domainGridHelper, camera, timer, directions, possibleInteractionStart, possibleInteractionEnd, interaction, endMap, prevMapKey);
+            return new World(worldView, domainGridHelper, camera, timer, directions, flags, possibleInteractionStart, possibleInteractionEnd, interaction, endMap, prevMapKey);
         },
         createPlayerController: function (world) {
             return new PlayerController(world);

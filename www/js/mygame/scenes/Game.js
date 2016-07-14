@@ -98,8 +98,8 @@ G.Game = (function (PlayFactory, installPlayerKeyBoard, installPlayerGamePad, Sc
         }
 
         this.world = PlayFactory.createWorld(this.stage, this.timer, this.device, this.map, this.npc, this.walls,
-            this.background, this.directions, possibleInteractionStart, possibleInteractionEnd, interaction, endMap,
-            this.prevMapKey);
+            this.background, this.directions, this.flags, possibleInteractionStart, possibleInteractionEnd, interaction,
+            endMap, this.prevMapKey);
 
         this.world.init(function () {
             if (self.__itIsOver)
