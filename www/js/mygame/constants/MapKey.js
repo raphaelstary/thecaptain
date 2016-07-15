@@ -8,5 +8,6 @@ G.MapKey = {
     NPC: 'npc',
     WALLS: 'walls',
     BACKGROUND: 'background',
-    DIRECTIONS: 'directions'
+    DIRECTIONS: 'directions',
+    EVENTS: 'events'
 };

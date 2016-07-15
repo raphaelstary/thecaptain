@@ -7,5 +7,6 @@ G.Tile = {
     WALL: 'W',
     BACKGROUND: 'B',
 
+    EVENT: 'E',
     MAP: 'map'
 };

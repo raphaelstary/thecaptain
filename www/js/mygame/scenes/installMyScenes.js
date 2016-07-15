@@ -13,9 +13,11 @@ G.installMyScenes = (function (Scenes, MVVMScene, Start, Scene, Event, Game, Map
         var walls = services.world[MapKey.WALLS];
         var background = services.world[MapKey.BACKGROUND];
         var directions = services.world[MapKey.DIRECTIONS];
+        var gameEvents = services.world[MapKey.EVENTS];
 
-        gameCallbacks[MapKey.REPAIR_SHIP] = function () {
+        gameCallbacks[MapKey.REPAIR_SHIP] = function (next) {
             console.log('setting all values to max');
+            next();
         };
 
         var scenes = new Scenes();
@@ -41,8 +43,7 @@ G.installMyScenes = (function (Scenes, MVVMScene, Start, Scene, Event, Game, Map
         }
 
         function showMapScene(nextMapKey, prevMapKey) {
-            var game = new Game(services, maps[nextMapKey], dialogs, npcs, walls, background, directions, nextMapKey,
-                prevMapKey, flags, gameCallbacks);
+            var game = new Game(services, maps[nextMapKey], dialogs, npcs, walls, background, directions, gameEvents, nextMapKey, prevMapKey, flags, gameCallbacks);
             new MVVMScene(services, services.scenes[Scene.GAME], game, Scene.GAME).show(mapCallback);
             return game;
         }

@@ -1,7 +1,9 @@
-G.Game = (function (PlayFactory, installPlayerKeyBoard, installPlayerGamePad, Scene, MVVMScene, Dialog, Tile, Event, Strings) {
+G.Game = (function (PlayFactory, installPlayerKeyBoard, installPlayerGamePad, Scene, MVVMScene, Dialog, Tile, Event,
+    Strings) {
     "use strict";
 
-    function Game(services, map, dialog, npc, walls, background, directions, mapKey, prevMapKey, flags, gameCallbacks) {
+    function Game(services, map, dialog, npc, walls, background, directions, gameEvents, mapKey, prevMapKey, flags,
+        gameCallbacks) {
         this.device = services.device;
         this.events = services.events;
         this.sceneStorage = services.sceneStorage;
@@ -15,6 +17,7 @@ G.Game = (function (PlayFactory, installPlayerKeyBoard, installPlayerGamePad, Sc
         this.walls = walls;
         this.background = background;
         this.directions = directions;
+        this.gameEvents = gameEvents;
         this.mapKey = mapKey;
         this.prevMapKey = prevMapKey;
         this.flags = flags;
@@ -98,8 +101,9 @@ G.Game = (function (PlayFactory, installPlayerKeyBoard, installPlayerGamePad, Sc
         }
 
         this.world = PlayFactory.createWorld(this.stage, this.timer, this.device, this.map, this.npc, this.walls,
-            this.background, this.directions, this.flags, possibleInteractionStart, possibleInteractionEnd, interaction,
-            endMap, this.prevMapKey);
+            this.background, this.directions, this.gameEvents, this.flags, this.gameCallbacks, possibleInteractionStart,
+            possibleInteractionEnd, interaction, endMap, this.prevMapKey, this.__pause.bind(this),
+            this.__resume.bind(this));
 
         this.world.init(function () {
             if (self.__itIsOver)
@@ -123,8 +127,9 @@ G.Game = (function (PlayFactory, installPlayerKeyBoard, installPlayerGamePad, Sc
         this.events.unsubscribe(this.keyBoardHandler);
         this.events.unsubscribe(this.gamePadHandler);
         this.events.unsubscribe(this.cameraListener);
-        this.world.worldView.preDestroy();
+        this.world.preDestroy();
     };
 
     return Game;
-})(G.PlayFactory, G.installPlayerKeyBoard, G.installPlayerGamePad, G.Scene, H5.MVVMScene, G.Dialog, G.Tile, H5.Event, H5.Strings);
+})(G.PlayFactory, G.installPlayerKeyBoard, G.installPlayerGamePad, G.Scene, H5.MVVMScene, G.Dialog, G.Tile, H5.Event,
+    H5.Strings);

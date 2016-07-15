@@ -46,9 +46,9 @@ G.WorldView = (function (Image, Math, iterateEntries, Tile) {
                 return;
             }
 
-            npc.entity = this.__createEntity(npc, this.npcInfo[npc.type]);
+            npc.entity = this.__createEntity(npc, this.npcInfo[npc.type].asset);
             npc.entity.show = false;
-            npc.drawable = this.__createEntity(npc, this.npcInfo[npc.type]);
+            npc.drawable = this.__createEntity(npc, this.npcInfo[npc.type].asset);
 
             this.npcs[npc.type] = npc;
         }, this);

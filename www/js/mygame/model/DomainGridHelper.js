@@ -72,10 +72,22 @@ G.DomainGridHelper = (function (Tile, Strings) {
 
     DomainGridHelper.prototype.isPlayerOnPortal = function (entity) {
         var tile = this.grid.getBackground(entity.u, entity.v);
-        if (Strings.startsWidth(tile, Tile.MAP)) {
+        if (tile && Strings.startsWidth(tile, Tile.MAP)) {
             return tile;
         }
         return false;
+    };
+
+    DomainGridHelper.prototype.isPlayerOnEvent = function (entity) {
+        var tile = this.grid.getEvent(entity.u, entity.v);
+        if (tile && Strings.startsWidth(tile, Tile.EVENT)) {
+            return tile;
+        }
+        return false;
+    };
+
+    DomainGridHelper.prototype.remove = function (npc) {
+        this.grid.set(npc.u, npc.v, Tile.EMPTY);
     };
 
     return DomainGridHelper;

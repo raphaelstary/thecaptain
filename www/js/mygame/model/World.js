@@ -1,14 +1,17 @@
-G.World = (function (iterateEntries) {
+G.World = (function (iterateEntries, Tile) {
     "use strict";
 
-    function World(worldView, domainGridHelper, camera, timer, directions, flags, possibleInteractionStart,
-        possibleInteractionEnd, interaction, endMap, prevMapKey) {
+    function World(worldView, domainGridHelper, camera, timer, directions, gameEvents, npcInfo, flags, gameCallbacks,
+        possibleInteractionStart, possibleInteractionEnd, interaction, endMap, prevMapKey, pause, resume) {
         this.worldView = worldView;
         this.domainGridHelper = domainGridHelper;
         this.camera = camera;
         this.timer = timer;
         this.directions = directions;
+        this.npcInfo = npcInfo;
         this.flags = flags;
+        this.gameCallbacks = gameCallbacks;
+        this.gameEvents = gameEvents;
 
         this.possibleInteractionStart = possibleInteractionStart;
         this.possibleInteractionEnd = possibleInteractionEnd;
@@ -16,10 +19,14 @@ G.World = (function (iterateEntries) {
         this.endMap = endMap;
         this.prevMapKey = prevMapKey;
 
+        this.__pause = pause;
+        this.__resume = resume;
+
         this.oneCyle = 60;
+        this.__itIsOver = false;
     }
 
-    World.prototype.__updateEntitiesZIndex = function () {
+    World.prototype.__updateZIndices = function () {
         var zIndex = 1;
         this.npcs.concat(this.player)
             .filter(function (entityWrapper) {
@@ -45,10 +52,6 @@ G.World = (function (iterateEntries) {
         }, this);
     };
 
-    function removeUnmetConditions(waypoint) {
-        return !((waypoint.condition && !this.flags[waypoint.condition]) ||
-        (waypoint.conditionNegated && this.flags[waypoint.conditionNegated]));
-    }
 
     World.prototype.init = function (callback) {
         this.__interacting = false;
@@ -59,7 +62,14 @@ G.World = (function (iterateEntries) {
             this.domainGridHelper.movePlayer(this.player, prevMapPortal.u, prevMapPortal.v);
         }
 
-        this.npcs = this.domainGridHelper.getNPCs();
+        this.npcs = this.domainGridHelper.getNPCs().filter(function (npcTile) {
+            var npc = this.npcInfo[npcTile.type];
+            if (npc && !this.__isConditionMet(npc)) {
+                this.domainGridHelper.remove(npcTile);
+                return false;
+            }
+            return true;
+        }, this);
         var walls = this.domainGridHelper.getWalls();
         var backgroundTiles = this.domainGridHelper.getBackgroundTiles();
 
@@ -70,64 +80,21 @@ G.World = (function (iterateEntries) {
         this.allTiles.push(this.player);
 
         this.worldView.drawLevel(this.player, this.npcs, walls, backgroundTiles, callback);
-
-        iterateEntries(this.directions, function (npcDirections, npcId) {
-            var directions = npcDirections.filter(removeUnmetConditions, this);
-            if (directions.length < 1)
-                return;
-
-            this.npcs.some(function (npc) {
-                if (npc.type == npcId) {
-                    this.autoMoveNPC(npc, directions);
-                    return true;
-                }
-                return false;
-            }, this);
-        }, this);
+        iterateEntries(this.directions, this.__startAutoMove, this);
     };
 
-    World.prototype.autoMoveNPC = function (entity, nextWayPoints) {
-        if (this.__interacting) {
-            this.timer.doLater(this.autoMoveNPC.bind(this, entity, nextWayPoints), this.oneCyle * 2);
+    World.prototype.__startAutoMove = function (allWayPoints, npcId, noLoop, callback) {
+        var wayPoints = allWayPoints.filter(this.__isConditionMet, this);
+        if (wayPoints.length < 1)
             return;
-        }
 
-        var self = this;
-
-        function handleNextWayPoint() {
-            if (nextWayPoints.length > 0) {
-                self.autoMoveNPC(entity, nextWayPoints);
-            } else {
-                self.autoMoveNPC(entity, self.directions[entity.type].filter(removeUnmetConditions, self));
+        this.npcs.some(function (npc) {
+            if (npc.type == npcId) {
+                this.autoMove(npc, wayPoints, noLoop, callback);
+                return true;
             }
-        }
-
-        var wayPoint = nextWayPoints.shift();
-
-        var success = false;
-        if (wayPoint.direction == 'left') {
-            success = this.moveLeft(handleNextWayPoint, entity);
-
-        } else if (wayPoint.direction == 'right') {
-            success = this.moveRight(handleNextWayPoint, entity);
-
-        } else if (wayPoint.direction == 'up') {
-            success = this.moveTop(handleNextWayPoint, entity);
-
-        } else if (wayPoint.direction == 'down') {
-            success = this.moveBottom(handleNextWayPoint, entity);
-
-        } else if (wayPoint.direction == 'wait') {
-            success = true;
-            this.timer.doLater(handleNextWayPoint, this.oneCyle);
-        }
-
-        if (!success) {
-            nextWayPoints.unshift(wayPoint);
-            this.timer.doLater(handleNextWayPoint, this.oneCyle);
-        } else {
-            this.worldView.changeState(entity.drawable, wayPoint.asset);
-        }
+            return false;
+        }, this);
     };
 
     World.prototype.interact = function (callback) {
@@ -193,7 +160,7 @@ G.World = (function (iterateEntries) {
         var self = this;
 
         function postMove() {
-            self.__updateEntitiesZIndex();
+            self.__updateZIndices();
 
             var possibleInteractiveTile = self.domainGridHelper.canPlayerInteract(self.player);
 
@@ -214,6 +181,14 @@ G.World = (function (iterateEntries) {
                 self.endMap(nextMap);
             }
 
+            if (entity.type == Tile.PLAYER) {
+                var eventTrigger = self.domainGridHelper.isPlayerOnEvent(entity);
+                if (eventTrigger) {
+                    self.__process(self.gameEvents[eventTrigger].slice(), callback);
+                    return;
+                }
+            }
+
             if (callback)
                 callback();
         }
@@ -226,5 +201,146 @@ G.World = (function (iterateEntries) {
         return true;
     };
 
+    World.prototype.__process = function (events, callback) {
+        if (events.length < 1) {
+            if (callback)
+                callback();
+            return;
+        }
+
+        var event = events.shift();
+
+        if (!this.__isConditionMet(event)) {
+            this.__process(events, callback);
+            return;
+        }
+
+        var next = this.__process.bind(this, events, callback);
+
+        if (event.action == 'stop_controls') {
+            this.__pause();
+            next();
+
+        } else if (event.action == 'resume_controls') {
+            this.__resume();
+            next();
+
+        } else if (event.action == 'set_flag') {
+            this.flags[event.argument] = true;
+            next();
+
+        } else if (event.action == 'remove_flag') {
+            delete this.flags[event.argument];
+            next();
+
+        } else if (event.action == 'directions') {
+            this.__startAutoMove(this.directions[event.argument], event.argument, true, next);
+
+        } else if (event.action == 'dialog') {
+            this.interaction(event.argument, next);
+
+        } else if (event.action == 'events') {
+            this.__process(this.gameEvents[event.argument].slice(), next);
+
+        } else if (event.action == 'fights') {
+            console.log('fight started');
+            console.log('fight ended');
+            next();
+            // todo impl fights
+
+        } else if (event.action == 'function') {
+            this.gameCallbacks[event.argument](next);
+        }
+    };
+
+    World.prototype.autoMove = function (entity, nextWayPoints, noLoop, callback) {
+        if (this.__itIsOver)
+            return;
+
+        if (this.__interacting) {
+            this.timer.doLater(this.autoMove.bind(this, entity, nextWayPoints), this.oneCyle * 2);
+            return;
+        }
+
+        var self = this;
+
+        function handleNextWayPoint() {
+            if (nextWayPoints.length > 0) {
+                self.autoMove(entity, nextWayPoints, noLoop, callback);
+                return;
+            }
+
+            if (callback)
+                callback();
+            if (!noLoop)
+                self.autoMove(entity, self.directions[entity.type].filter(self.__isConditionMet, self), noLoop,
+                    callback);
+        }
+
+        function moveForever(move, entity, callback) {
+            function currentMoveCallback() {
+                if (success)
+                    moveForever(move, entity, callback)
+            }
+
+            var success = move(currentMoveCallback, entity);
+            if (!success && callback)
+                callback();
+        }
+
+        var wayPoint = nextWayPoints.shift();
+
+        var success = false;
+        if (wayPoint.direction == 'left') {
+            success = this.moveLeft(handleNextWayPoint, entity);
+
+        } else if (wayPoint.direction == 'right') {
+            success = this.moveRight(handleNextWayPoint, entity);
+
+        } else if (wayPoint.direction == 'up') {
+            success = this.moveTop(handleNextWayPoint, entity);
+
+        } else if (wayPoint.direction == 'down') {
+            success = this.moveBottom(handleNextWayPoint, entity);
+
+        } else if (wayPoint.direction == 'wait') {
+            success = true;
+            this.timer.doLater(handleNextWayPoint, this.oneCyle);
+
+        } else if (wayPoint.direction == 'right_forever') {
+            success = true;
+            moveForever(this.moveRight.bind(this), entity, handleNextWayPoint);
+
+        } else if (wayPoint.direction == 'up_forever') {
+            success = true;
+            moveForever(this.moveTop.bind(this), entity, handleNextWayPoint);
+
+        } else if (wayPoint.direction == 'down_forever') {
+            success = true;
+            moveForever(this.moveBottom.bind(this), entity, handleNextWayPoint);
+
+        } else if (wayPoint.direction == 'left_forever') {
+            success = true;
+            moveForever(this.moveLeft.bind(this), entity, handleNextWayPoint);
+        }
+
+        if (!success) {
+            nextWayPoints.unshift(wayPoint);
+            this.timer.doLater(handleNextWayPoint, this.oneCyle);
+        } else {
+            this.worldView.changeState(entity.drawable, wayPoint.asset);
+        }
+    };
+
+    World.prototype.__isConditionMet = function (element) {
+        return !((element.condition && !this.flags[element.condition]) ||
+        (element.conditionNegated && this.flags[element.conditionNegated]));
+    };
+
+    World.prototype.preDestroy = function () {
+        this.__itIsOver = true;
+        this.worldView.preDestroy();
+    };
+
     return World;
-})(H5.iterateEntries);
+})(H5.iterateEntries, G.Tile);
