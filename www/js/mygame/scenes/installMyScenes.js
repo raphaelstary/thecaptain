@@ -4,7 +4,10 @@ G.installMyScenes = (function (Scenes, MVVMScene, Start, Scene, Event, Game, Map
     function installMyScenes(services) {
         // create your scenes and add them to the scene manager
 
-        var flags = {};
+        var gameState = {
+            map: MapKey.OUTPOST,
+            flags: {}
+        };
         var gameCallbacks = {};
 
         var maps = services.world;
@@ -22,13 +25,13 @@ G.installMyScenes = (function (Scenes, MVVMScene, Start, Scene, Event, Game, Map
 
         var scenes = new Scenes();
 
-        var start = new MVVMScene(services, services.scenes[Scene.START], new Start(services), Scene.START);
+        var start = new Start(services, gameState);
+        var startScene = new MVVMScene(services, services.scenes[Scene.START], start, Scene.START);
 
-        scenes.add(start.show.bind(start));
+        scenes.add(startScene.show.bind(startScene));
 
         scenes.add(function () {
-            var game = showMapScene('map_blue');
-            // var game = showMapScene(MapKey.OUTPOST);
+            var game = showMapScene(gameState.map);
 
             // game.pause();
             // var dialogScreen = new Dialog(services, dialogs['admirals_orders']);
@@ -43,7 +46,7 @@ G.installMyScenes = (function (Scenes, MVVMScene, Start, Scene, Event, Game, Map
         }
 
         function showMapScene(nextMapKey, prevMapKey) {
-            var game = new Game(services, maps[nextMapKey], dialogs, npcs, walls, background, directions, gameEvents, nextMapKey, prevMapKey, flags, gameCallbacks);
+            var game = new Game(services, maps[nextMapKey], dialogs, npcs, walls, background, directions, gameEvents, nextMapKey, prevMapKey, gameState.flags, gameCallbacks);
             new MVVMScene(services, services.scenes[Scene.GAME], game, Scene.GAME).show(mapCallback);
             return game;
         }

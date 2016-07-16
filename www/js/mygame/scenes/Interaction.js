@@ -1,12 +1,12 @@
-G.Menu = (function (Event, Key) {
+G.Interaction = (function (Event, Key) {
     "use strict";
 
-    function Menu(services, callbacks) {
+    function Interaction(services, callbacks) {
         this.events = services.events;
         this.callbacks = callbacks;
     }
 
-    Menu.prototype.postConstruct = function () {
+    Interaction.prototype.postConstruct = function () {
         this.itIsOver = false;
 
         var self = this;
@@ -14,54 +14,32 @@ G.Menu = (function (Event, Key) {
             {
                 selection: this.selectionA,
                 drawable: this.textA,
-                text: 'save',
-                fn: this.callbacks['save']
+                text: 'continue',
+                fn: this.callbacks['continue']
             }, {
                 selection: this.selectionB,
                 drawable: this.textB,
-                text: 'resume',
-                fn: function () {
-                    if (self.itIsOver)
-                        return;
-                    self.itIsOver = true;
-                    self.nextScene();
-                }
+                text: 'new game'
             }, {
                 selection: this.selectionC,
                 drawable: this.textC,
                 text: 'save game',
-                hidden: true,
-                fn: undefined
+                hidden: true
             }, {
                 selection: this.selectionD,
                 drawable: this.textD,
                 text: 'save game',
-                hidden: true,
-                fn: undefined
+                hidden: true
             }, {
                 selection: this.selectionE,
                 drawable: this.textE,
                 text: 'save game',
-                hidden: true,
-                fn: undefined
+                hidden: true
             }, {
                 selection: this.selectionF,
                 drawable: this.textF,
                 text: 'save game',
-                hidden: true,
-                fn: undefined
-            }, {
-                selection: this.selectionG,
-                drawable: this.textG,
-                text: 'save game',
-                hidden: true,
-                fn: undefined
-            }, {
-                selection: this.selectionH,
-                drawable: this.textH,
-                text: 'save game',
-                hidden: true,
-                fn: undefined
+                hidden: true
             }
         ];
 
@@ -94,8 +72,14 @@ G.Menu = (function (Event, Key) {
         }
 
         function execute() {
+            if (self.itIsOver)
+                return;
+
             if (selection)
                 selection();
+
+            self.itIsOver = true;
+            self.nextScene();
         }
 
         this.keyListener = this.events.subscribe(Event.KEY_BOARD, function (keyBoard) {
@@ -125,10 +109,10 @@ G.Menu = (function (Event, Key) {
         });
     };
 
-    Menu.prototype.preDestroy = function () {
+    Interaction.prototype.preDestroy = function () {
         this.events.unsubscribe(this.keyListener);
         this.events.unsubscribe(this.gamePadListener);
     };
 
-    return Menu;
+    return Interaction;
 })(H5.Event, H5.Key);
