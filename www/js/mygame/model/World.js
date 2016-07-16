@@ -2,7 +2,7 @@ G.World = (function (iterateEntries, Tile) {
     "use strict";
 
     function World(worldView, domainGridHelper, camera, timer, directions, gameEvents, npcInfo, flags, gameCallbacks,
-        possibleInteractionStart, possibleInteractionEnd, interaction, endMap, prevMapKey, pause, resume) {
+        possibleInteractionStart, possibleInteractionEnd, interaction, showMenu, endMap, prevMapKey, pause, resume) {
         this.worldView = worldView;
         this.domainGridHelper = domainGridHelper;
         this.camera = camera;
@@ -16,6 +16,7 @@ G.World = (function (iterateEntries, Tile) {
         this.possibleInteractionStart = possibleInteractionStart;
         this.possibleInteractionEnd = possibleInteractionEnd;
         this.interaction = interaction;
+        this.showMenu = showMenu;
         this.endMap = endMap;
         this.prevMapKey = prevMapKey;
 
@@ -366,6 +367,17 @@ G.World = (function (iterateEntries, Tile) {
     World.prototype.preDestroy = function () {
         this.__itIsOver = true;
         this.worldView.preDestroy();
+    };
+
+    World.prototype.goToMenu = function (callback) {
+        this.__interacting = true;
+        var self = this;
+        this.showMenu(function () {
+            self.__interacting = false;
+            if (callback)
+                callback();
+        });
+        return true;
     };
 
     return World;

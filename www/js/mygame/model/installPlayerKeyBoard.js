@@ -7,6 +7,7 @@ G.installPlayerKeyBoard = (function (Event, Key) {
         var upPressed = false;
         var downPressed = false;
         var enterPressed = false;
+        var escapePressed = false;
 
         function leftCallback() {
             if (!leftPressed)
@@ -66,6 +67,13 @@ G.installPlayerKeyBoard = (function (Event, Key) {
                 playerController.handleInteractionKey();
             } else if (!keyBoard[Key.ENTER] && enterPressed) {
                 enterPressed = false;
+            }
+
+            if (keyBoard[Key.ESC] && !escapePressed) {
+                escapePressed = true;
+                playerController.handleMenuKey();
+            } else if (!keyBoard[Key.ESC] && escapePressed) {
+                escapePressed = false;
             }
         });
     }

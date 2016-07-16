@@ -1,5 +1,5 @@
 G.Game = (function (PlayFactory, installPlayerKeyBoard, installPlayerGamePad, Scene, MVVMScene, Dialog, Tile, Event,
-    Strings) {
+    Strings, Menu, localStorage, saveObject, Storage) {
     "use strict";
 
     function Game(services, map, dialog, npc, walls, background, directions, gameEvents, mapKey, prevMapKey, flags,
@@ -88,6 +88,22 @@ G.Game = (function (PlayFactory, installPlayerKeyBoard, installPlayerGamePad, Sc
             dialogScene.show(callback);
         }
 
+        function showMenu(callback) {
+            if (self.__itIsOver)
+                return;
+
+            var callbacks = {
+                save: function () {
+                    localStorage.setItem(Storage.MAP, self.mapKey);
+                    saveObject(Storage.STATE, self.flags);
+                    console.log('game saved');
+                }
+            };
+            var menu = new Menu(self.services, callbacks);
+            var menuScene = new MVVMScene(self.services, self.services.scenes[Scene.MENU], menu, Scene.MENU);
+            menuScene.show(callback);
+        }
+
         function endMap(nextMap) {
             if (self.__itIsOver)
                 return;
@@ -102,7 +118,7 @@ G.Game = (function (PlayFactory, installPlayerKeyBoard, installPlayerGamePad, Sc
 
         this.world = PlayFactory.createWorld(this.stage, this.timer, this.device, this.map, this.npc, this.walls,
             this.background, this.directions, this.gameEvents, this.flags, this.gameCallbacks, possibleInteractionStart,
-            possibleInteractionEnd, interaction, endMap, this.prevMapKey, this.__pause.bind(this),
+            possibleInteractionEnd, interaction, showMenu, endMap, this.prevMapKey, this.__pause.bind(this),
             this.__resume.bind(this));
 
         this.world.init(function () {
@@ -132,4 +148,4 @@ G.Game = (function (PlayFactory, installPlayerKeyBoard, installPlayerGamePad, Sc
 
     return Game;
 })(G.PlayFactory, G.installPlayerKeyBoard, G.installPlayerGamePad, G.Scene, H5.MVVMScene, G.Dialog, G.Tile, H5.Event,
-    H5.Strings);
+    H5.Strings, G.Menu, H5.lclStorage, H5.saveObject, G.Storage);

@@ -67,5 +67,14 @@ G.PlayerController = (function () {
         this.moving = this.world.interact(this.__myCallback.bind(this));
     };
 
+    PlayerController.prototype.handleMenuKey = function () {
+        if (this.__paused)
+            return;
+        if (this.moving)
+            return;
+
+        this.moving = this.world.goToMenu(this.__myCallback.bind(this));
+    };
+
     return PlayerController;
 })();

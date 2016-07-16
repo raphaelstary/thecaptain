@@ -1,5 +1,6 @@
 G.Scene = {
     START: 'start',
+    MENU: 'menu',
     GAME: 'game',
     DIALOG: 'dialog',
     OPTION: 'option',

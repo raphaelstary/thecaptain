@@ -7,6 +7,7 @@ G.installPlayerGamePad = (function (Event) {
         var upPressed = false;
         var downPressed = false;
         var enterPressed = false;
+        var escapePressed = false;
 
         function leftCallback() {
             if (!leftPressed)
@@ -66,6 +67,13 @@ G.installPlayerGamePad = (function (Event) {
                 playerController.handleInteractionKey();
             } else if (!gamePad.isAPressed() && enterPressed) {
                 enterPressed = false;
+            }
+
+            if (gamePad.isStartPressed() && !escapePressed) {
+                escapePressed = true;
+                playerController.handleMenuKey();
+            } else if (!gamePad.isStartPressed() && escapePressed) {
+                escapePressed = false;
             }
         });
     }
