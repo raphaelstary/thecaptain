@@ -1,4 +1,5 @@
 G.Storage = {
     MAP: 'starship_rpg-map',
-    STATE: 'starship_rpg-state'
+    STATE: 'starship_rpg-state',
+    SAVED: 'starship_rpg-saved'
 };

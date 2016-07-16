@@ -1,4 +1,5 @@
-G.Start = (function (Event, Key, Interaction, MVVMScene, Scene, loadObject, loadString, Storage) {
+G.Start = (function (Event, Key, Interaction, MVVMScene, Scene, loadObject, loadString, Storage, iterateEntries,
+    localStorage, loadBoolean) {
     "use strict";
 
     function Start(services, gameState) {
@@ -8,6 +9,7 @@ G.Start = (function (Event, Key, Interaction, MVVMScene, Scene, loadObject, load
     }
 
     Start.prototype.postConstruct = function () {
+        var hasSavedGame = loadBoolean(Storage.SAVED);
         this.itIsOver = false;
         var self = this;
         this.keyListener = this.events.subscribe(Event.KEY_BOARD, function (keyBoard) {
@@ -16,7 +18,11 @@ G.Start = (function (Event, Key, Interaction, MVVMScene, Scene, loadObject, load
 
             if (keyBoard[Key.ENTER] || keyBoard[Key.SPACE]) {
                 self.itIsOver = true;
-                showStartMenu();
+                if (hasSavedGame) {
+                    showStartMenu();
+                } else {
+                    self.nextScene();
+                }
             }
         });
 
@@ -26,7 +32,11 @@ G.Start = (function (Event, Key, Interaction, MVVMScene, Scene, loadObject, load
 
             if (gamePad.isAPressed() || gamePad.isStartPressed()) {
                 self.itIsOver = true;
-                showStartMenu();
+                if (hasSavedGame) {
+                    showStartMenu();
+                } else {
+                    self.nextScene();
+                }
             }
         });
 
@@ -35,7 +45,11 @@ G.Start = (function (Event, Key, Interaction, MVVMScene, Scene, loadObject, load
                 continue: function () {
                     self.gameState.map = loadString(Storage.MAP);
                     self.gameState.flags = loadObject(Storage.STATE);
-                    console.log('game loaded');
+                },
+                newGame: function () {
+                    iterateEntries(Storage, function (storageKey) {
+                        localStorage.removeItem(storageKey);
+                    });
                 }
             };
             var menu = new Interaction(self.services, callbacks);
@@ -52,4 +66,5 @@ G.Start = (function (Event, Key, Interaction, MVVMScene, Scene, loadObject, load
     };
 
     return Start;
-})(H5.Event, H5.Key, G.Interaction, H5.MVVMScene, G.Scene, H5.loadObject, H5.loadString, G.Storage);
+})(H5.Event, H5.Key, G.Interaction, H5.MVVMScene, G.Scene, H5.loadObject, H5.loadString, G.Storage, H5.iterateEntries,
+    H5.lclStorage, H5.loadBoolean);

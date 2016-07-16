@@ -96,7 +96,7 @@ G.Game = (function (PlayFactory, installPlayerKeyBoard, installPlayerGamePad, Sc
                 save: function () {
                     localStorage.setItem(Storage.MAP, self.mapKey);
                     saveObject(Storage.STATE, self.flags);
-                    console.log('game saved');
+                    localStorage.setItem(Storage.SAVED, true);
                 }
             };
             var menu = new Menu(self.services, callbacks);

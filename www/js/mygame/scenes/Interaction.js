@@ -19,7 +19,8 @@ G.Interaction = (function (Event, Key) {
             }, {
                 selection: this.selectionB,
                 drawable: this.textB,
-                text: 'new game'
+                text: 'new game',
+                fn: this.callbacks['newGame']
             }, {
                 selection: this.selectionC,
                 drawable: this.textC,
