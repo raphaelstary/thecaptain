@@ -62,10 +62,12 @@ G.World = (function (iterateEntries, Tile) {
             this.domainGridHelper.movePlayer(this.player, prevMapPortal.u, prevMapPortal.v);
         }
 
+        this.npcsToAdd = {};
         this.npcs = this.domainGridHelper.getNPCs().filter(function (npcTile) {
             var npc = this.npcInfo[npcTile.type];
             if (npc && !this.__isConditionMet(npc)) {
                 this.domainGridHelper.remove(npcTile);
+                this.npcsToAdd[npcTile.type] = npcTile;
                 return false;
             }
             return true;
@@ -269,7 +271,11 @@ G.World = (function (iterateEntries, Tile) {
             this.worldView.remove(currentNpc);
             next();
         } else if (event.action == 'add_npc') {
-
+            var npc = this.npcsToAdd[event.argument];
+            delete this.npcsToAdd[event.argument];
+            this.domainGridHelper.add(npc);
+            this.worldView.add(npc);
+            this.npcs.push(npc);
         }
     };
 

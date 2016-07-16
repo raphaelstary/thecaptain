@@ -90,5 +90,9 @@ G.DomainGridHelper = (function (Tile, Strings) {
         this.grid.set(npc.u, npc.v, Tile.EMPTY);
     };
 
+    DomainGridHelper.prototype.add = function (npc) {
+        this.grid.set(npc.u, npc.v, npc.type);
+    };
+
     return DomainGridHelper;
 })(G.Tile, H5.Strings);

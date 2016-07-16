@@ -40,18 +40,7 @@ G.WorldView = (function (Image, Math, iterateEntries, Tile) {
 
         this.player = player;
 
-        npcs.forEach(function (npc) {
-            if (!this.npcInfo[npc.type]) {
-                npc.hidden = true;
-                return;
-            }
-
-            npc.entity = this.__createEntity(npc, this.npcInfo[npc.type].asset);
-            npc.entity.show = false;
-            npc.drawable = this.__createEntity(npc, this.npcInfo[npc.type].asset);
-
-            this.npcs[npc.type] = npc;
-        }, this);
+        npcs.forEach(this.add, this);
 
         walls.forEach(function (tile) {
             if (!this.wallInfo[tile.type]) {
@@ -122,6 +111,19 @@ G.WorldView = (function (Image, Math, iterateEntries, Tile) {
         npc.entity.remove();
         npc.drawable.remove();
         delete this.npcs[npc.type];
+    };
+
+    WorldView.prototype.add = function (npc) {
+        if (!this.npcInfo[npc.type]) {
+            npc.hidden = true;
+            return;
+        }
+
+        npc.entity = this.__createEntity(npc, this.npcInfo[npc.type].asset);
+        npc.entity.show = false;
+        npc.drawable = this.__createEntity(npc, this.npcInfo[npc.type].asset);
+
+        this.npcs[npc.type] = npc;
     };
 
     return WorldView;
