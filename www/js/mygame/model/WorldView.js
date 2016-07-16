@@ -118,5 +118,11 @@ G.WorldView = (function (Image, Math, iterateEntries, Tile) {
         this.changeState(this.player.drawable, Image.SHIP_FRONT);
     };
 
+    WorldView.prototype.remove = function (npc) {
+        npc.entity.remove();
+        npc.drawable.remove();
+        delete this.npcs[npc.type];
+    };
+
     return WorldView;
 })(G.Image, Math, H5.iterateEntries, G.Tile);

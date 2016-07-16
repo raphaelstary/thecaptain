@@ -103,10 +103,14 @@ G.World = (function (iterateEntries, Tile) {
 
         this.__interacting = true;
         var self = this;
-        this.interaction(this.interactiveTileInRange.type, function () {
+        this.interaction(this.interactiveTileInRange.type, function (eventTrigger) {
+            if (eventTrigger) {
+                self.__process(self.gameEvents[eventTrigger].slice(), callback);
+            } else {
+                if (callback)
+                    callback();
+            }
             self.__interacting = false;
-            if (callback)
-                callback();
         });
 
         return true;
@@ -250,6 +254,22 @@ G.World = (function (iterateEntries, Tile) {
 
         } else if (event.action == 'function') {
             this.gameCallbacks[event.argument](next);
+
+        } else if (event.action == 'remove_npc') {
+            var currentNpc = null;
+            this.npcs.some(function (npc, npcIndex, npcs) {
+                var found = npc.type == event.argument;
+                if (found) {
+                    npcs.splice(npcIndex, 1);
+                    currentNpc = npc;
+                }
+                return found;
+            });
+            this.domainGridHelper.remove(currentNpc);
+            this.worldView.remove(currentNpc);
+            next();
+        } else if (event.action == 'add_npc') {
+
         }
     };
 

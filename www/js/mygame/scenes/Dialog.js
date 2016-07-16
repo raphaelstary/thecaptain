@@ -35,7 +35,7 @@ G.Dialog = (function (Event, Key, Width, Height, Option, MVVMScene, Scene, Dialo
                 startNextParagraph();
             } else {
                 self.itIsOver = true;
-                self.nextScene();
+                self.nextScene(self.__eventTrigger);
             }
         }
 
@@ -81,15 +81,16 @@ G.Dialog = (function (Event, Key, Width, Height, Option, MVVMScene, Scene, Dialo
                     } else if (paragraph.setterOptionB && selection == DialogOption.B) {
                         self.flags[paragraph.setterOptionB] = true;
                     }
+                    active = true;
                     if (paragraph.callbackOptionA && selection == DialogOption.A &&
                         self.callbacks[paragraph.callbackOptionA]) {
-                        self.callbacks[paragraph.callbackOptionA]();
+                        self.callbacks[paragraph.callbackOptionA](continueWithNextParagraphOrQuit);
                     } else if (paragraph.callbackOptionB && selection == DialogOption.B &&
                         self.callbacks[paragraph.callbackOptionB]) {
-                        self.callbacks[paragraph.callbackOptionB]();
+                        self.callbacks[paragraph.callbackOptionB](continueWithNextParagraphOrQuit);
+                    } else {
+                        continueWithNextParagraphOrQuit();
                     }
-                    active = true;
-                    continueWithNextParagraphOrQuit();
                 });
             }
         }
@@ -117,6 +118,9 @@ G.Dialog = (function (Event, Key, Width, Height, Option, MVVMScene, Scene, Dialo
 
         function startNextCharacterIteration(paragraph, index) {
             if (index === 0) {
+                if (paragraph.eventTrigger) {
+                    self.__eventTrigger = paragraph.eventTrigger;
+                }
                 if (paragraph.optionA) {
                     needToShowOptionScreen = true;
                 }
