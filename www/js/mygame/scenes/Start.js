@@ -45,11 +45,6 @@ G.Start = (function (Event, Key, Interaction, MVVMScene, Scene, loadObject, load
                 continue: function () {
                     self.gameState.map = loadString(Storage.MAP);
                     self.gameState.flags = loadObject(Storage.STATE);
-                },
-                newGame: function () {
-                    iterateEntries(Storage, function (storageKey) {
-                        localStorage.removeItem(storageKey);
-                    });
                 }
             };
             var menu = new Interaction(self.services, callbacks);

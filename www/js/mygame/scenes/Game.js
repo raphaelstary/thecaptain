@@ -93,10 +93,11 @@ G.Game = (function (PlayFactory, installPlayerKeyBoard, installPlayerGamePad, Sc
                 return;
 
             var callbacks = {
-                save: function () {
+                save: function (callback) {
                     localStorage.setItem(Storage.MAP, self.mapKey);
                     saveObject(Storage.STATE, self.flags);
                     localStorage.setItem(Storage.SAVED, true);
+                    interaction('saved', callback);
                 }
             };
             var menu = new Menu(self.services, callbacks);

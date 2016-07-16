@@ -20,10 +20,12 @@ G.Menu = (function (Event, Key) {
                 selection: this.selectionB,
                 drawable: this.textB,
                 text: 'resume',
-                fn: function () {
+                fn: function (callback) {
                     if (self.itIsOver)
                         return;
                     self.itIsOver = true;
+                    if (callback)
+                        callback();
                     self.nextScene();
                 }
             }, {
@@ -93,13 +95,23 @@ G.Menu = (function (Event, Key) {
             selection = options[0].fn;
         }
 
-        function execute() {
-            if (selection)
-                selection();
+        var busy = false;
+
+        function reactivateListener() {
+            busy = false;
+        }
+
+        function execute(callback) {
+            busy = true;
+            if (selection) {
+                selection(callback);
+            } else if (callback) {
+                callback();
+            }
         }
 
         this.keyListener = this.events.subscribe(Event.KEY_BOARD, function (keyBoard) {
-            if (self.itIsOver)
+            if (self.itIsOver || busy)
                 return;
 
             if (keyBoard[Key.UP]) {
@@ -107,12 +119,12 @@ G.Menu = (function (Event, Key) {
             } else if (keyBoard[Key.DOWN]) {
                 down();
             } else if (keyBoard[Key.ENTER]) {
-                execute();
+                execute(reactivateListener);
             }
         });
 
         this.gamePadListener = this.events.subscribe(Event.GAME_PAD, function (gamePad) {
-            if (self.itIsOver)
+            if (self.itIsOver || busy)
                 return;
 
             if (gamePad.isDPadUpPressed()) {
@@ -120,7 +132,7 @@ G.Menu = (function (Event, Key) {
             } else if (gamePad.isDPadDownPressed()) {
                 down();
             } else if (gamePad.isAPressed()) {
-                execute();
+                execute(reactivateListener);
             }
         });
     };
