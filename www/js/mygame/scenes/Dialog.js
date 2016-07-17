@@ -118,13 +118,6 @@ G.Dialog = (function (Event, Key, Width, Height, Option, MVVMScene, Scene, Dialo
 
         function startNextCharacterIteration(paragraph, index) {
             if (index === 0) {
-                if (paragraph.eventTrigger) {
-                    self.__eventTrigger = paragraph.eventTrigger;
-                }
-                if (paragraph.optionA) {
-                    needToShowOptionScreen = true;
-                }
-
                 if (paragraph.condition || paragraph.conditionNegated) {
 
                     var isConditionAnAnswer = paragraph.condition &&
@@ -141,6 +134,13 @@ G.Dialog = (function (Event, Key, Width, Height, Option, MVVMScene, Scene, Dialo
                         continueWithNextParagraphOrQuit();
                         return;
                     }
+                }
+
+                if (paragraph.eventTrigger) {
+                    self.__eventTrigger = paragraph.eventTrigger;
+                }
+                if (paragraph.optionA) {
+                    needToShowOptionScreen = true;
                 }
             }
 
