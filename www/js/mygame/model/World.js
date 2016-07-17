@@ -277,6 +277,8 @@ G.World = (function (iterateEntries, Tile) {
             this.domainGridHelper.add(npc);
             this.worldView.add(npc);
             this.npcs.push(npc);
+            this.allTiles.push(npc);
+            next();
         }
     };
 
