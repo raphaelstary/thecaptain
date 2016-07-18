@@ -66,6 +66,10 @@ G.Game = (function (PlayFactory, installPlayerKeyBoard, installPlayerGamePad, Sc
 
             if (Strings.startsWidth(dialogId, Tile.NPC + 'S')) {
                 self.interactSymbol.setText('read');
+            } else if (Strings.startsWidth(dialogId, Tile.NPC + 'C')) {
+                self.interactSymbol.setText('scan');
+            } else if (Strings.startsWidth(dialogId, Tile.NPC + 'I')) {
+                self.interactSymbol.setText('take');
             } else if (Strings.startsWidth(dialogId, Tile.NPC)) {
                 self.interactSymbol.setText('talk');
             }
