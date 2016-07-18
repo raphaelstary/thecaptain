@@ -114,7 +114,7 @@ G.WorldView = (function (Image, Math, iterateEntries, Tile) {
     };
 
     WorldView.prototype.add = function (npc) {
-        if (!this.npcInfo[npc.type]) {
+        if (!this.npcInfo[npc.type] || !this.npcInfo[npc.type].asset) {
             npc.hidden = true;
             return;
         }
