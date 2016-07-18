@@ -279,6 +279,8 @@ G.World = (function (iterateEntries, Tile) {
             this.npcs.push(npc);
             this.allTiles.push(npc);
             next();
+        } else if (event.action == 'wait') {
+            this.timer.doLater(next, parseInt(event.argument));
         }
     };
 
