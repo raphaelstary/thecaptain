@@ -75,14 +75,16 @@ G.World = (function (iterateEntries, Tile) {
         }, this);
         var walls = this.domainGridHelper.getWalls();
         var backgroundTiles = this.domainGridHelper.getBackgroundTiles();
+        var portals = this.domainGridHelper.getPortals();
 
         this.allTiles = [];
         this.allTiles.push.apply(this.allTiles, this.npcs);
         this.allTiles.push.apply(this.allTiles, walls);
         this.allTiles.push.apply(this.allTiles, backgroundTiles);
+        this.allTiles.push.apply(this.allTiles, portals);
         this.allTiles.push(this.player);
 
-        this.worldView.drawLevel(this.player, this.npcs, walls, backgroundTiles, callback);
+        this.worldView.drawLevel(this.player, this.npcs, walls, portals, backgroundTiles, callback);
         iterateEntries(this.directions, this.__startAutoMove, this);
     };
 

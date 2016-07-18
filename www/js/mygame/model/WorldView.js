@@ -29,7 +29,7 @@ G.WorldView = (function (Image, Math, iterateEntries, Tile) {
         iterateEntries(this.npcs, removeElem);
     };
 
-    WorldView.prototype.drawLevel = function (player, npcs, walls, backgroundTiles, callback) {
+    WorldView.prototype.drawLevel = function (player, npcs, walls, portals, backgroundTiles, callback) {
 
         this.defaultDrawable = this.gridViewHelper.create(1, 1, Image.CLOUD);
         this.defaultDrawable.show = false;
@@ -50,6 +50,14 @@ G.WorldView = (function (Image, Math, iterateEntries, Tile) {
             tile.entity = this.__createStatic(tile, this.wallInfo[tile.type], 2, true);
             tile.entity.show = false;
             tile.drawable = this.__createStatic(tile, this.wallInfo[tile.type], 2, true);
+
+            this.staticTiles.push(tile);
+        }, this);
+
+        portals.forEach(function (tile) {
+            tile.entity = this.__createStatic(tile, Image.PORTAL, 2, true);
+            tile.entity.show = false;
+            tile.drawable = this.__createStatic(tile, Image.PORTAL, 2, true);
 
             this.staticTiles.push(tile);
         }, this);

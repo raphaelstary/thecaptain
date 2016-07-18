@@ -26,6 +26,10 @@ G.DomainGridHelper = (function (Tile, Strings) {
         return this.gridHelper.getTile(name, true);
     };
 
+    DomainGridHelper.prototype.getPortals = function () {
+        return this.gridHelper.getTiles(Tile.MAP, true);
+    };
+
     DomainGridHelper.prototype.canPlayerMove = function (player, u, v) {
         var isNeighborOfPlayer = this.gridHelper.isNeighbor(player.u, player.v, u, v);
         if (isNeighborOfPlayer) {
