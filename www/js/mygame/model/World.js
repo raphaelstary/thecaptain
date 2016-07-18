@@ -159,6 +159,22 @@ G.World = (function (iterateEntries, Tile) {
         return this.__move(entity, entity.u, entity.v + 1, callback);
     };
 
+    World.prototype.__indicateIteraction = function () {
+        var possibleInteractiveTile = this.domainGridHelper.canPlayerInteract(this.player);
+
+        if (possibleInteractiveTile && this.interactiveTileInRange) {
+            this.interactiveTileInRange = possibleInteractiveTile;
+        }
+        if (!this.interactiveTileInRange && possibleInteractiveTile) {
+            this.interactiveTileInRange = possibleInteractiveTile;
+            this.possibleInteractionStart(possibleInteractiveTile.type);
+        }
+        if (this.interactiveTileInRange && !possibleInteractiveTile) {
+            this.interactiveTileInRange = undefined;
+            this.possibleInteractionEnd();
+        }
+    };
+
     World.prototype.__move = function (entity, u, v, callback) {
         var canMove = this.domainGridHelper.canPlayerMove(entity, u, v);
         if (!canMove)
@@ -168,20 +184,7 @@ G.World = (function (iterateEntries, Tile) {
 
         function postMove() {
             self.__updateZIndices();
-
-            var possibleInteractiveTile = self.domainGridHelper.canPlayerInteract(self.player);
-
-            if (possibleInteractiveTile && self.interactiveTileInRange) {
-                self.interactiveTileInRange = possibleInteractiveTile;
-            }
-            if (!self.interactiveTileInRange && possibleInteractiveTile) {
-                self.interactiveTileInRange = possibleInteractiveTile;
-                self.possibleInteractionStart(possibleInteractiveTile.type);
-            }
-            if (self.interactiveTileInRange && !possibleInteractiveTile) {
-                self.interactiveTileInRange = undefined;
-                self.possibleInteractionEnd();
-            }
+            self.__indicateIteraction();
 
             var nextMap = self.domainGridHelper.isPlayerOnPortal(entity);
             if (nextMap) {
@@ -270,6 +273,7 @@ G.World = (function (iterateEntries, Tile) {
             });
             this.domainGridHelper.remove(currentNpc);
             this.worldView.remove(currentNpc);
+            this.__indicateIteraction();
             next();
         } else if (event.action == 'add_npc') {
             var npc = this.npcsToAdd[event.argument];
