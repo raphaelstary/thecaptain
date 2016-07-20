@@ -116,9 +116,12 @@ G.WorldView = (function (Image, Math, iterateEntries, Tile) {
     };
 
     WorldView.prototype.remove = function (npc) {
-        npc.entity.remove();
-        npc.drawable.remove();
-        delete this.npcs[npc.type];
+        if (npc.entity)
+            npc.entity.remove();
+        if (npc.drawable)
+            npc.drawable.remove();
+        if (this.npcs[npc.type])
+            delete this.npcs[npc.type];
     };
 
     WorldView.prototype.add = function (npc) {
