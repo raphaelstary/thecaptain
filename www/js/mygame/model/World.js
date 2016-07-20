@@ -60,7 +60,8 @@ G.World = (function (iterateEntries, Tile) {
         this.player = this.domainGridHelper.getPlayer();
         if (this.prevMapKey) {
             var prevMapPortal = this.domainGridHelper.getPortalTileOfPrevMap(this.prevMapKey);
-            this.domainGridHelper.movePlayer(this.player, prevMapPortal.u, prevMapPortal.v);
+            if (prevMapPortal)
+                this.domainGridHelper.movePlayer(this.player, prevMapPortal.u, prevMapPortal.v);
         }
 
         this.npcsToAdd = {};
