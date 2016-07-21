@@ -99,13 +99,13 @@ G.Game = (function (PlayFactory, installPlayerKeyBoard, installPlayerGamePad, Sc
 
             var dialogScreen = new Dialog(self.services, self.dialog[dialogId], self.flags, self.gameCallbacks);
             var dialogScene = new MVVMScene(self.services, self.services.scenes[Scene.DIALOG], dialogScreen, Scene.DIALOG);
-            dialogScene.show(function () {
+            dialogScene.show(function (eventTrigger) {
                 if (interactionVisible) {
                     self.interactSymbol.show = true;
                     self.interactButton.show = true;
                 }
                 if (callback)
-                    callback();
+                    callback(eventTrigger);
             });
         }
 
