@@ -59,6 +59,7 @@ G.Game = (function (PlayFactory, installPlayerKeyBoard, installPlayerGamePad, Sc
         this.__stop = false;
 
         var self = this;
+        var interactionVisible = false;
 
         function possibleInteractionStart(dialogId) {
             if (self.__itIsOver)
@@ -73,23 +74,39 @@ G.Game = (function (PlayFactory, installPlayerKeyBoard, installPlayerGamePad, Sc
             } else if (Strings.startsWidth(dialogId, Tile.NPC)) {
                 self.interactSymbol.setText('talk');
             }
+            interactionVisible = true;
             self.interactSymbol.show = true;
+            self.interactButton.show = true;
         }
 
         function possibleInteractionEnd() {
             if (self.__itIsOver)
                 return;
 
+            interactionVisible = false;
             self.interactSymbol.show = false;
+            self.interactButton.show = false;
         }
 
         function interaction(dialogId, callback) {
             if (self.__itIsOver)
                 return;
 
+            if (interactionVisible) {
+                self.interactSymbol.show = false;
+                self.interactButton.show = false;
+            }
+
             var dialogScreen = new Dialog(self.services, self.dialog[dialogId], self.flags, self.gameCallbacks);
             var dialogScene = new MVVMScene(self.services, self.services.scenes[Scene.DIALOG], dialogScreen, Scene.DIALOG);
-            dialogScene.show(callback);
+            dialogScene.show(function () {
+                if (interactionVisible) {
+                    self.interactSymbol.show = true;
+                    self.interactButton.show = true;
+                }
+                if (callback)
+                    callback();
+            });
         }
 
         function showMenu(callback) {
@@ -142,6 +159,7 @@ G.Game = (function (PlayFactory, installPlayerKeyBoard, installPlayerGamePad, Sc
         this.gamePadHandler = installPlayerGamePad(this.events, this.playerController);
 
         this.interactSymbol.show = false;
+        self.interactButton.show = false;
     };
 
     Game.prototype.preDestroy = function () {
