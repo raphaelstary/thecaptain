@@ -137,5 +137,9 @@ G.WorldView = (function (Image, Math, iterateEntries, Tile) {
         this.npcs[npc.type] = npc;
     };
 
+    WorldView.prototype.explode = function (npc, callback) {
+        npc.drawable.animate(Image.EXPLOSION, Image.EXPLOSION_FRAMES).setCallback(callback);
+    };
+
     return WorldView;
 })(G.Image, Math, H5.iterateEntries, G.Tile);
