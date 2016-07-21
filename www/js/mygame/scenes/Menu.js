@@ -102,11 +102,20 @@ G.Menu = (function (Event, Key) {
         }
 
         function execute(callback) {
+            function extendedCallback() {
+                self.selectBtn.show = true;
+                self.selectTxt.show = true;
+                if (callback)
+                    callback();
+            }
+
             busy = true;
+            self.selectBtn.show = false;
+            self.selectTxt.show = false;
             if (selection) {
-                selection(callback);
-            } else if (callback) {
-                callback();
+                selection(extendedCallback);
+            } else {
+                extendedCallback();
             }
         }
 
