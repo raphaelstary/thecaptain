@@ -47,6 +47,8 @@ G.Start = (function (Event, Key, Interaction, MVVMScene, Scene, loadObject, load
                     self.gameState.flags = loadObject(Storage.STATE);
                 }
             };
+            self.startBtn.show = false;
+            self.startTxt.show = false;
             var menu = new Interaction(self.services, callbacks);
             var menuScene = new MVVMScene(self.services, self.services.scenes[Scene.INTERACTION], menu, Scene.INTERACTION);
             menuScene.show(function () {
