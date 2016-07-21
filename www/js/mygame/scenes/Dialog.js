@@ -154,7 +154,7 @@ G.Dialog = (function (Event, Key, Width, Height, Option, MVVMScene, Scene, Dialo
         }
 
         self.dialogTxt.setMaxLineLength(Width.get(10, 8));
-        self.dialogTxt.setLineHeight(Height.get(10));
+        self.dialogTxt.setLineHeight(Height.get(11));
         startNextParagraph();
     };
 
