@@ -275,9 +275,9 @@ G.World = (function (iterateEntries, Tile) {
                 return found;
             });
             this.domainGridHelper.remove(currentNpc);
-            this.worldView.remove(currentNpc);
+            this.worldView.remove(currentNpc, next);
             this.__indicateIteraction();
-            next();
+
         } else if (event.action == 'add_npc') {
             var npc = this.npcsToAdd[event.argument];
             delete this.npcsToAdd[event.argument];

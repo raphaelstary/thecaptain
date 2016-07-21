@@ -115,13 +115,28 @@ G.WorldView = (function (Image, Math, iterateEntries, Tile) {
         this.changeState(this.player.drawable, Image.SHIP_FRONT);
     };
 
-    WorldView.prototype.remove = function (npc) {
+    WorldView.prototype.remove = function (npc, callback) {
+        if (this.npcs[npc.type])
+            delete this.npcs[npc.type];
+
+        if (npc.type[1] == 'R') {
+            this.explode(npc, function () {
+                if (npc.entity)
+                    npc.entity.remove();
+                if (npc.drawable)
+                    npc.drawable.remove();
+                if (callback)
+                    callback();
+            });
+            return;
+        }
+
         if (npc.entity)
             npc.entity.remove();
         if (npc.drawable)
             npc.drawable.remove();
-        if (this.npcs[npc.type])
-            delete this.npcs[npc.type];
+        if (callback)
+            callback();
     };
 
     WorldView.prototype.add = function (npc) {
