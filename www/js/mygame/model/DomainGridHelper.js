@@ -1,4 +1,4 @@
-G.DomainGridHelper = (function (Tile, Strings) {
+G.DomainGridHelper = (function (Tile, Strings, range) {
     "use strict";
 
     function DomainGridHelper(gridHelper, grid) {
@@ -11,7 +11,12 @@ G.DomainGridHelper = (function (Tile, Strings) {
     };
 
     DomainGridHelper.prototype.getWalls = function () {
-        return this.gridHelper.getTiles(Tile.WALL);
+        var walls = this.gridHelper.getTiles(Tile.WALL);
+        walls.forEach(function (wall) {
+            if ((Strings.startsWidth(wall.type, 'WRS') || Strings.startsWidth(wall.type, 'WBS')) && range(0, 100) > 66)
+                wall.type = wall.type.substr(0, 2) + 'C' + wall.type.substr(3);
+        });
+        return walls;
     };
 
     DomainGridHelper.prototype.getNPCs = function () {
@@ -99,4 +104,4 @@ G.DomainGridHelper = (function (Tile, Strings) {
     };
 
     return DomainGridHelper;
-})(G.Tile, H5.Strings);
+})(G.Tile, H5.Strings, H5.range);
