@@ -1,4 +1,4 @@
-G.installMyScenes = (function (Scenes, MVVMScene, Start, Scene, Event, Game, MapKey, createShipFight, Dialog) {
+G.installMyScenes = (function (Scenes, MVVMScene, Start, Scene, Event, Game, MapKey, createShipFight) {
     "use strict";
 
     function installMyScenes(services) {
@@ -30,9 +30,9 @@ G.installMyScenes = (function (Scenes, MVVMScene, Start, Scene, Event, Game, Map
 
         scenes.add(startScene.show.bind(startScene));
 
-        scenes.add(function () {
-            showMapScene(gameState.map);
-        });
+        // scenes.add(function () {
+        //     showMapScene(gameState.map);
+        // });
 
         function mapCallback(mapInfo) {
             showMapScene(mapInfo.nextMap, mapInfo.prevMap);
@@ -45,13 +45,13 @@ G.installMyScenes = (function (Scenes, MVVMScene, Start, Scene, Event, Game, Map
         }
 
         // ##### start bridge scene
-        // scenes.add(function () {
-        //     var fight = createShipFight(services, dialogs);
-        //     fight.start();
-        // });
+        scenes.add(function () {
+            var fight = createShipFight(services, dialogs);
+            fight.start();
+        });
 
         return scenes;
     }
 
     return installMyScenes;
-})(H5.Scenes, H5.MVVMScene, G.Start, G.Scene, H5.Event, G.Game, G.MapKey, G.createShipFight, G.Dialog);
+})(H5.Scenes, H5.MVVMScene, G.Start, G.Scene, H5.Event, G.Game, G.MapKey, G.createShipFight);

@@ -1,4 +1,4 @@
-G.Bridge = (function (MVVMScene, BridgeScreen, BridgeCrew, BridgeOrders, Scene, Dialog, OrderOption) {
+G.Bridge = (function (MVVMScene, BridgeScreen, BridgeCrew, BridgeOrders, Scene, Dialog, OrderOption, Background) {
     "use strict";
 
     function Bridge(services, crew) {
@@ -110,4 +110,4 @@ G.Bridge = (function (MVVMScene, BridgeScreen, BridgeCrew, BridgeOrders, Scene, 
     }
 
     return Bridge;
-})(H5.MVVMScene, G.BridgeScreen, G.BridgeCrew, G.BridgeOrders, G.Scene, G.Dialog, G.OrderOption);
+})(H5.MVVMScene, G.BridgeScreen, G.BridgeCrew, G.BridgeOrders, G.Scene, G.Dialog, G.OrderOption, G.Background);
