@@ -2,7 +2,8 @@ G.World = (function (iterateEntries, Tile) {
     "use strict";
 
     function World(worldView, domainGridHelper, camera, timer, directions, gameEvents, npcInfo, flags, gameCallbacks,
-        possibleInteractionStart, possibleInteractionEnd, interaction, showMenu, endMap, prevMapKey, pause, resume) {
+        possibleInteractionStart, possibleInteractionEnd, interaction, fight, showMenu, endMap, prevMapKey, pause,
+        resume) {
         this.worldView = worldView;
         this.domainGridHelper = domainGridHelper;
         this.camera = camera;
@@ -16,6 +17,7 @@ G.World = (function (iterateEntries, Tile) {
         this.possibleInteractionStart = possibleInteractionStart;
         this.possibleInteractionEnd = possibleInteractionEnd;
         this.interaction = interaction;
+        this.fight = fight;
         this.showMenu = showMenu;
         this.endMap = endMap;
         this.prevMapKey = prevMapKey;
@@ -28,8 +30,8 @@ G.World = (function (iterateEntries, Tile) {
     }
 
     World.prototype.__updateZIndices = function () {
-        var zIndex = 1;
-        this.npcs.concat(this.player)
+        var zIndex = 0;
+        this.npcs.concat(this.player).concat(this.walls)
             .filter(function (entityWrapper) {
                 return !entityWrapper.hidden && entityWrapper.drawable.show;
             })
@@ -53,7 +55,6 @@ G.World = (function (iterateEntries, Tile) {
         }, this);
     };
 
-
     World.prototype.init = function (callback) {
         this.__interacting = false;
 
@@ -74,7 +75,7 @@ G.World = (function (iterateEntries, Tile) {
             }
             return true;
         }, this);
-        var walls = this.domainGridHelper.getWalls();
+        var walls = this.walls = this.domainGridHelper.getWalls();
         var backgroundTiles = this.domainGridHelper.getBackgroundTiles();
         var portals = this.domainGridHelper.getPortals();
 
@@ -256,10 +257,7 @@ G.World = (function (iterateEntries, Tile) {
             this.__process(this.gameEvents[event.argument].slice(), next);
 
         } else if (event.action == 'fights') {
-            console.log('fight started');
-            console.log('fight ended');
-            next();
-            // todo impl fights
+            this.fight(next);
 
         } else if (event.action == 'function') {
             this.gameCallbacks[event.argument](next);

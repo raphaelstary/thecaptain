@@ -47,25 +47,25 @@ G.WorldView = (function (Image, Math, iterateEntries, Tile) {
                 tile.hidden = true;
                 return;
             }
-            tile.entity = this.__createStatic(tile, this.wallInfo[tile.type], 2, true);
+            tile.entity = this.__createEntity(tile, this.wallInfo[tile.type]);
             tile.entity.show = false;
-            tile.drawable = this.__createStatic(tile, this.wallInfo[tile.type], 2, true);
+            tile.drawable = this.__createEntity(tile, this.wallInfo[tile.type]);
 
             this.staticTiles.push(tile);
         }, this);
 
         portals.forEach(function (tile) {
-            tile.entity = this.__createStatic(tile, Image.PORTAL, 2, true);
+            tile.entity = this.__createStatic(tile, Image.PORTAL, 0);
             tile.entity.show = false;
-            tile.drawable = this.__createStatic(tile, Image.PORTAL, 2, true);
+            tile.drawable = this.__createStatic(tile, Image.PORTAL, 0);
 
             this.staticTiles.push(tile);
         }, this);
 
         backgroundTiles.forEach(function (tile) {
-            tile.entity = this.__createStatic(tile, this.backgroundInfo[tile.type], 1);
+            tile.entity = this.__createStatic(tile, this.backgroundInfo[tile.type], 0);
             tile.entity.show = false;
-            tile.drawable = this.__createStatic(tile, this.backgroundInfo[tile.type], 1);
+            tile.drawable = this.__createStatic(tile, this.backgroundInfo[tile.type], 0);
 
             this.staticTiles.push(tile);
         }, this);

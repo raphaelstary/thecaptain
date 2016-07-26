@@ -8,8 +8,8 @@ G.ShipFight = (function (range, isNaN, Math) {
         this.enemy = enemy;
     }
 
-    ShipFight.prototype.start = function () {
-        this.bridge.show();
+    ShipFight.prototype.start = function (next) {
+        this.bridge.show(next);
 
         this.__updateView();
         this.bridge.setShieldsEnemy(this.enemy.shields, this.enemy.shields);
@@ -136,15 +136,11 @@ G.ShipFight = (function (range, isNaN, Math) {
     };
 
     ShipFight.prototype.success = function () {
-        this.__dialog('defeat', function () {
-            console.log('success');
-        });
+        this.__dialog('defeat', this.bridge.nextScene.bind(this.bridge, true));
     };
 
     ShipFight.prototype.failure = function () {
-        this.__dialog('failure', function () {
-            console.log('failure');
-        });
+        this.__dialog('failure', this.bridge.nextScene.bind(this.bridge, false));
     };
 
     ShipFight.prototype.__dialog = function (key, callback) {

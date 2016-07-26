@@ -106,6 +106,8 @@ G.BridgeOrders = (function (Event, Key, OrderOption) {
         self.selectionB.show = false;
         self.selectionC.show = false;
         self.selectionD.show = false;
+
+        this.continueSign.setText('order');
     };
 
     BridgeOrders.prototype.preDestroy = function () {

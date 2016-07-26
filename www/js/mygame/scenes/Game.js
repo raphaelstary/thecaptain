@@ -1,5 +1,5 @@
 G.Game = (function (PlayFactory, installPlayerKeyBoard, installPlayerGamePad, Scene, MVVMScene, Dialog, Tile, Event,
-    Strings, Menu, localStorage, saveObject, Storage) {
+    Strings, Menu, localStorage, saveObject, Storage, createShipFight) {
     "use strict";
 
     function Game(services, map, dialog, npc, walls, background, directions, gameEvents, mapKey, prevMapKey, flags,
@@ -109,6 +109,22 @@ G.Game = (function (PlayFactory, installPlayerKeyBoard, installPlayerGamePad, Sc
             });
         }
 
+        function fight(callback) {
+            if (interactionVisible) {
+                self.interactSymbol.show = false;
+                self.interactButton.show = false;
+            }
+            var fight = createShipFight(self.services, self.dialog);
+            fight.start(function () {
+                if (interactionVisible) {
+                    self.interactSymbol.show = true;
+                    self.interactButton.show = true;
+                }
+                if (callback)
+                    callback();
+            });
+        }
+
         function showMenu(callback) {
             if (self.__itIsOver)
                 return;
@@ -140,7 +156,7 @@ G.Game = (function (PlayFactory, installPlayerKeyBoard, installPlayerGamePad, Sc
 
         this.world = PlayFactory.createWorld(this.stage, this.timer, this.device, this.map, this.npc, this.walls,
             this.background, this.directions, this.gameEvents, this.flags, this.gameCallbacks, possibleInteractionStart,
-            possibleInteractionEnd, interaction, showMenu, endMap, this.prevMapKey, this.__pause.bind(this),
+            possibleInteractionEnd, interaction, fight, showMenu, endMap, this.prevMapKey, this.__pause.bind(this),
             this.__resume.bind(this));
 
         this.world.init(function () {
@@ -171,4 +187,4 @@ G.Game = (function (PlayFactory, installPlayerKeyBoard, installPlayerGamePad, Sc
 
     return Game;
 })(G.PlayFactory, G.installPlayerKeyBoard, G.installPlayerGamePad, G.Scene, H5.MVVMScene, G.Dialog, G.Tile, H5.Event,
-    H5.Strings, G.Menu, H5.lclStorage, H5.saveObject, G.Storage);
+    H5.Strings, G.Menu, H5.lclStorage, H5.saveObject, G.Storage, G.createShipFight);
