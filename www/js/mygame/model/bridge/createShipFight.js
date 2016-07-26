@@ -190,7 +190,7 @@ G.createShipFight = (function (Bridge, ShipFight) {
             ]
         },
         science: {
-            name: 'Lt.Cmdr. Pocks',
+            name: 'Cmdr. Pocks',
             position: 'Science Officer',
             commands: [
                 {

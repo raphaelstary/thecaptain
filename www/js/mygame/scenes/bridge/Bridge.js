@@ -9,6 +9,7 @@ G.Bridge = (function (MVVMScene, BridgeScreen, BridgeCrew, BridgeOrders, Scene, 
     Bridge.prototype.show = function (next) {
         this.next = next;
 
+        this.bridge = this.__showBridge();
         this.screen = this.__showScreen();
     };
 
@@ -57,6 +58,12 @@ G.Bridge = (function (MVVMScene, BridgeScreen, BridgeCrew, BridgeOrders, Scene, 
         var screen = new BridgeScreen(this.services);
         new MVVMScene(this.services, this.services.scenes[Scene.BRIDGE_SCREEN], screen, Scene.BRIDGE_SCREEN).show();
         return screen;
+    };
+
+    Bridge.prototype.__showBridge = function () {
+        var bridge = new Background(this.services);
+        new MVVMScene(this.services, this.services.scenes[Scene.BRIDGE], bridge, Scene.BRIDGE).show();
+        return bridge;
     };
 
     Bridge.prototype.__createCrewSelection = function () {
