@@ -27,7 +27,9 @@ G.installMyScenes = (function (Scenes, MVVMScene, Start, Scene, Event, Game, Map
         var gameEvents = services.world[MapKey.EVENTS];
 
         gameCallbacks[MapKey.REPAIR_SHIP] = function (next) {
-            console.log('setting all values to max');
+            gameState.ship = {
+                hull: 90
+            };
             next();
         };
 
