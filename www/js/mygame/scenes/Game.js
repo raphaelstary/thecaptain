@@ -124,7 +124,7 @@ G.Game = (function (PlayFactory, installPlayerKeyBoard, installPlayerGamePad, Sc
                 commands: enemyStats.commands
             };
 
-            var fight = createShipFight(self.services, self.dialog, self.ship.hull, enemy);
+            var fight = createShipFight(self.services, self.dialog, self.ship, enemy);
             fight.start(function (isVictorious, hull) {
                 if (interactionVisible) {
                     self.interactSymbol.show = true;

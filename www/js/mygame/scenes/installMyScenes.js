@@ -4,13 +4,17 @@ G.installMyScenes = (function (Scenes, MVVMScene, Start, Scene, Event, Game, Map
     function installMyScenes(services) {
         // create your scenes and add them to the scene manager
 
-        var gameState = {
+        function getInitGameState() {
+            return {
             map: MapKey.OUTPOST,
             flags: {},
             ship: {
                 hull: 90
             }
         };
+        }
+
+        var gameState = getInitGameState();
         var gameCallbacks = {};
 
         var maps = services.world;
@@ -36,7 +40,11 @@ G.installMyScenes = (function (Scenes, MVVMScene, Start, Scene, Event, Game, Map
 
         var endOfGame;
         scenes.add(function (next) {
-            endOfGame = next;
+            endOfGame = function () {
+                gameState = getInitGameState();
+                if (next)
+                    next();
+            };
             showMapScene(gameState.map);
         });
 

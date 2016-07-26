@@ -1,11 +1,12 @@
 G.ShipFight = (function (range, isNaN, Math) {
     "use strict";
 
-    function ShipFight(bridgeView, dialogs, ship, enemy) {
+    function ShipFight(bridgeView, dialogs, ship, enemy, shipStats) {
         this.bridge = bridgeView;
         this.dialogs = dialogs;
         this.ship = ship;
         this.enemy = enemy;
+        this.shipStats = shipStats;
     }
 
     ShipFight.prototype.start = function (next) {
@@ -29,6 +30,7 @@ G.ShipFight = (function (range, isNaN, Math) {
                 return;
             }
             command.count--;
+            this.shipStats[command.dialog + '_count'] = command.count;
         }
 
         if (command.precondition) {
@@ -144,6 +146,8 @@ G.ShipFight = (function (range, isNaN, Math) {
     };
 
     ShipFight.prototype.__dialog = function (key, callback) {
+        if (!this.dialogs[key])
+            throw 'dialog not set: ' + key;
         this.bridge.showDialog(this.dialogs[key], callback);
     };
 
