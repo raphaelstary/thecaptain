@@ -6,12 +6,12 @@ G.installMyScenes = (function (Scenes, MVVMScene, Start, Scene, Event, Game, Map
 
         function getInitGameState() {
             return {
-            map: MapKey.OUTPOST,
-            flags: {},
-            ship: {
-                hull: 90
-            }
-        };
+                map: MapKey.OUTPOST,
+                flags: {},
+                ship: {
+                    hull: 90
+                }
+            };
         }
 
         var gameState = getInitGameState();
