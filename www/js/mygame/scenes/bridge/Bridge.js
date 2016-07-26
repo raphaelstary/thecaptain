@@ -13,11 +13,11 @@ G.Bridge = (function (MVVMScene, BridgeScreen, BridgeCrew, BridgeOrders, Scene, 
         this.screen = this.__showScreen();
     };
 
-    Bridge.prototype.nextScene = function (isVictorious) {
+    Bridge.prototype.nextScene = function (isVictorious, hull) {
         this.screen.nextScene();
         this.bridge.nextScene();
         if (this.next)
-            this.next(isVictorious);
+            this.next(isVictorious, hull);
     };
 
     Bridge.prototype.showSelection = function (callback) {

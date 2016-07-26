@@ -153,7 +153,7 @@ G.WorldView = (function (Image, Math, iterateEntries, Tile) {
     };
 
     WorldView.prototype.explode = function (npc, callback) {
-        npc.drawable.animate(Image.EXPLOSION, Image.EXPLOSION_FRAMES).setCallback(callback);
+        npc.drawable.animate(Image.EXPLOSION, Image.EXPLOSION_FRAMES, false).setCallback(callback);
     };
 
     return WorldView;

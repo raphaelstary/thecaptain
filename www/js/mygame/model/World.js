@@ -257,7 +257,7 @@ G.World = (function (iterateEntries, Tile) {
             this.__process(this.gameEvents[event.argument].slice(), next);
 
         } else if (event.action == 'fights') {
-            this.fight(next);
+            this.fight(event.argument, next);
 
         } else if (event.action == 'function') {
             this.gameCallbacks[event.argument](next);

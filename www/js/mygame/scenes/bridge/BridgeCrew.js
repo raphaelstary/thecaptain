@@ -86,6 +86,10 @@ G.BridgeCrew = (function (Event, Key) {
         });
 
         this.showOrders(options[0].officer);
+
+        right();
+        right();
+        right();
     };
 
     BridgeCrew.prototype.preDestroy = function () {

@@ -6,7 +6,10 @@ G.installMyScenes = (function (Scenes, MVVMScene, Start, Scene, Event, Game, Map
 
         var gameState = {
             map: MapKey.OUTPOST,
-            flags: {}
+            flags: {},
+            ship: {
+                hull: 90
+            }
         };
         var gameCallbacks = {};
 
@@ -30,16 +33,22 @@ G.installMyScenes = (function (Scenes, MVVMScene, Start, Scene, Event, Game, Map
 
         scenes.add(startScene.show.bind(startScene));
 
-        scenes.add(function () {
+        var endOfGame;
+        scenes.add(function (next) {
+            endOfGame = next;
             showMapScene(gameState.map);
         });
 
         function mapCallback(mapInfo) {
+            if (!mapInfo) {
+                endOfGame();
+                return;
+            }
             showMapScene(mapInfo.nextMap, mapInfo.prevMap);
         }
 
         function showMapScene(nextMapKey, prevMapKey) {
-            var game = new Game(services, maps[nextMapKey], dialogs, npcs, walls, background, directions, gameEvents, nextMapKey, prevMapKey, gameState.flags, gameCallbacks);
+            var game = new Game(services, maps[nextMapKey], dialogs, npcs, walls, background, directions, gameEvents, nextMapKey, prevMapKey, gameState.flags, gameState.ship, gameCallbacks);
             new MVVMScene(services, services.scenes[Scene.GAME], game, Scene.GAME).show(mapCallback);
             return game;
         }

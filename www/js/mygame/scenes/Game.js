@@ -3,7 +3,7 @@ G.Game = (function (PlayFactory, installPlayerKeyBoard, installPlayerGamePad, Sc
     "use strict";
 
     function Game(services, map, dialog, npc, walls, background, directions, gameEvents, mapKey, prevMapKey, flags,
-        gameCallbacks) {
+        ship, gameCallbacks) {
         this.device = services.device;
         this.events = services.events;
         this.sceneStorage = services.sceneStorage;
@@ -21,6 +21,7 @@ G.Game = (function (PlayFactory, installPlayerKeyBoard, installPlayerGamePad, Sc
         this.mapKey = mapKey;
         this.prevMapKey = prevMapKey;
         this.flags = flags;
+        this.ship = ship;
         this.gameCallbacks = gameCallbacks;
         this.services = services;
 
@@ -109,17 +110,47 @@ G.Game = (function (PlayFactory, installPlayerKeyBoard, installPlayerGamePad, Sc
             });
         }
 
-        function fight(callback) {
+        function fight(enemyId, callback) {
             if (interactionVisible) {
                 self.interactSymbol.show = false;
                 self.interactButton.show = false;
             }
-            var fight = createShipFight(self.services, self.dialog);
-            fight.start(function () {
+
+            var enemy = {
+                shields: 30,
+                hull: 20,
+                commands: [
+                    {
+                        dialog: 'laser_enemy',
+                        damage: 5,
+                        probability: 66
+                    }, {
+                        dialog: 'triple_laser_enemy',
+                        damage: 15,
+                        probability: 34
+                    }
+                ]
+            };
+
+            var fight = createShipFight(self.services, self.dialog, self.ship.hull, enemy);
+            fight.start(function (isVictorious, hull) {
                 if (interactionVisible) {
                     self.interactSymbol.show = true;
                     self.interactButton.show = true;
                 }
+
+                if (!isVictorious) {
+                    self.world.worldView.explode(self.world.worldView.player, function () {
+                        interaction('game_over', function () {
+                            self.nextScene();
+                            // document.location.reload(true);
+                        });
+                    });
+                    return;
+                }
+
+                self.ship.hull = hull;
+
                 if (callback)
                     callback();
             });
@@ -133,6 +164,7 @@ G.Game = (function (PlayFactory, installPlayerKeyBoard, installPlayerGamePad, Sc
                 save: function (callback) {
                     localStorage.setItem(Storage.MAP, self.mapKey);
                     saveObject(Storage.STATE, self.flags);
+                    saveObject(Storage.SHIP, self.ship);
                     localStorage.setItem(Storage.SAVED, true);
                     interaction('saved', callback);
                 }

@@ -136,11 +136,11 @@ G.ShipFight = (function (range, isNaN, Math) {
     };
 
     ShipFight.prototype.success = function () {
-        this.__dialog('defeat', this.bridge.nextScene.bind(this.bridge, true));
+        this.__dialog('defeat', this.bridge.nextScene.bind(this.bridge, true, this.ship.hull));
     };
 
     ShipFight.prototype.failure = function () {
-        this.__dialog('failure', this.bridge.nextScene.bind(this.bridge, false));
+        this.__dialog('failure', this.bridge.nextScene.bind(this.bridge, false, this.ship.hull));
     };
 
     ShipFight.prototype.__dialog = function (key, callback) {

@@ -45,6 +45,7 @@ G.Start = (function (Event, Key, Interaction, MVVMScene, Scene, loadObject, load
                 continue: function () {
                     self.gameState.map = loadString(Storage.MAP);
                     self.gameState.flags = loadObject(Storage.STATE);
+                    self.gameState.ship = loadObject(Storage.SHIP);
                 }
             };
             self.startBtn.show = false;

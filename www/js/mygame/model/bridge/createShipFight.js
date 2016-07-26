@@ -1,38 +1,21 @@
 G.createShipFight = (function (Bridge, ShipFight) {
     "use strict";
 
-    function createShipFight(services, dialogs) {
+    function createShipFight(services, dialogs, hull, enemy) {
+        var ship = {
+            shields: 0,
+            shieldsMax: 80,
+            hull: hull,
+            hullMax: 90,
+            energy: 100,
+            energyMax: 100,
+            defense: 0,
+            defenseMax: 1
+        };
 
         var bridgeView = new Bridge(services, crew);
         return new ShipFight(bridgeView, dialogs, ship, enemy);
     }
-
-    var ship = {
-        shields: 0,
-        shieldsMax: 80,
-        hull: 90,
-        hullMax: 90,
-        energy: 100,
-        energyMax: 100,
-        defense: 0,
-        defenseMax: 1
-    };
-
-    var enemy = {
-        shields: 30,
-        hull: 20,
-        commands: [
-            {
-                dialog: 'laser_enemy',
-                damage: 20,
-                probability: 66
-            }, {
-                dialog: 'triple_laser_enemy',
-                damage: 40,
-                probability: 34
-            }
-        ]
-    };
 
     var crew = {
         engineering: {
