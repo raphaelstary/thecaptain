@@ -138,7 +138,7 @@ G.createShipFight = (function (Bridge, ShipFight) {
                                 value: -10
                             }, {
                                 property: 'damage',
-                                value: 15
+                                value: 10
                             }
                         ],
                         precondition: {
@@ -156,7 +156,7 @@ G.createShipFight = (function (Bridge, ShipFight) {
                                 value: -30
                             }, {
                                 property: 'damage',
-                                value: 30
+                                value: 20
                             }
                         ],
                         precondition: {
@@ -176,7 +176,7 @@ G.createShipFight = (function (Bridge, ShipFight) {
                                 value: -5
                             }, {
                                 property: 'damage',
-                                value: 40
+                                value: 30
                             }
                         ],
                         precondition: {
