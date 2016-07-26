@@ -2,8 +2,8 @@ G.Game = (function (PlayFactory, installPlayerKeyBoard, installPlayerGamePad, Sc
     Strings, Menu, localStorage, saveObject, Storage, createShipFight) {
     "use strict";
 
-    function Game(services, map, dialog, npc, walls, background, directions, gameEvents, mapKey, prevMapKey, flags,
-        ship, gameCallbacks) {
+    function Game(services, map, dialog, npc, walls, background, directions, fights, gameEvents, mapKey, prevMapKey,
+        flags, ship, gameCallbacks) {
         this.device = services.device;
         this.events = services.events;
         this.sceneStorage = services.sceneStorage;
@@ -17,6 +17,7 @@ G.Game = (function (PlayFactory, installPlayerKeyBoard, installPlayerGamePad, Sc
         this.walls = walls;
         this.background = background;
         this.directions = directions;
+        this.fights = fights;
         this.gameEvents = gameEvents;
         this.mapKey = mapKey;
         this.prevMapKey = prevMapKey;
@@ -116,20 +117,11 @@ G.Game = (function (PlayFactory, installPlayerKeyBoard, installPlayerGamePad, Sc
                 self.interactButton.show = false;
             }
 
+            var enemyStats = self.fights[enemyId];
             var enemy = {
-                shields: 30,
-                hull: 20,
-                commands: [
-                    {
-                        dialog: 'laser_enemy',
-                        damage: 5,
-                        probability: 66
-                    }, {
-                        dialog: 'triple_laser_enemy',
-                        damage: 15,
-                        probability: 34
-                    }
-                ]
+                shields: enemyStats.shields,
+                hull: enemyStats.hull,
+                commands: enemyStats.commands
             };
 
             var fight = createShipFight(self.services, self.dialog, self.ship.hull, enemy);

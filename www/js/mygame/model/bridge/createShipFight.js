@@ -29,7 +29,7 @@ G.createShipFight = (function (Bridge, ShipFight) {
                     actions: [
                         {
                             property: 'energy',
-                            value: 50
+                            value: 80
                         }
                     ],
                     precondition: {
@@ -113,7 +113,7 @@ G.createShipFight = (function (Bridge, ShipFight) {
                     actions: [
                         {
                             property: 'energy',
-                            value: -20
+                            value: -5
                         }, {
                             property: 'defense',
                             value: 'max'
@@ -121,7 +121,7 @@ G.createShipFight = (function (Bridge, ShipFight) {
                     ],
                     precondition: {
                         property: 'energy',
-                        value: 20,
+                        value: 5,
                         dialog: 'energy_low'
                     }
                 }
@@ -138,15 +138,33 @@ G.createShipFight = (function (Bridge, ShipFight) {
                     actions: [
                         {
                             property: 'energy',
-                            value: -20
+                            value: -10
                         }, {
                             property: 'damage',
-                            value: 5
+                            value: 15
                         }
                     ],
                     precondition: {
                         property: 'energy',
-                        value: 20,
+                        value: 10,
+                        dialog: 'energy_low'
+                    }
+                }, {
+                    type: 'setter',
+                    name: 'Laser Burst',
+                    dialog: 'laser_burst',
+                    actions: [
+                        {
+                            property: 'energy',
+                            value: -30
+                        }, {
+                            property: 'damage',
+                            value: 30
+                        }
+                    ],
+                    precondition: {
+                        property: 'energy',
+                        value: 30,
                         dialog: 'energy_low'
                     }
                 }, {
@@ -161,7 +179,7 @@ G.createShipFight = (function (Bridge, ShipFight) {
                             value: -5
                         }, {
                             property: 'damage',
-                            value: 20
+                            value: 40
                         }
                     ],
                     precondition: {

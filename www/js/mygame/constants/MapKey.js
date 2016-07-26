@@ -7,6 +7,7 @@ G.MapKey = {
     DIALOG: 'dialog',
     NPC: 'npc',
     WALLS: 'walls',
+    FIGHTS: 'fights',
     BACKGROUND: 'background',
     DIRECTIONS: 'directions',
     EVENTS: 'events'
