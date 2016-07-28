@@ -27,8 +27,10 @@ G.installMyScenes = (function (Scenes, MVVMScene, Start, Scene, Event, Game, Map
         var gameEvents = services.world[MapKey.EVENTS];
 
         gameCallbacks[MapKey.REPAIR_SHIP] = function (next) {
+            var torpedoCount = gameState.ship.torpedo_count;
             gameState.ship = {
-                hull: 90
+                hull: 90,
+                torpedo_count: torpedoCount
             };
             next();
         };
