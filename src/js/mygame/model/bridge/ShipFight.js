@@ -1,4 +1,4 @@
-G.ShipFight = (function (range, isNaN, Math) {
+G.ShipFight = (function (range, isNaN, Math, DecisionAI) {
     "use strict";
 
     function ShipFight(bridgeView, dialogs, ship, enemy, shipStats) {
@@ -96,7 +96,7 @@ G.ShipFight = (function (range, isNaN, Math) {
     };
 
     ShipFight.prototype.initCounterAttack = function () {
-        var command = selectCommand(this.enemy.commands);
+        var command = DecisionAI.selectCommand(this.enemy.commands, DecisionAI.getRandom());
 
         this.__dialog(command.dialog, this.counterAttack.bind(this, command));
     };
@@ -155,17 +155,5 @@ G.ShipFight = (function (range, isNaN, Math) {
         this.__dialog(keyA, this.__dialog.bind(this, keyB, callback));
     };
 
-    function selectCommand(commands) {
-        var random = range(0, 100);
-        return commands.reduce(function (previous, current) {
-            if (isNaN(previous))
-                return previous;
-
-            if (random > previous && random <= current.probability + previous)
-                return current;
-            return current.probability + previous;
-        }, 0);
-    }
-
     return ShipFight;
-})(H5.range, isNaN, Math);
+})(H5.range, isNaN, Math, G.DecisionAI);
