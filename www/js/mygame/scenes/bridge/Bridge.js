@@ -1,9 +1,12 @@
-G.Bridge = (function (MVVMScene, BridgeScreen, BridgeCrew, BridgeOrders, Scene, Dialog, OrderOption, Background) {
+G.Bridge = (function (MVVMScene, BridgeScreen, BridgeCrew, BridgeOrders, Scene, Dialog, OrderOption, Background,
+    Event) {
     "use strict";
 
     function Bridge(services, crew) {
         this.services = services;
         this.crew = crew;
+
+        this.events = services.events;
     }
 
     Bridge.prototype.show = function (next) {
@@ -11,9 +14,13 @@ G.Bridge = (function (MVVMScene, BridgeScreen, BridgeCrew, BridgeOrders, Scene, 
 
         this.bridge = this.__showBridge();
         this.screen = this.__showScreen();
+
+        this.screenTickId = this.events.subscribe(Event.TICK_CAMERA, this.screen.update.bind(this.screen));
     };
 
     Bridge.prototype.nextScene = function (isVictorious, hull) {
+        this.events.unsubscribe(this.screenTickId);
+
         this.screen.nextScene();
         this.bridge.nextScene();
         if (this.next)
@@ -136,4 +143,5 @@ G.Bridge = (function (MVVMScene, BridgeScreen, BridgeCrew, BridgeOrders, Scene, 
     }
 
     return Bridge;
-})(H5.MVVMScene, G.BridgeScreen, G.BridgeCrew, G.BridgeOrders, G.Scene, G.Dialog, G.OrderOption, G.Background);
+})(H5.MVVMScene, G.BridgeScreen, G.BridgeCrew, G.BridgeOrders, G.Scene, G.Dialog, G.OrderOption, G.Background,
+    H5.Event);

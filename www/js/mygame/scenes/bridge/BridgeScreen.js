@@ -9,63 +9,124 @@ G.BridgeScreen = (function (wrap, Math, calcScreenConst, Event, ScreenShaker, Sh
         this.services = services;
 
         this.shields = 0;
+        this.shieldsNext = 0;
         this.shieldsMax = 0;
         this.hull = 0;
+        this.hullNext = 0;
         this.hullMax = 0;
         this.energy = 0;
+        this.energyNext = 0;
         this.energyMax = 0;
         this.shieldsEnemy = 0;
+        this.shieldsEnemyNext = 0;
         this.shieldsEnemyMax = 0;
         this.hullEnemy = 0;
+        this.hullEnemyNext = 0;
         this.hullEnemyMax = 0;
+
+        this.__itIsOver = false;
     }
 
-    BridgeScreen.prototype.setShields = function (current, max) {
-        this.shields = current;
+    BridgeScreen.prototype.update = function () {
+        if (this.shields < this.shieldsNext) {
+            this.shields++;
+            this.shieldsBarMask.x = this.__shieldsX();
+            this.shieldsBarMask.data.width = this.__shieldsWidth();
+            this.shieldsText.setText(this.shields);
+        }
+        if (this.shields > this.shieldsNext) {
+            this.shields--;
+            this.shieldsBarMask.x = this.__shieldsX();
+            this.shieldsBarMask.data.width = this.__shieldsWidth();
+            this.shieldsText.setText(this.shields);
+        }
+
+        if (this.hull < this.hullNext) {
+            this.hull++;
+            this.hullBarMask.x = this.__hullX();
+            this.hullBarMask.data.width = this.__hullWidth();
+            this.hullText.setText(this.hull);
+        }
+        if (this.hull > this.hullNext) {
+            this.hull--;
+            this.hullBarMask.x = this.__hullX();
+            this.hullBarMask.data.width = this.__hullWidth();
+            this.hullText.setText(this.hull);
+        }
+
+        if (this.energy < this.energyNext) {
+            this.energy++;
+            this.energyBarMask.x = this.__energyX();
+            this.energyBarMask.data.width = this.__energyWidth();
+            this.energyText.setText(this.energy);
+        }
+        if (this.energy > this.energyNext) {
+            this.energy--;
+            this.energyBarMask.x = this.__energyX();
+            this.energyBarMask.data.width = this.__energyWidth();
+            this.energyText.setText(this.energy);
+        }
+
+        if (this.shieldsEnemy < this.shieldsEnemyNext) {
+            this.shieldsEnemy++;
+            this.shieldsBarEnemyMask.x = this.__shieldsEnemyX();
+            this.shieldsBarEnemyMask.data.width = this.__shieldsEnemyWidth();
+            this.shieldsTextEnemy.setText(this.shieldsEnemy);
+        }
+        if (this.shieldsEnemy > this.shieldsEnemyNext) {
+            this.shieldsEnemy--;
+            this.shieldsBarEnemyMask.x = this.__shieldsEnemyX();
+            this.shieldsBarEnemyMask.data.width = this.__shieldsEnemyWidth();
+            this.shieldsTextEnemy.setText(this.shieldsEnemy);
+        }
+
+        if (this.hullEnemy < this.hullEnemyNext) {
+            this.hullEnemy++;
+            this.hullBarEnemyMask.x = this.__hullEnemyX();
+            this.hullBarEnemyMask.data.width = this.__hullEnemyWidth();
+            this.hullTextEnemy.setText(this.hullEnemy);
+        }
+        if (this.hullEnemy > this.hullEnemyNext) {
+            this.hullEnemy--;
+            this.hullBarEnemyMask.x = this.__hullEnemyX();
+            this.hullBarEnemyMask.data.width = this.__hullEnemyWidth();
+            this.hullTextEnemy.setText(this.hullEnemy);
+        }
+    };
+
+    BridgeScreen.prototype.setShields = function (next, max) {
+        this.shieldsNext = next;
         if (max !== undefined)
             this.shieldsMax = max;
-        this.shieldsBarMask.x = this.__shieldsX();
-        this.shieldsBarMask.data.width = this.__shieldsWidth();
-        this.shieldsText.setText(current);
     };
 
-    BridgeScreen.prototype.setHull = function (current, max) {
-        this.hull = current;
+    BridgeScreen.prototype.setHull = function (next, max) {
+        this.hullNext = next;
         if (max !== undefined)
             this.hullMax = max;
-        this.hullBarMask.x = this.__hullX();
-        this.hullBarMask.data.width = this.__hullWidth();
-        this.hullText.setText(current);
     };
 
-    BridgeScreen.prototype.setEnergy = function (current, max) {
-        this.energy = current;
+    BridgeScreen.prototype.setEnergy = function (next, max) {
+        this.energyNext = next;
         if (max !== undefined)
             this.energyMax = max;
-        this.energyBarMask.x = this.__energyX();
-        this.energyBarMask.data.width = this.__energyWidth();
-        this.energyText.setText(current);
     };
 
-    BridgeScreen.prototype.setShieldsEnemy = function (current, max) {
-        this.shieldsEnemy = current;
+    BridgeScreen.prototype.setShieldsEnemy = function (next, max) {
+        this.shieldsEnemyNext = next;
         if (max !== undefined)
             this.shieldsEnemyMax = max;
-        this.shieldsBarEnemyMask.x = this.__shieldsEnemyX();
-        this.shieldsBarEnemyMask.data.width = this.__shieldsEnemyWidth();
-        this.shieldsTextEnemy.setText(current);
     };
 
-    BridgeScreen.prototype.setHullEnemy = function (current, max) {
-        this.hullEnemy = current;
+    BridgeScreen.prototype.setHullEnemy = function (next, max) {
+        this.hullEnemyNext = next;
         if (max !== undefined)
             this.hullEnemyMax = max;
-        this.hullBarEnemyMask.x = this.__hullEnemyX();
-        this.hullBarEnemyMask.data.width = this.__hullEnemyWidth();
-        this.hullTextEnemy.setText(current);
     };
 
     BridgeScreen.prototype.postConstruct = function () {
+        this.__itIsOver = false;
+
         this.shieldsBarMask = this.__createMask(this.shieldsBar, this.__shieldsX.bind(this),
             this.__shieldsWidth.bind(this));
         this.hullBarMask = this.__createMask(this.hullBar, this.__hullX.bind(this), this.__hullWidth.bind(this));
@@ -87,6 +148,11 @@ G.BridgeScreen = (function (wrap, Math, calcScreenConst, Event, ScreenShaker, Sh
                 return;
             this.shaker.add(drawable);
         }, this);
+        this.shaker.add(this.shieldsBarMask);
+        this.shaker.add(this.hullBarMask);
+        this.shaker.add(this.energyBarMask);
+        this.shaker.add(this.shieldsBarEnemyMask);
+        this.shaker.add(this.hullBarEnemyMask);
 
         // register ship screen shake
         this.shipShaker = new ScreenShaker(this.device);
@@ -97,6 +163,8 @@ G.BridgeScreen = (function (wrap, Math, calcScreenConst, Event, ScreenShaker, Sh
     };
 
     BridgeScreen.prototype.preDestroy = function () {
+        this.__itIsOver = true;
+
         // un-register screen shake
         this.events.unsubscribe(this.shakerTickId);
         this.events.unsubscribe(this.shakerResizeId);
