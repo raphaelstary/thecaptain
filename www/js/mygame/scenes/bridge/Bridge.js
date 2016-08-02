@@ -15,7 +15,7 @@ G.Bridge = (function (MVVMScene, BridgeScreen, BridgeCrew, BridgeOrders, Scene, 
         this.bridge = this.__showBridge();
         this.screen = this.__showScreen();
 
-        this.screenTickId = this.events.subscribe(Event.TICK_CAMERA, this.screen.update.bind(this.screen));
+        this.screenTickId = this.events.subscribe(Event.TICK_MOVE, this.screen.update.bind(this.screen));
     };
 
     Bridge.prototype.nextScene = function (isVictorious, hull) {

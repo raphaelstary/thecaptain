@@ -45,7 +45,10 @@ G.installMyScenes = (function (Scenes, MVVMScene, Start, Scene, Event, Game, Map
         var endOfGame;
         scenes.add(function (next) {
             endOfGame = function () {
-                gameState = getInitGameState();
+                var freshGameState = getInitGameState();
+                gameState.map = freshGameState.map;
+                gameState.flags = freshGameState.flags;
+                gameState.ship = freshGameState.ship;
                 if (next)
                     next();
             };

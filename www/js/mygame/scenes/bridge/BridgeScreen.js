@@ -30,68 +30,58 @@ G.BridgeScreen = (function (wrap, Math, calcScreenConst, Event, ScreenShaker, Sh
     BridgeScreen.prototype.update = function () {
         if (this.shields < this.shieldsNext) {
             this.shields++;
-            this.shieldsBarMask.x = this.__shieldsX();
-            this.shieldsBarMask.data.width = this.__shieldsWidth();
             this.shieldsText.setText(this.shields);
         }
         if (this.shields > this.shieldsNext) {
             this.shields--;
-            this.shieldsBarMask.x = this.__shieldsX();
-            this.shieldsBarMask.data.width = this.__shieldsWidth();
             this.shieldsText.setText(this.shields);
         }
+        this.shieldsBarMask.x = this.__shieldsX();
+        this.shieldsBarMask.data.width = this.__shieldsWidth();
 
         if (this.hull < this.hullNext) {
             this.hull++;
-            this.hullBarMask.x = this.__hullX();
-            this.hullBarMask.data.width = this.__hullWidth();
             this.hullText.setText(this.hull);
         }
         if (this.hull > this.hullNext) {
             this.hull--;
-            this.hullBarMask.x = this.__hullX();
-            this.hullBarMask.data.width = this.__hullWidth();
             this.hullText.setText(this.hull);
         }
+        this.hullBarMask.x = this.__hullX();
+        this.hullBarMask.data.width = this.__hullWidth();
 
         if (this.energy < this.energyNext) {
             this.energy++;
-            this.energyBarMask.x = this.__energyX();
-            this.energyBarMask.data.width = this.__energyWidth();
             this.energyText.setText(this.energy);
         }
         if (this.energy > this.energyNext) {
             this.energy--;
-            this.energyBarMask.x = this.__energyX();
-            this.energyBarMask.data.width = this.__energyWidth();
             this.energyText.setText(this.energy);
         }
+        this.energyBarMask.x = this.__energyX();
+        this.energyBarMask.data.width = this.__energyWidth();
 
         if (this.shieldsEnemy < this.shieldsEnemyNext) {
             this.shieldsEnemy++;
-            this.shieldsBarEnemyMask.x = this.__shieldsEnemyX();
-            this.shieldsBarEnemyMask.data.width = this.__shieldsEnemyWidth();
             this.shieldsTextEnemy.setText(this.shieldsEnemy);
         }
         if (this.shieldsEnemy > this.shieldsEnemyNext) {
             this.shieldsEnemy--;
-            this.shieldsBarEnemyMask.x = this.__shieldsEnemyX();
-            this.shieldsBarEnemyMask.data.width = this.__shieldsEnemyWidth();
             this.shieldsTextEnemy.setText(this.shieldsEnemy);
         }
+        this.shieldsBarEnemyMask.x = this.__shieldsEnemyX();
+        this.shieldsBarEnemyMask.data.width = this.__shieldsEnemyWidth();
 
         if (this.hullEnemy < this.hullEnemyNext) {
             this.hullEnemy++;
-            this.hullBarEnemyMask.x = this.__hullEnemyX();
-            this.hullBarEnemyMask.data.width = this.__hullEnemyWidth();
             this.hullTextEnemy.setText(this.hullEnemy);
         }
         if (this.hullEnemy > this.hullEnemyNext) {
             this.hullEnemy--;
-            this.hullBarEnemyMask.x = this.__hullEnemyX();
-            this.hullBarEnemyMask.data.width = this.__hullEnemyWidth();
             this.hullTextEnemy.setText(this.hullEnemy);
         }
+        this.hullBarEnemyMask.x = this.__hullEnemyX();
+        this.hullBarEnemyMask.data.width = this.__hullEnemyWidth();
     };
 
     BridgeScreen.prototype.setShields = function (next, max) {
@@ -141,7 +131,7 @@ G.BridgeScreen = (function (wrap, Math, calcScreenConst, Event, ScreenShaker, Sh
         // register screen shake
         this.shaker = new ScreenShaker(this.device);
         this.shakerResizeId = this.events.subscribe(Event.RESIZE, this.shaker.resize.bind(this.shaker));
-        this.shakerTickId = this.events.subscribe(Event.TICK_MOVE, this.shaker.update.bind(this.shaker));
+        this.shakerTickId = this.events.subscribe(Event.TICK_COLLISION, this.shaker.update.bind(this.shaker));
 
         this.drawables.forEach(function (drawable) {
             if (this.enemyShip.id == drawable.id)
