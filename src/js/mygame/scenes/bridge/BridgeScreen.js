@@ -1,8 +1,10 @@
-G.BridgeScreen = (function (wrap, Math, calcScreenConst) {
+G.BridgeScreen = (function (wrap, Math, calcScreenConst, Event, ScreenShaker) {
     "use strict";
 
     function BridgeScreen(services) {
         this.stage = services.stage;
+        this.events = services.events;
+        this.device = services.device;
 
         this.shields = 0;
         this.shieldsMax = 0;
@@ -73,6 +75,30 @@ G.BridgeScreen = (function (wrap, Math, calcScreenConst) {
         this.hullBarEnemyMask = this.__createMask(this.hullBarEnemy, this.__hullEnemyX.bind(this),
             this.__hullEnemyWidth.bind(this));
 
+        // register screen shake
+        this.shaker = new ScreenShaker(this.device);
+        this.shakerResizeId = this.events.subscribe(Event.RESIZE, this.shaker.resize.bind(this.shaker));
+        this.shakerTickId = this.events.subscribe(Event.TICK_MOVE, this.shaker.update.bind(this.shaker));
+
+        this.drawables.forEach(function (drawable) {
+            if (this.enemyShip.id == drawable.id)
+                return;
+            this.shaker.add(drawable);
+        }, this);
+    };
+
+    BridgeScreen.prototype.preDestroy = function () {
+        // un-register screen shake
+        this.events.unsubscribe(this.shakerTickId);
+        this.events.unsubscribe(this.shakerResizeId);
+    };
+
+    BridgeScreen.prototype.bigShake = function () {
+        this.shaker.startBigShake();
+    };
+
+    BridgeScreen.prototype.smallShake = function () {
+        this.shaker.startSmallShake();
     };
 
     BridgeScreen.prototype.__createMask = function (base, xFn, widthFn) {
@@ -127,4 +153,4 @@ G.BridgeScreen = (function (wrap, Math, calcScreenConst) {
     };
 
     return BridgeScreen;
-})(H5.wrap, Math, H5.calcScreenConst);
+})(H5.wrap, Math, H5.calcScreenConst, H5.Event, H5.ScreenShaker);

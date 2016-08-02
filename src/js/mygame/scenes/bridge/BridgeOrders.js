@@ -1,8 +1,9 @@
-G.BridgeOrders = (function (Event, Key, OrderOption) {
+G.BridgeOrders = (function (Event, Key, OrderOption, ScreenShaker) {
     "use strict";
 
     function BridgeOrders(services, name, optionA, optionB, optionC, optionD) {
         this.events = services.events;
+        this.device = services.device;
 
         this.name = name;
         this.optionA = optionA;
@@ -108,12 +109,33 @@ G.BridgeOrders = (function (Event, Key, OrderOption) {
         self.selectionD.show = false;
 
         this.continueSign.setText('order');
+
+        // register screen shake
+        this.shaker = new ScreenShaker(this.device);
+        this.shakerResizeId = this.events.subscribe(Event.RESIZE, this.shaker.resize.bind(this.shaker));
+        this.shakerTickId = this.events.subscribe(Event.TICK_MOVE, this.shaker.update.bind(this.shaker));
+
+        this.drawables.forEach(function (drawable) {
+            this.shaker.add(drawable);
+        }, this);
     };
 
     BridgeOrders.prototype.preDestroy = function () {
         this.events.unsubscribe(this.keyListener);
         this.events.unsubscribe(this.gamePadListener);
+
+        // un-register screen shake
+        this.events.unsubscribe(this.shakerTickId);
+        this.events.unsubscribe(this.shakerResizeId);
+    };
+
+    BridgeOrders.prototype.bigShake = function () {
+        this.shaker.startBigShake();
+    };
+
+    BridgeOrders.prototype.smallShake = function () {
+        this.shaker.startSmallShake();
     };
 
     return BridgeOrders;
-})(H5.Event, H5.Key, G.OrderOption);
+})(H5.Event, H5.Key, G.OrderOption, H5.ScreenShaker);

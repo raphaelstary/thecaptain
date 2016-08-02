@@ -20,6 +20,20 @@ G.Bridge = (function (MVVMScene, BridgeScreen, BridgeCrew, BridgeOrders, Scene, 
             this.next(isVictorious, hull);
     };
 
+    Bridge.prototype.bigShake = function () {
+        this.bridge.bigShake();
+        this.screen.bigShake();
+        this.orders.viewModel.bigShake();
+        this.crewSelection.viewModel.bigShake();
+    };
+
+    Bridge.prototype.smallShake = function () {
+        this.bridge.smallShake();
+        this.screen.smallShake();
+        this.orders.viewModel.smallShake();
+        this.crewSelection.viewModel.smallShake();
+    };
+
     Bridge.prototype.showSelection = function (callback) {
         this.crewSelection = this.__createCrewSelection();
         this.crewSelection.show(callback);

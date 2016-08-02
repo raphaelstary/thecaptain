@@ -1,8 +1,9 @@
-G.BridgeCrew = (function (Event, Key) {
+G.BridgeCrew = (function (Event, Key, ScreenShaker) {
     "use strict";
 
     function BridgeCrew(services, crew, showOrders) {
         this.events = services.events;
+        this.device = services.device;
 
         this.name = name;
         this.engineering = crew.engineering;
@@ -90,12 +91,33 @@ G.BridgeCrew = (function (Event, Key) {
         right();
         right();
         right();
+
+        // register screen shake
+        this.shaker = new ScreenShaker(this.device);
+        this.shakerResizeId = this.events.subscribe(Event.RESIZE, this.shaker.resize.bind(this.shaker));
+        this.shakerTickId = this.events.subscribe(Event.TICK_MOVE, this.shaker.update.bind(this.shaker));
+
+        this.drawables.forEach(function (drawable) {
+            this.shaker.add(drawable);
+        }, this);
     };
 
     BridgeCrew.prototype.preDestroy = function () {
         this.events.unsubscribe(this.keyListener);
         this.events.unsubscribe(this.gamePadListener);
+
+        // un-register screen shake
+        this.events.unsubscribe(this.shakerTickId);
+        this.events.unsubscribe(this.shakerResizeId);
+    };
+
+    BridgeCrew.prototype.bigShake = function () {
+        this.shaker.startBigShake();
+    };
+
+    BridgeCrew.prototype.smallShake = function () {
+        this.shaker.startSmallShake();
     };
 
     return BridgeCrew;
-})(H5.Event, H5.Key);
+})(H5.Event, H5.Key, H5.ScreenShaker);

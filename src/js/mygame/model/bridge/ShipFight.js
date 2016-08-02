@@ -80,9 +80,11 @@ G.ShipFight = (function (range, isNaN, Math, DecisionAI) {
 
         if (isAttack) {
             if (this.enemy.hull > 1) {
-                this.__chainDialog('critical_hit', 'effective', this.initCounterAttack.bind(this));
+                // this.__chainDialog('critical_hit', 'effective', this.initCounterAttack.bind(this));
+                this.initCounterAttack();
             } else {
-                this.__chainDialog('critical_hit', 'effective', this.success.bind(this));
+                // this.__chainDialog('critical_hit', 'effective', this.success.bind(this));
+                this.success();
             }
         } else {
             this.initCounterAttack();
@@ -112,9 +114,12 @@ G.ShipFight = (function (range, isNaN, Math, DecisionAI) {
             this.bridge.setHull.bind(this.bridge));
 
         if (this.ship.hull > 1) {
-            this.__chainDialog('critical_hit', 'effective', this.waitForOrders.bind(this));
+            // this.__chainDialog('critical_hit', 'effective', this.waitForOrders.bind(this));
+            this.waitForOrders();
+            this.bridge.bigShake();
         } else {
-            this.__chainDialog('critical_hit', 'effective', this.failure.bind(this));
+            // this.__chainDialog('critical_hit', 'effective', this.failure.bind(this));
+            this.failure();
         }
     };
 
