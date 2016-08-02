@@ -86,6 +86,7 @@ G.ShipFight = (function (range, isNaN, Math, DecisionAI) {
             } else {
                 // this.__chainDialog('critical_hit', 'effective', this.success.bind(this));
                 this.success();
+                this.bridge.hitEnemy();
             }
         } else {
             this.initCounterAttack();
@@ -121,6 +122,7 @@ G.ShipFight = (function (range, isNaN, Math, DecisionAI) {
         } else {
             // this.__chainDialog('critical_hit', 'effective', this.failure.bind(this));
             this.failure();
+            this.bridge.bigShake();
         }
     };
 
