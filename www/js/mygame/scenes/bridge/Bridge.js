@@ -34,6 +34,10 @@ G.Bridge = (function (MVVMScene, BridgeScreen, BridgeCrew, BridgeOrders, Scene, 
         this.crewSelection.viewModel.smallShake();
     };
 
+    Bridge.prototype.hitEnemy = function () {
+        this.screen.hitEnemy();
+    };
+
     Bridge.prototype.showSelection = function (callback) {
         this.crewSelection = this.__createCrewSelection();
         this.crewSelection.show(callback);

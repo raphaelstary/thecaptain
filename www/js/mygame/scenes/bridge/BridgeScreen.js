@@ -1,10 +1,12 @@
-G.BridgeScreen = (function (wrap, Math, calcScreenConst, Event, ScreenShaker) {
+G.BridgeScreen = (function (wrap, Math, calcScreenConst, Event, ScreenShaker, ShipHitView) {
     "use strict";
 
     function BridgeScreen(services) {
         this.stage = services.stage;
         this.events = services.events;
         this.device = services.device;
+
+        this.services = services;
 
         this.shields = 0;
         this.shieldsMax = 0;
@@ -85,12 +87,23 @@ G.BridgeScreen = (function (wrap, Math, calcScreenConst, Event, ScreenShaker) {
                 return;
             this.shaker.add(drawable);
         }, this);
+
+        // register ship screen shake
+        this.shipShaker = new ScreenShaker(this.device);
+        this.shipShakerResizeId = this.events.subscribe(Event.RESIZE, this.shipShaker.resize.bind(this.shipShaker));
+        this.shipShakerTickId = this.events.subscribe(Event.TICK_MOVE, this.shipShaker.update.bind(this.shipShaker));
+
+        this.hitView = new ShipHitView(this.services, this.enemyShip, this.shipShaker);
     };
 
     BridgeScreen.prototype.preDestroy = function () {
         // un-register screen shake
         this.events.unsubscribe(this.shakerTickId);
         this.events.unsubscribe(this.shakerResizeId);
+
+        // un-register ship screen shake
+        this.events.unsubscribe(this.shipShakerTickId);
+        this.events.unsubscribe(this.shipShakerResizeId);
     };
 
     BridgeScreen.prototype.bigShake = function () {
@@ -99,6 +112,10 @@ G.BridgeScreen = (function (wrap, Math, calcScreenConst, Event, ScreenShaker) {
 
     BridgeScreen.prototype.smallShake = function () {
         this.shaker.startSmallShake();
+    };
+
+    BridgeScreen.prototype.hitEnemy = function () {
+        this.hitView.hit();
     };
 
     BridgeScreen.prototype.__createMask = function (base, xFn, widthFn) {
@@ -153,4 +170,4 @@ G.BridgeScreen = (function (wrap, Math, calcScreenConst, Event, ScreenShaker) {
     };
 
     return BridgeScreen;
-})(H5.wrap, Math, H5.calcScreenConst, H5.Event, H5.ScreenShaker);
+})(H5.wrap, Math, H5.calcScreenConst, H5.Event, H5.ScreenShaker, G.ShipHitView);

@@ -82,6 +82,7 @@ G.ShipFight = (function (range, isNaN, Math, DecisionAI) {
             if (this.enemy.hull > 1) {
                 // this.__chainDialog('critical_hit', 'effective', this.initCounterAttack.bind(this));
                 this.initCounterAttack();
+                this.bridge.hitEnemy();
             } else {
                 // this.__chainDialog('critical_hit', 'effective', this.success.bind(this));
                 this.success();
