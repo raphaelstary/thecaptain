@@ -120,6 +120,7 @@ G.Game = (function (PlayFactory, installPlayerKeyBoard, installPlayerGamePad, Sc
             var enemyStats = self.fights[enemyId];
             var enemy = {
                 name: enemyStats.name,
+                asset: enemyStats.asset,
                 shields: enemyStats.shields,
                 hull: enemyStats.hull,
                 commands: enemyStats.commands
@@ -136,7 +137,6 @@ G.Game = (function (PlayFactory, installPlayerKeyBoard, installPlayerGamePad, Sc
                     self.world.worldView.explode(self.world.worldView.player, function () {
                         interaction('game_over', function () {
                             self.nextScene();
-                            // document.location.reload(true);
                         });
                     });
                     return;
