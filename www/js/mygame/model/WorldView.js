@@ -63,6 +63,10 @@ G.WorldView = (function (Image, Math, iterateEntries, Tile) {
         }, this);
 
         backgroundTiles.forEach(function (tile) {
+            if (this.backgroundInfo[tile.type] == Image.SPACE) {
+                tile.hidden = true;
+                return;
+            }
             tile.entity = this.__createStatic(tile, this.backgroundInfo[tile.type], 0);
             tile.entity.show = false;
             tile.drawable = this.__createStatic(tile, this.backgroundInfo[tile.type], 0);

@@ -8,5 +8,6 @@ G.Image = {
     EXPLOSION_FRAMES: 22,
 
     CLOUD: 'blue-cloud-filled',
-    PORTAL: 'wormwhole'
+    PORTAL: 'wormwhole',
+    SPACE: 'space'
 };
