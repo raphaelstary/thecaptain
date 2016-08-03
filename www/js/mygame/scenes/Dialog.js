@@ -1,9 +1,10 @@
-G.Dialog = (function (Event, Key, Width, Height, Option, MVVMScene, Scene, DialogOption) {
+G.Dialog = (function (Event, Key, Width, Height, Option, MVVMScene, Scene, DialogOption, ScreenShaker) {
     "use strict";
 
     function Dialog(services, textPragraphs, flags, callbacks) {
         this.events = services.events;
         this.timer = services.timer;
+        this.device = services.device;
         this.textPragraphs = textPragraphs.slice();
         this.flags = flags || {};
         this.callbacks = callbacks || {};
@@ -156,12 +157,36 @@ G.Dialog = (function (Event, Key, Width, Height, Option, MVVMScene, Scene, Dialo
         self.dialogTxt.setMaxLineLength(Width.get(10, 8));
         self.dialogTxt.setLineHeight(Height.get(11));
         startNextParagraph();
+
+        // register screen shake
+        this.shaker = new ScreenShaker(this.device);
+        this.shakerResizeId = this.events.subscribe(Event.RESIZE, this.shaker.resize.bind(this.shaker));
+        this.shakerTickId = this.events.subscribe(Event.TICK_MOVE, this.shaker.update.bind(this.shaker));
+
+        this.drawables.forEach(function (drawable) {
+            var isBackground = drawable.zIndex == 12;
+            if (isBackground)
+                return;
+            this.shaker.add(drawable);
+        }, this);
     };
 
     Dialog.prototype.preDestroy = function () {
         this.events.unsubscribe(this.keyListener);
         this.events.unsubscribe(this.gamePadListener);
+
+        // un-register screen shake
+        this.events.unsubscribe(this.shakerTickId);
+        this.events.unsubscribe(this.shakerResizeId);
+    };
+
+    Dialog.prototype.bigShake = function () {
+        this.shaker.startBigShake();
+    };
+
+    Dialog.prototype.smallShake = function () {
+        this.shaker.startSmallShake();
     };
 
     return Dialog;
-})(H5.Event, H5.Key, H5.Width, H5.Height, G.Option, H5.MVVMScene, G.Scene, G.DialogOption);
+})(H5.Event, H5.Key, H5.Width, H5.Height, G.Option, H5.MVVMScene, G.Scene, G.DialogOption, H5.ScreenShaker);

@@ -32,6 +32,7 @@ G.Bridge = (function (MVVMScene, BridgeScreen, BridgeCrew, BridgeOrders, Scene, 
         this.screen.bigShake();
         this.orders.viewModel.bigShake();
         this.crewSelection.viewModel.bigShake();
+        this.dialog.bigShake();
     };
 
     Bridge.prototype.smallShake = function () {
@@ -51,8 +52,8 @@ G.Bridge = (function (MVVMScene, BridgeScreen, BridgeCrew, BridgeOrders, Scene, 
     };
 
     Bridge.prototype.showDialog = function (dialog, callback) {
-        var dialogScene = this.__createDialog(dialog);
-        dialogScene.show(callback);
+        this.dialog = new Dialog(this.services, dialog);
+        new MVVMScene(this.services, this.services.scenes[Scene.DIALOG], this.dialog, Scene.DIALOG).show(callback);
     };
 
     Bridge.prototype.setShields = function (current, max) {
@@ -73,11 +74,6 @@ G.Bridge = (function (MVVMScene, BridgeScreen, BridgeCrew, BridgeOrders, Scene, 
 
     Bridge.prototype.setHullEnemy = function (current, max) {
         this.screen.setHullEnemy(current, max);
-    };
-
-    Bridge.prototype.__createDialog = function (dialog) {
-        var dialogScreen = new Dialog(this.services, dialog);
-        return new MVVMScene(this.services, this.services.scenes[Scene.DIALOG], dialogScreen, Scene.DIALOG);
     };
 
     Bridge.prototype.__showScreen = function () {

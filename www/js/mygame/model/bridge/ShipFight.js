@@ -80,12 +80,10 @@ G.ShipFight = (function (range, isNaN, Math, DecisionAI) {
 
         if (isAttack) {
             if (this.enemy.hull > 1) {
-                // this.__chainDialog('critical_hit', 'effective', this.initCounterAttack.bind(this));
-                this.initCounterAttack();
+                this.__dialog('hit', this.initCounterAttack.bind(this));
                 this.bridge.hitEnemy();
             } else {
-                // this.__chainDialog('critical_hit', 'effective', this.success.bind(this));
-                this.success();
+                this.__dialog('hit', this.success.bind(this));
                 this.bridge.hitEnemy();
             }
         } else {
@@ -116,12 +114,10 @@ G.ShipFight = (function (range, isNaN, Math, DecisionAI) {
             this.bridge.setHull.bind(this.bridge));
 
         if (this.ship.hull > 1) {
-            // this.__chainDialog('critical_hit', 'effective', this.waitForOrders.bind(this));
-            this.waitForOrders();
+            this.__dialog('hit', this.waitForOrders.bind(this));
             this.bridge.bigShake();
         } else {
-            // this.__chainDialog('critical_hit', 'effective', this.failure.bind(this));
-            this.failure();
+            this.__dialog('hit', this.failure.bind(this));
             this.bridge.bigShake();
         }
     };
@@ -157,10 +153,6 @@ G.ShipFight = (function (range, isNaN, Math, DecisionAI) {
         if (!this.dialogs[key])
             throw 'dialog not set: ' + key;
         this.bridge.showDialog(this.dialogs[key], callback);
-    };
-
-    ShipFight.prototype.__chainDialog = function (keyA, keyB, callback) {
-        this.__dialog(keyA, this.__dialog.bind(this, keyB, callback));
     };
 
     return ShipFight;
