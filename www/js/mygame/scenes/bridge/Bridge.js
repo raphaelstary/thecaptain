@@ -60,6 +60,10 @@ G.Bridge = (function (MVVMScene, BridgeScreen, BridgeCrew, BridgeOrders, Scene, 
         this.screen.setName(name);
     };
 
+    Bridge.prototype.setShip = function (fileName) {
+        this.screen.setShip(fileName);
+    };
+
     Bridge.prototype.setShields = function (current, max) {
         this.screen.setShields(current, max);
     };

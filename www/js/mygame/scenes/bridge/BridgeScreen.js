@@ -88,6 +88,10 @@ G.BridgeScreen = (function (wrap, Math, calcScreenConst, Event, ScreenShaker, Sh
         this.enemyName.setText(name);
     };
 
+    BridgeScreen.prototype.setShip = function (fileName) {
+        this.enemyShip.data = this.stage.getGraphic(fileName);
+    };
+
     BridgeScreen.prototype.setShields = function (next, max) {
         this.shieldsNext = next;
         if (max !== undefined)
