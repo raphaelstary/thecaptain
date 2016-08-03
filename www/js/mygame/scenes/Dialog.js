@@ -12,151 +12,156 @@ G.Dialog = (function (Event, Key, Width, Height, Option, MVVMScene, Scene, Dialo
         this.services = services;
     }
 
-    Dialog.prototype.postConstruct = function () {
-        this.itIsOver = false;
-        var typing = true;
-        var skip = false;
-        var active = true;
-        var needToShowOptionScreen = false;
-        var chosenOption;
+    Dialog.prototype.__continueWithNextParagraphOrQuit = function () {
         var self = this;
-
-        this.continueSign.setText('skip');
-
-        function startNextParagraph() {
-            typing = true;
-            skip = false;
-            self.dialogTxt.setText('');
-            self.continueSign.setText('skip');
-            startNextCharacterIteration(self.textPragraphs.shift(), 0);
+        if (self.textPragraphs.length > 0) {
+            self.__startNextParagraph();
+        } else {
+            self.itIsOver = true;
+            self.nextScene(self.__eventTrigger);
         }
+    };
 
-        function continueWithNextParagraphOrQuit() {
-            if (self.textPragraphs.length > 0) {
-                startNextParagraph();
-            } else {
-                self.itIsOver = true;
-                self.nextScene(self.__eventTrigger);
+    Dialog.prototype.__startNextParagraph = function () {
+        var self = this;
+        self.typing = true;
+        self.skip = false;
+        self.dialogTxt.setText('');
+        self.continueSign.setText('skip');
+        self.__startNextCharacterIteration(self.textPragraphs.shift(), 0);
+    };
+
+    Dialog.prototype.__showOptionScreen = function (paragraph) {
+        var self = this;
+        if (self.needToShowOptionScreen) {
+            self.needToShowOptionScreen = false;
+            self.active = false;
+
+            var optionScreen = new Option(self.services, paragraph.optionA, paragraph.optionB);
+            var optionScene = new MVVMScene(self.services, self.services.scenes[Scene.OPTION], optionScreen, Scene.OPTION);
+            optionScene.show(function (selection) {
+                self.chosenOption = selection;
+                if (paragraph.setterOptionA && selection == DialogOption.A) {
+                    self.flags[paragraph.setterOptionA] = true;
+                } else if (paragraph.setterOptionB && selection == DialogOption.B) {
+                    self.flags[paragraph.setterOptionB] = true;
+                }
+                self.active = true;
+                if (paragraph.callbackOptionA && selection == DialogOption.A &&
+                    self.callbacks[paragraph.callbackOptionA]) {
+                    self.callbacks[paragraph.callbackOptionA](self.__continueWithNextParagraphOrQuit.bind(self));
+                } else if (paragraph.callbackOptionB && selection == DialogOption.B &&
+                    self.callbacks[paragraph.callbackOptionB]) {
+                    self.callbacks[paragraph.callbackOptionB](self.__continueWithNextParagraphOrQuit.bind(self));
+                } else {
+                    self.__continueWithNextParagraphOrQuit();
+                }
+            });
+        }
+    };
+
+    Dialog.prototype.__endOfTyping = function (paragraph) {
+        var self = this;
+        self.dialogTxt.setText(paragraph.text);
+        self.continueSign.setText('continue');
+        self.typing = false;
+        self.__showOptionScreen(paragraph);
+    };
+
+    Dialog.prototype.__writeNextCharacter = function (paragraph, index) {
+        var self = this;
+        if (self.skip) {
+            self.__endOfTyping(paragraph);
+            return;
+        }
+        self.dialogTxt.setText(self.dialogTxt.data.msg + paragraph.text[index]);
+
+        if (index < paragraph.text.length - 1) {
+            self.__startNextCharacterIteration(paragraph, index + 1);
+        } else {
+            self.__endOfTyping(paragraph);
+        }
+    };
+
+    Dialog.prototype.__startNextCharacterIteration = function (paragraph, index) {
+        var self = this;
+        if (index === 0) {
+            if (paragraph.condition || paragraph.conditionNegated) {
+
+                var isConditionAnAnswer = paragraph.condition &&
+                    (paragraph.condition == DialogOption.A || paragraph.condition == DialogOption.B);
+                if (isConditionAnAnswer && paragraph.condition != self.chosenOption) {
+                    self.__continueWithNextParagraphOrQuit();
+                    return;
+                }
+                if (!isConditionAnAnswer && paragraph.condition && !self.flags[paragraph.condition]) {
+                    self.__continueWithNextParagraphOrQuit();
+                    return;
+                }
+                if (!isConditionAnAnswer && paragraph.conditionNegated && self.flags[paragraph.conditionNegated]) {
+                    self.__continueWithNextParagraphOrQuit();
+                    return;
+                }
+            }
+
+            if (paragraph.eventTrigger) {
+                self.__eventTrigger = paragraph.eventTrigger;
+            }
+            if (paragraph.optionA) {
+                self.needToShowOptionScreen = true;
             }
         }
 
+        if (paragraph.text[index] == ' ') {
+            self.__writeNextCharacter(paragraph, index);
+        } else {
+            self.timer.doLater(function () {
+                self.__writeNextCharacter(paragraph, index);
+            }, 2);
+        }
+    };
+
+    Dialog.prototype.postConstruct = function () {
+        this.itIsOver = false;
+        var self = this;
+        self.skip = false;
+        self.active = true;
+        self.typing = true;
+        self.needToShowOptionScreen = false;
+
+        this.continueSign.setText('skip');
+
         this.keyListener = this.events.subscribe(Event.KEY_BOARD, function (keyBoard) {
-            if (self.itIsOver || !active)
+            if (self.itIsOver || !self.active)
                 return;
 
             if (keyBoard[Key.ENTER] || keyBoard[Key.SPACE]) {
-                if (typing) {
+                if (self.typing) {
                     // skip typing
-                    skip = true;
+                    self.skip = true;
                 } else {
-                    continueWithNextParagraphOrQuit();
+                    self.__continueWithNextParagraphOrQuit();
                 }
             }
         });
 
         this.gamePadListener = this.events.subscribe(Event.GAME_PAD, function (gamePad) {
-            if (self.itIsOver || !active)
+            if (self.itIsOver || !self.active)
                 return;
 
             if (gamePad.isAPressed() || gamePad.isStartPressed()) {
-                if (typing) {
+                if (self.typing) {
                     // skip typing
-                    skip = true;
+                    self.skip = true;
                 } else {
-                    continueWithNextParagraphOrQuit();
+                    self.__continueWithNextParagraphOrQuit();
                 }
             }
         });
 
-        function showOptionScreen(paragraph) {
-            if (needToShowOptionScreen) {
-                needToShowOptionScreen = false;
-                active = false;
-
-                var optionScreen = new Option(self.services, paragraph.optionA, paragraph.optionB);
-                var optionScene = new MVVMScene(self.services, self.services.scenes[Scene.OPTION], optionScreen, Scene.OPTION);
-                optionScene.show(function (selection) {
-                    chosenOption = selection;
-                    if (paragraph.setterOptionA && selection == DialogOption.A) {
-                        self.flags[paragraph.setterOptionA] = true;
-                    } else if (paragraph.setterOptionB && selection == DialogOption.B) {
-                        self.flags[paragraph.setterOptionB] = true;
-                    }
-                    active = true;
-                    if (paragraph.callbackOptionA && selection == DialogOption.A &&
-                        self.callbacks[paragraph.callbackOptionA]) {
-                        self.callbacks[paragraph.callbackOptionA](continueWithNextParagraphOrQuit);
-                    } else if (paragraph.callbackOptionB && selection == DialogOption.B &&
-                        self.callbacks[paragraph.callbackOptionB]) {
-                        self.callbacks[paragraph.callbackOptionB](continueWithNextParagraphOrQuit);
-                    } else {
-                        continueWithNextParagraphOrQuit();
-                    }
-                });
-            }
-        }
-
-        function endOfTyping(paragraph) {
-            self.dialogTxt.setText(paragraph.text);
-            self.continueSign.setText('continue');
-            typing = false;
-            showOptionScreen(paragraph);
-        }
-
-        function writeNextCharacter(paragraph, index) {
-            if (skip) {
-                endOfTyping(paragraph);
-                return;
-            }
-            self.dialogTxt.setText(self.dialogTxt.data.msg + paragraph.text[index]);
-
-            if (index < paragraph.text.length - 1) {
-                startNextCharacterIteration(paragraph, index + 1);
-            } else {
-                endOfTyping(paragraph);
-            }
-        }
-
-        function startNextCharacterIteration(paragraph, index) {
-            if (index === 0) {
-                if (paragraph.condition || paragraph.conditionNegated) {
-
-                    var isConditionAnAnswer = paragraph.condition &&
-                        (paragraph.condition == DialogOption.A || paragraph.condition == DialogOption.B);
-                    if (isConditionAnAnswer && paragraph.condition != chosenOption) {
-                        continueWithNextParagraphOrQuit();
-                        return;
-                    }
-                    if (!isConditionAnAnswer && paragraph.condition && !self.flags[paragraph.condition]) {
-                        continueWithNextParagraphOrQuit();
-                        return;
-                    }
-                    if (!isConditionAnAnswer && paragraph.conditionNegated && self.flags[paragraph.conditionNegated]) {
-                        continueWithNextParagraphOrQuit();
-                        return;
-                    }
-                }
-
-                if (paragraph.eventTrigger) {
-                    self.__eventTrigger = paragraph.eventTrigger;
-                }
-                if (paragraph.optionA) {
-                    needToShowOptionScreen = true;
-                }
-            }
-
-            if (paragraph.text[index] == ' ') {
-                writeNextCharacter(paragraph, index);
-            } else {
-                self.timer.doLater(function () {
-                    writeNextCharacter(paragraph, index);
-                }, 2);
-            }
-        }
-
         self.dialogTxt.setMaxLineLength(Width.get(10, 8));
         self.dialogTxt.setLineHeight(Height.get(11));
-        startNextParagraph();
+        self.__startNextParagraph();
 
         // register screen shake
         this.shaker = new ScreenShaker(this.device);
@@ -186,6 +191,22 @@ G.Dialog = (function (Event, Key, Width, Height, Option, MVVMScene, Scene, Dialo
 
     Dialog.prototype.smallShake = function () {
         this.shaker.startSmallShake();
+    };
+
+    Dialog.prototype.continueUp = function () {
+        var self = this;
+        if (self.itIsOver || !self.active)
+            return;
+
+        if (self.typing) {
+            // skip typing
+            self.skip = true;
+        } else {
+            self.__continueWithNextParagraphOrQuit();
+        }
+    };
+
+    Dialog.prototype.continueDown = function () {
     };
 
     return Dialog;
