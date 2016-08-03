@@ -115,5 +115,59 @@ G.Interaction = (function (Event, Key) {
         this.events.unsubscribe(this.gamePadListener);
     };
 
+    Interaction.prototype.selectionAUp = function () {
+        if (this.itIsOver)
+            return;
+
+        var fn = this.callbacks['continue'];
+        if (fn)
+            fn();
+
+        this.itIsOver = true;
+        this.nextScene();
+    };
+
+    Interaction.prototype.selectionADown = function () {
+    };
+
+    Interaction.prototype.selectionBUp = function () {
+        if (this.itIsOver)
+            return;
+
+        var fn = this.callbacks['newGame'];
+        if (fn)
+            fn();
+
+        this.itIsOver = true;
+        this.nextScene();
+    };
+
+    Interaction.prototype.selectionBDown = function () {
+    };
+
+    Interaction.prototype.selectionCUp = function () {
+    };
+
+    Interaction.prototype.selectionCDown = function () {
+    };
+
+    Interaction.prototype.selectionDUp = function () {
+    };
+
+    Interaction.prototype.selectionDDown = function () {
+    };
+
+    Interaction.prototype.selectionEUp = function () {
+    };
+
+    Interaction.prototype.selectionEDown = function () {
+    };
+
+    Interaction.prototype.selectionFUp = function () {
+    };
+
+    Interaction.prototype.selectionFDown = function () {
+    };
+
     return Interaction;
 })(H5.Event, H5.Key);

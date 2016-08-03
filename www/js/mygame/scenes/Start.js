@@ -8,7 +8,16 @@ G.Start = (function (Event, Key, Interaction, MVVMScene, Scene, loadObject, load
         this.services = services;
     }
 
+    Start.prototype.startUp = function () {
+        this.__showStartMenu();
+    };
+
+    Start.prototype.startDown = function () {
+    };
+
     Start.prototype.postConstruct = function () {
+        this.__once = true;
+
         var hasSavedGame = loadBoolean(Storage.SAVED);
         this.itIsOver = false;
         var self = this;
@@ -19,7 +28,7 @@ G.Start = (function (Event, Key, Interaction, MVVMScene, Scene, loadObject, load
             if (keyBoard[Key.ENTER] || keyBoard[Key.SPACE]) {
                 self.itIsOver = true;
                 if (hasSavedGame) {
-                    showStartMenu();
+                    self.__showStartMenu();
                 } else {
                     self.nextScene();
                 }
@@ -33,29 +42,33 @@ G.Start = (function (Event, Key, Interaction, MVVMScene, Scene, loadObject, load
             if (gamePad.isAPressed() || gamePad.isStartPressed()) {
                 self.itIsOver = true;
                 if (hasSavedGame) {
-                    showStartMenu();
+                    self.__showStartMenu();
                 } else {
                     self.nextScene();
                 }
             }
         });
 
-        function showStartMenu() {
-            var callbacks = {
-                continue: function () {
-                    self.gameState.map = loadString(Storage.MAP);
-                    self.gameState.flags = loadObject(Storage.STATE);
-                    self.gameState.ship = loadObject(Storage.SHIP);
-                }
-            };
-            self.startBtn.show = false;
-            self.startTxt.show = false;
-            var menu = new Interaction(self.services, callbacks);
-            var menuScene = new MVVMScene(self.services, self.services.scenes[Scene.INTERACTION], menu, Scene.INTERACTION);
-            menuScene.show(function () {
-                self.nextScene();
-            });
-        }
+    };
+
+    Start.prototype.__showStartMenu = function () {
+        if (!this.__once)
+            return;
+        this.__once = false;
+
+        var self = this;
+        var callbacks = {
+            continue: function () {
+                self.gameState.map = loadString(Storage.MAP);
+                self.gameState.flags = loadObject(Storage.STATE);
+                self.gameState.ship = loadObject(Storage.SHIP);
+            }
+        };
+        this.startBtn.show = false;
+        this.startTxt.show = false;
+        var menu = new Interaction(this.services, callbacks);
+        var menuScene = new MVVMScene(this.services, this.services.scenes[Scene.INTERACTION], menu, Scene.INTERACTION);
+        menuScene.show(this.nextScene.bind(this));
     };
 
     Start.prototype.preDestroy = function () {
