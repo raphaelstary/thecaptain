@@ -137,5 +137,49 @@ G.BridgeOrders = (function (Event, Key, OrderOption, ScreenShaker) {
         this.shaker.startSmallShake();
     };
 
+    BridgeOrders.prototype.aUp = function () {
+        if (this.itIsOver)
+            return;
+
+        this.itIsOver = true;
+        this.nextScene(OrderOption.A);
+    };
+
+    BridgeOrders.prototype.aDown = function () {
+    };
+
+    BridgeOrders.prototype.bUp = function () {
+        if (this.itIsOver)
+            return;
+
+        this.itIsOver = true;
+        this.nextScene(OrderOption.B);
+    };
+
+    BridgeOrders.prototype.bDown = function () {
+    };
+
+    BridgeOrders.prototype.cUp = function () {
+        if (this.itIsOver)
+            return;
+
+        this.itIsOver = true;
+        this.nextScene(OrderOption.C);
+    };
+
+    BridgeOrders.prototype.cDown = function () {
+    };
+
+    BridgeOrders.prototype.dUp = function () {
+        if (this.itIsOver)
+            return;
+
+        this.itIsOver = true;
+        this.nextScene(OrderOption.D);
+    };
+
+    BridgeOrders.prototype.dDown = function () {
+    };
+
     return BridgeOrders;
 })(H5.Event, H5.Key, G.OrderOption, H5.ScreenShaker);
