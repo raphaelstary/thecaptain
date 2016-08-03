@@ -119,6 +119,7 @@ G.Game = (function (PlayFactory, installPlayerKeyBoard, installPlayerGamePad, Sc
 
             var enemyStats = self.fights[enemyId];
             var enemy = {
+                name: enemyStats.name,
                 shields: enemyStats.shields,
                 hull: enemyStats.hull,
                 commands: enemyStats.commands

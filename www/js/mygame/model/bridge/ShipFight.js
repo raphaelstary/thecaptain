@@ -13,6 +13,7 @@ G.ShipFight = (function (range, isNaN, Math, DecisionAI) {
         this.bridge.show(next);
 
         this.__updateView();
+        this.bridge.setName(this.enemy.name);
         this.bridge.setShieldsEnemy(this.enemy.shields, this.enemy.shields);
         this.bridge.setHullEnemy(this.enemy.hull, this.enemy.hull);
 

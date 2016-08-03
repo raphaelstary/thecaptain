@@ -84,6 +84,10 @@ G.BridgeScreen = (function (wrap, Math, calcScreenConst, Event, ScreenShaker, Sh
         this.hullBarEnemyMask.data.width = this.__hullEnemyWidth();
     };
 
+    BridgeScreen.prototype.setName = function (name) {
+        this.enemyName.setText(name);
+    };
+
     BridgeScreen.prototype.setShields = function (next, max) {
         this.shieldsNext = next;
         if (max !== undefined)

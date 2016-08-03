@@ -56,6 +56,10 @@ G.Bridge = (function (MVVMScene, BridgeScreen, BridgeCrew, BridgeOrders, Scene, 
         new MVVMScene(this.services, this.services.scenes[Scene.DIALOG], this.dialog, Scene.DIALOG).show(callback);
     };
 
+    Bridge.prototype.setName = function (name) {
+        this.screen.setName(name);
+    };
+
     Bridge.prototype.setShields = function (current, max) {
         this.screen.setShields(current, max);
     };
