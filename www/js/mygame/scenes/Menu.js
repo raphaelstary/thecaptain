@@ -6,6 +6,16 @@ G.Menu = (function (Event, Key) {
         this.callbacks = callbacks;
     }
 
+    Menu.prototype.__resume = function (callback) {
+        var self = this;
+        if (self.itIsOver)
+            return;
+        self.itIsOver = true;
+        if (callback)
+            callback();
+        self.nextScene();
+    };
+
     Menu.prototype.postConstruct = function () {
         this.itIsOver = false;
 
@@ -20,14 +30,7 @@ G.Menu = (function (Event, Key) {
                 selection: this.selectionB,
                 drawable: this.textB,
                 text: 'resume',
-                fn: function (callback) {
-                    if (self.itIsOver)
-                        return;
-                    self.itIsOver = true;
-                    if (callback)
-                        callback();
-                    self.nextScene();
-                }
+                fn: this.__resume.bind(this)
             }, {
                 selection: this.selectionC,
                 drawable: this.textC,
@@ -95,10 +98,10 @@ G.Menu = (function (Event, Key) {
             selection = options[0].fn;
         }
 
-        var busy = false;
+        this.busy = false;
 
         function reactivateListener() {
-            busy = false;
+            self.busy = false;
         }
 
         function execute(callback) {
@@ -109,7 +112,7 @@ G.Menu = (function (Event, Key) {
                     callback();
             }
 
-            busy = true;
+            self.busy = true;
             self.selectBtn.show = false;
             self.selectTxt.show = false;
             if (selection) {
@@ -120,7 +123,7 @@ G.Menu = (function (Event, Key) {
         }
 
         this.keyListener = this.events.subscribe(Event.KEY_BOARD, function (keyBoard) {
-            if (self.itIsOver || busy)
+            if (self.itIsOver || self.busy)
                 return;
 
             if (keyBoard[Key.UP]) {
@@ -133,7 +136,7 @@ G.Menu = (function (Event, Key) {
         });
 
         this.gamePadListener = this.events.subscribe(Event.GAME_PAD, function (gamePad) {
-            if (self.itIsOver || busy)
+            if (self.itIsOver || self.busy)
                 return;
 
             if (gamePad.isDPadUpPressed()) {
@@ -149,6 +152,88 @@ G.Menu = (function (Event, Key) {
     Menu.prototype.preDestroy = function () {
         this.events.unsubscribe(this.keyListener);
         this.events.unsubscribe(this.gamePadListener);
+    };
+
+    Menu.prototype.selectionAUp = function () {
+        if (this.itIsOver || this.busy)
+            return;
+
+        var self = this;
+
+        function callback() {
+            self.busy = false;
+        }
+
+        this.busy = true;
+
+        var fn = this.callbacks['save'];
+        if (fn) {
+            fn(callback);
+        } else {
+            callback();
+        }
+    };
+
+    Menu.prototype.selectionADown = function () {
+    };
+
+    Menu.prototype.selectionBUp = function () {
+        if (this.itIsOver || this.busy)
+            return;
+
+        var self = this;
+
+        function callback() {
+            self.busy = false;
+        }
+
+        this.busy = true;
+
+        var fn = this.__resume.bind(this);
+        if (fn) {
+            fn(callback);
+        } else {
+            callback();
+        }
+    };
+
+    Menu.prototype.selectionBDown = function () {
+    };
+
+    Menu.prototype.selectionCUp = function () {
+    };
+
+    Menu.prototype.selectionCDown = function () {
+    };
+
+    Menu.prototype.selectionDUp = function () {
+    };
+
+    Menu.prototype.selectionDDown = function () {
+    };
+
+    Menu.prototype.selectionEUp = function () {
+    };
+
+    Menu.prototype.selectionEDown = function () {
+    };
+
+    Menu.prototype.selectionFUp = function () {
+    };
+
+    Menu.prototype.selectionFDown = function () {
+    };
+
+    Menu.prototype.selectionGUp = function () {
+    };
+
+    Menu.prototype.selectionGDown = function () {
+    };
+
+    Menu.prototype.selectionHUp = function () {
+    };
+
+    Menu.prototype.selectionHDown = function () {
     };
 
     return Menu;
