@@ -1,4 +1,4 @@
-G.World = (function (iterateEntries, Tile) {
+G.World = (function (iterateEntries, Tile, Image) {
     "use strict";
 
     function World(worldView, domainGridHelper, camera, timer, directions, gameEvents, npcInfo, flags, gameCallbacks,
@@ -102,6 +102,42 @@ G.World = (function (iterateEntries, Tile) {
             }
             return false;
         }, this);
+    };
+
+    World.prototype.startAutoMove = function (destination, callback) {
+        var path = this.domainGridHelper.getPath(this.player, destination);
+        if (!path)
+            return false;
+
+        var last = this.player;
+        var wayPoints = path.map(function (tile) {
+            var direction;
+            var asset;
+            if (last.u > tile.u) {
+                direction = 'left';
+                asset = Image.SHIP_LEFT;
+            } else if (last.u < tile.u) {
+                direction = 'right';
+                asset = Image.SHIP_RIGHT;
+            } else if (last.v > tile.v) {
+                direction = 'up';
+                asset = Image.SHIP_BACK;
+            } else if (last.v < tile.v) {
+                direction = 'down';
+                asset = Image.SHIP_FRONT;
+            }
+            last = tile;
+
+            return {
+                direction: direction,
+                asset: asset
+            };
+        });
+        this.autoMove(this.player, wayPoints, true, callback);
+
+        // this.timer.doLater(callback, 1);
+
+        return true;
     };
 
     World.prototype.interact = function (callback) {
@@ -390,4 +426,4 @@ G.World = (function (iterateEntries, Tile) {
     };
 
     return World;
-})(H5.iterateEntries, G.Tile);
+})(H5.iterateEntries, G.Tile, G.Image);

@@ -1,8 +1,9 @@
 G.PlayerController = (function () {
     "use strict";
 
-    function PlayerController(world) {
+    function PlayerController(world, domainGridHelper) {
         this.world = world;
+        this.domainGridHelper = domainGridHelper;
 
         this.moving = false;
         this.__paused = false;
@@ -20,6 +21,27 @@ G.PlayerController = (function () {
         this.moving = false;
         if (callback)
             callback();
+    };
+
+    PlayerController.prototype.handlePointerDown = function (x, y) {
+        //if (this.__paused || this.moving)
+        //    return;
+    };
+
+    PlayerController.prototype.handlePointerMove = function (x, y) {
+        //if (this.__paused || this.moving)
+        //    return;
+    };
+
+    PlayerController.prototype.handlePointerUp = function (x, y) {
+        if (this.__paused || this.moving)
+            return;
+
+        var target = this.domainGridHelper.getCoordinates(x, y);
+        if (target === undefined || target.u === undefined || target.v === undefined)
+            return;
+
+        this.moving = this.world.startAutoMove(target, this.__myCallback.bind(this));
     };
 
     PlayerController.prototype.handleKeyLeft = function (callback) {

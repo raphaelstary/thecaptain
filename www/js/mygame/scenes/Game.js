@@ -193,8 +193,20 @@ G.Game = (function (PlayFactory, installPlayerKeyBoard, installPlayerGamePad, Sc
 
         this.cameraListener = this.events.subscribe(Event.TICK_CAMERA, this.world.updateCamera.bind(this.world));
 
-        this.playerController = PlayFactory.createPlayerController(this.world);
+        this.playerController = PlayFactory.createPlayerController(this.world, this.world.domainGridHelper);
         this.__pause();
+
+        this.pointerHandler = this.events.subscribe(Event.POINTER, function (pointer) {
+            if (self.__itIsOver)
+                return;
+
+            if (pointer.type == 'down')
+                self.playerController.handlePointerDown(pointer.x, pointer.y);
+            if (pointer.type == 'up')
+                self.playerController.handlePointerUp(pointer.x, pointer.y);
+            if (pointer.type == 'move')
+                self.playerController.handlePointerMove(pointer.x, pointer.y);
+        });
 
         this.keyBoardHandler = installPlayerKeyBoard(this.events, this.playerController);
         this.gamePadHandler = installPlayerGamePad(this.events, this.playerController);
@@ -204,6 +216,7 @@ G.Game = (function (PlayFactory, installPlayerKeyBoard, installPlayerGamePad, Sc
     };
 
     Game.prototype.preDestroy = function () {
+        this.events.unsubscribe(this.pointerHandler);
         this.events.unsubscribe(this.keyBoardHandler);
         this.events.unsubscribe(this.gamePadHandler);
         this.events.unsubscribe(this.cameraListener);
