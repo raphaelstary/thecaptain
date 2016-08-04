@@ -67,5 +67,24 @@ G.Option = (function (Event, Key, DialogOption) {
         this.events.unsubscribe(this.gamePadListener);
     };
 
+    Option.prototype.selectionAUp = function () {
+        if (this.itIsOver)
+            return;
+        this.nextScene(DialogOption.A);
+    };
+
+    Option.prototype.selectionADown = function () {
+    };
+
+    Option.prototype.selectionBUp = function () {
+        if (this.itIsOver)
+            return;
+        this.nextScene(DialogOption.B);
+    };
+
+    Option.prototype.selectionBDown = function () {
+
+    };
+
     return Option;
 })(H5.Event, H5.Key, G.DialogOption);
