@@ -106,7 +106,7 @@ G.World = (function (iterateEntries, Tile, Image) {
 
     World.prototype.startAutoMove = function (destination, callback) {
         var path = this.domainGridHelper.getPath(this.player, destination);
-        if (!path)
+        if (!path || path.length < 1)
             return false;
 
         var last = this.player;
