@@ -223,6 +223,20 @@ G.Game = (function (PlayFactory, installPlayerKeyBoard, installPlayerGamePad, Sc
         this.world.preDestroy();
     };
 
+    Game.prototype.menuUp = function () {
+        this.playerController.handleMenuKey();
+    };
+
+    Game.prototype.menuDown = function () {
+    };
+
+    Game.prototype.interactUp = function () {
+        this.playerController.handleInteractionKey();
+    };
+
+    Game.prototype.interactDown = function () {
+    };
+
     return Game;
 })(G.PlayFactory, G.installPlayerKeyBoard, G.installPlayerGamePad, G.Scene, H5.MVVMScene, G.Dialog, G.Tile, H5.Event,
     H5.Strings, G.Menu, H5.lclStorage, H5.saveObject, G.Storage, G.createShipFight);
