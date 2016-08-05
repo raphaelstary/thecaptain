@@ -91,7 +91,7 @@ G.Bridge = (function (MVVMScene, BridgeScreen, BridgeCrew, BridgeOrders, Scene, 
     };
 
     Bridge.prototype.__showBridge = function () {
-        var bridge = new Background(this.services);
+        var bridge = new Background(this.services, this.crew);
         new MVVMScene(this.services, this.services.scenes[Scene.BRIDGE], bridge, Scene.BRIDGE).show();
         return bridge;
     };

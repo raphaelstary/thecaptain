@@ -1,9 +1,11 @@
 G.Background = (function (Event, ScreenShaker) {
     "use strict";
 
-    function Background(services) {
+    function Background(services, crew) {
         this.events = services.events;
         this.device = services.device;
+        this.stage = services.stage;
+        this.crew = crew;
     }
 
     Background.prototype.postConstruct = function () {
@@ -17,6 +19,16 @@ G.Background = (function (Event, ScreenShaker) {
             if (isBackground)
                 return;
             this.shaker.add(drawable);
+        }, this);
+
+        ['engineering', 'tactics', 'navigation', 'weapons', 'science', 'communication'].forEach(function (key) {
+            var img = this.crew[key].asset;
+            if (img) {
+                this[key].data = this.stage.getGraphic(img);
+            } else {
+                this.shaker.remove(this[key]);
+                this[key].remove();
+            }
         }, this);
     };
 
