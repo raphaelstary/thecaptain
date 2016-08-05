@@ -3,7 +3,7 @@ G.Game = (function (PlayFactory, installPlayerKeyBoard, installPlayerGamePad, Sc
     "use strict";
 
     function Game(services, map, dialog, npc, walls, background, directions, fights, gameEvents, mapKey, prevMapKey,
-        flags, ship, gameCallbacks) {
+        flags, ship, crew, gameCallbacks) {
         this.device = services.device;
         this.events = services.events;
         this.sceneStorage = services.sceneStorage;
@@ -23,6 +23,7 @@ G.Game = (function (PlayFactory, installPlayerKeyBoard, installPlayerGamePad, Sc
         this.prevMapKey = prevMapKey;
         this.flags = flags;
         this.ship = ship;
+        this.crew = crew;
         this.gameCallbacks = gameCallbacks;
         this.services = services;
 
@@ -126,7 +127,7 @@ G.Game = (function (PlayFactory, installPlayerKeyBoard, installPlayerGamePad, Sc
                 commands: enemyStats.commands
             };
 
-            var fight = createShipFight(self.services, self.dialog, self.ship, enemy);
+            var fight = createShipFight(self.services, self.dialog, self.ship, enemy, self.crew);
             fight.start(function (isVictorious, hull) {
                 if (interactionVisible) {
                     self.interactSymbol.show = true;

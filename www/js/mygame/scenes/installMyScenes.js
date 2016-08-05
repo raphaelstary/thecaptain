@@ -25,6 +25,7 @@ G.installMyScenes = (function (Scenes, MVVMScene, Start, Scene, Event, Game, Map
         var background = services.world[MapKey.BACKGROUND];
         var directions = services.world[MapKey.DIRECTIONS];
         var gameEvents = services.world[MapKey.EVENTS];
+        var crew = services.world[MapKey.CREW];
 
         gameCallbacks[MapKey.REPAIR_SHIP] = function (next) {
             var torpedoCount = gameState.ship.torpedo_count;
@@ -64,7 +65,7 @@ G.installMyScenes = (function (Scenes, MVVMScene, Start, Scene, Event, Game, Map
         }
 
         function showMapScene(nextMapKey, prevMapKey) {
-            var game = new Game(services, maps[nextMapKey], dialogs, npcs, walls, background, directions, fights, gameEvents, nextMapKey, prevMapKey, gameState.flags, gameState.ship, gameCallbacks);
+            var game = new Game(services, maps[nextMapKey], dialogs, npcs, walls, background, directions, fights, gameEvents, nextMapKey, prevMapKey, gameState.flags, gameState.ship, crew, gameCallbacks);
             new MVVMScene(services, services.scenes[Scene.GAME], game, Scene.GAME).show(mapCallback);
             return game;
         }
