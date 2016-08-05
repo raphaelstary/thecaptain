@@ -22,9 +22,11 @@ G.Background = (function (Event, ScreenShaker) {
         }, this);
 
         ['engineering', 'tactics', 'navigation', 'weapons', 'science', 'communication'].forEach(function (key) {
-            var img = this.crew[key].asset;
-            if (img) {
-                this[key].data = this.stage.getGraphic(img);
+            var officer = this.crew[key];
+            if (officer) {
+                this[key].data = this.stage.getGraphic(officer.asset);
+                this.shaker.remove(this[key + 'Chair']);
+                this[key + 'Chair'].remove();
             } else {
                 this.shaker.remove(this[key]);
                 this[key].remove();
