@@ -63,6 +63,7 @@ G.Game = (function (PlayFactory, installPlayerKeyBoard, installPlayerGamePad, Sc
 
         var self = this;
         var interactionVisible = false;
+        var menuIconVisible = true;
 
         function possibleInteractionStart(dialogId) {
             if (self.__itIsOver)
@@ -91,21 +92,34 @@ G.Game = (function (PlayFactory, installPlayerKeyBoard, installPlayerGamePad, Sc
             self.interactButton.show = false;
         }
 
-        function interaction(dialogId, callback) {
+        function interaction(dialogId, callback, ignoreIcons) {
             if (self.__itIsOver)
                 return;
 
-            if (interactionVisible) {
-                self.interactSymbol.show = false;
-                self.interactButton.show = false;
+            if (!ignoreIcons) {
+                if (menuIconVisible) {
+                    self.menuButton.show = false;
+                    self.menuText.show = false;
+                }
+
+                if (interactionVisible) {
+                    self.interactSymbol.show = false;
+                    self.interactButton.show = false;
+                }
             }
 
             var dialogScreen = new Dialog(self.services, self.dialog[dialogId], self.flags, self.gameCallbacks);
             var dialogScene = new MVVMScene(self.services, self.services.scenes[Scene.DIALOG], dialogScreen, Scene.DIALOG);
             dialogScene.show(function (eventTrigger) {
-                if (interactionVisible) {
-                    self.interactSymbol.show = true;
-                    self.interactButton.show = true;
+                if (!ignoreIcons) {
+                    if (menuIconVisible) {
+                        self.menuButton.show = true;
+                        self.menuText.show = true;
+                    }
+                    if (interactionVisible) {
+                        self.interactSymbol.show = true;
+                        self.interactButton.show = true;
+                    }
                 }
                 if (callback)
                     callback(eventTrigger);
@@ -113,6 +127,10 @@ G.Game = (function (PlayFactory, installPlayerKeyBoard, installPlayerGamePad, Sc
         }
 
         function fight(enemyId, callback) {
+            if (menuIconVisible) {
+                self.menuButton.show = false;
+                self.menuText.show = false;
+            }
             if (interactionVisible) {
                 self.interactSymbol.show = false;
                 self.interactButton.show = false;
@@ -129,6 +147,10 @@ G.Game = (function (PlayFactory, installPlayerKeyBoard, installPlayerGamePad, Sc
 
             var fight = createShipFight(self.services, self.dialog, self.ship, enemy, self.crew);
             fight.start(function (isVictorious, hull) {
+                if (menuIconVisible) {
+                    self.menuButton.show = true;
+                    self.menuText.show = true;
+                }
                 if (interactionVisible) {
                     self.interactSymbol.show = true;
                     self.interactButton.show = true;
@@ -154,18 +176,38 @@ G.Game = (function (PlayFactory, installPlayerKeyBoard, installPlayerGamePad, Sc
             if (self.__itIsOver)
                 return;
 
+            if (interactionVisible) {
+                self.interactSymbol.show = false;
+                self.interactButton.show = false;
+            }
+            if (menuIconVisible) {
+                self.menuButton.show = false;
+                self.menuText.show = false;
+            }
+
             var callbacks = {
                 save: function (callback) {
                     localStorage.setItem(Storage.MAP, self.mapKey);
                     saveObject(Storage.STATE, self.flags);
                     saveObject(Storage.SHIP, self.ship);
                     localStorage.setItem(Storage.SAVED, true);
-                    interaction('saved', callback);
+                    interaction('saved', callback, true);
                 }
             };
             var menu = new Menu(self.services, callbacks);
             var menuScene = new MVVMScene(self.services, self.services.scenes[Scene.MENU], menu, Scene.MENU);
-            menuScene.show(callback);
+            menuScene.show(function () {
+                if (interactionVisible) {
+                    self.interactSymbol.show = true;
+                    self.interactButton.show = true;
+                }
+                if (menuIconVisible) {
+                    self.menuButton.show = true;
+                    self.menuText.show = true;
+                }
+                if (callback)
+                    callback();
+            });
         }
 
         function endMap(nextMap) {
