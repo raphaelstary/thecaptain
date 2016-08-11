@@ -95,19 +95,24 @@ G.BridgeCrew = (function (Event, Key, ScreenShaker) {
             }
         });
 
-        if (this.weapons) {
-            this.weaponsUp();
-        } else if (this.tactics) {
-            this.tacticsUp();
-        } else if (this.engineering) {
-            this.engineeringUp();
-        } else if (this.navigation) {
-            this.navigationUp();
-        } else if (this.science) {
-            this.scienceUp();
-        } else if (this.communication) {
-            this.communicationUp();
-        }
+        this.showOrders(options[0].officer);
+
+        right();
+        right();
+        right();
+        // if (this.weapons) {
+        //     this.weaponsUp();
+        // } else if (this.tactics) {
+        //     this.tacticsUp();
+        // } else if (this.engineering) {
+        //     this.engineeringUp();
+        // } else if (this.navigation) {
+        //     this.navigationUp();
+        // } else if (this.science) {
+        //     this.scienceUp();
+        // } else if (this.communication) {
+        //     this.communicationUp();
+        // }
 
         // register screen shake
         this.shaker = new ScreenShaker(this.device);
