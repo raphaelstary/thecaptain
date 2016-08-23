@@ -38,8 +38,8 @@ G.ShipHitView = (function (wrap, Transition) {
 
         var self = this;
         this.timer.doLater(function () {
-            white.remove(white);
-            black.remove(black);
+            white.remove();
+            black.remove();
             self.shaker.remove(white);
             self.shaker.remove(black);
             self.shaker.remove(self.drawable);
