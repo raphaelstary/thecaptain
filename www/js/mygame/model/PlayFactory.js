@@ -5,9 +5,8 @@ G.PlayFactory = (function (Grid, GridHelper, GridViewHelper, DomainGridHelper, W
 
     return {
         createWorld: function (stage, timer, sounds, device, map, npcInfo, wallInfo, backgroundInfo, directions,
-            gameEvents,
-            flags, gameCallbacks, possibleInteractionStart, possibleInteractionEnd, interaction, fight, showMenu,
-            endMap, prevMapKey, pause, resume) {
+            gameEvents, flags, gameCallbacks, possibleInteractionStart, possibleInteractionEnd, interaction, fight,
+            showMenu, endMap, prevMapKey, pause, resume) {
             var grid = new Grid(map);
             var gridViewHelper = new GridViewHelper(stage, device, 16, 9, zero, zero);
             var worldView = new WorldView(stage, timer, sounds, gridViewHelper, npcInfo, wallInfo, backgroundInfo);

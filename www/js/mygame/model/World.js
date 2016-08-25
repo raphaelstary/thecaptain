@@ -283,6 +283,18 @@ G.World = (function (iterateEntries, Tile, Image, Sound) {
             delete this.flags[event.argument];
             next();
 
+        } else if (event.action == 'increment_flag') {
+            if (this.flags[event.argument] === undefined)
+                this.flags[event.argument] = 0;
+            this.flags[event.argument]++;
+            next();
+
+        } else if (event.action == 'decrement_flag') {
+            if (this.flags[event.argument] === undefined)
+                this.flags[event.argument] = 0;
+            this.flags[event.argument]--;
+            next();
+
         } else if (event.action == 'directions') {
             this.__startAutoMove(this.directions[event.argument], event.argument, true, next);
 
@@ -320,6 +332,16 @@ G.World = (function (iterateEntries, Tile, Image, Sound) {
             this.npcs.push(npc);
             this.allTiles.push(npc);
             next();
+        } else if (event.action == 'add_npc_next') {
+            var npcTile = this.domainGridHelper.getEmptyNeighbor(this.player);
+            npcTile.type = event.argument;
+
+            this.domainGridHelper.add(npcTile);
+            this.worldView.add(npcTile);
+            this.npcs.push(npcTile);
+            this.allTiles.push(npcTile);
+            next();
+
         } else if (event.action == 'wait') {
             this.timer.doLater(next, parseInt(event.argument));
         }

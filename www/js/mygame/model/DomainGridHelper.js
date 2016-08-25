@@ -181,5 +181,11 @@ G.DomainGridHelper = (function (Tile, Strings, range, A_STAR) {
         return this.__calcPathWithAStar(relativeStart, relativeEnd).map(toAbsoluteCoordinates(cameraCoordinates));
     };
 
+    DomainGridHelper.prototype.getEmptyNeighbor = function (player) {
+        return this.gridHelper.getNeighbors(player.u, player.v).filter(function (neighbor) {
+            return neighbor.type == Tile.EMPTY;
+        }).reverse()[0];
+    };
+
     return DomainGridHelper;
 })(G.Tile, H5.Strings, H5.range, L.A_STAR);

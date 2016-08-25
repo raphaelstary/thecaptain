@@ -68,7 +68,7 @@ G.Start = (function (Event, Key, Interaction, MVVMScene, Scene, loadObject, load
                 if (hasSavedGame) {
                     self.__showStartMenu();
                 } else {
-                    self.nextScene();
+                    self.__fadeOut();
                 }
             }
         });
@@ -82,7 +82,7 @@ G.Start = (function (Event, Key, Interaction, MVVMScene, Scene, loadObject, load
                 if (hasSavedGame) {
                     self.__showStartMenu();
                 } else {
-                    self.nextScene();
+                    self.__fadeOut();
                 }
             }
         });
@@ -107,16 +107,21 @@ G.Start = (function (Event, Key, Interaction, MVVMScene, Scene, loadObject, load
         this.startTxt.show = false;
         var menu = new Interaction(this.services, callbacks);
         var menuScene = new MVVMScene(this.services, this.services.scenes[Scene.INTERACTION], menu, Scene.INTERACTION);
-        menuScene.show(this.nextScene.bind(this));
+        menuScene.show(this.__fadeOut.bind(this));
     };
 
-    Start.prototype.preDestroy = function () {
+    Start.prototype.__fadeOut = function () {
         var self = this;
         self.stopMusic = true;
         self.sounds.fadeOut(self.lastLoopAlt);
         self.sounds.fadeOut(self.lastLoop);
         self.sounds.play(Sound.MUSIC_START);
+        this.timer.doLater(function () {
+            self.nextScene();
+        }, 30);
+    };
 
+    Start.prototype.preDestroy = function () {
         this.events.unsubscribe(this.keyListener);
         this.events.unsubscribe(this.gamePadListener);
     };

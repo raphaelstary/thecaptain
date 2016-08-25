@@ -124,7 +124,7 @@ G.WorldView = (function (Image, Math, iterateEntries, Tile, Sound) {
         if (this.npcs[npc.type])
             delete this.npcs[npc.type];
 
-        if (npc.type[1] == 'R') {
+        if (npc.type[1] == 'R' || npc.type[1] == 'P') {
             this.explode(npc, function () {
                 if (npc.entity)
                     npc.entity.remove();

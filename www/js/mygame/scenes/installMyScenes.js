@@ -1,4 +1,4 @@
-G.installMyScenes = (function (Scenes, MVVMScene, Start, Scene, Event, Game, MapKey, GoFullScreen) {
+G.installMyScenes = (function (Scenes, MVVMScene, Start, Scene, Event, Game, MapKey, GoFullScreen, range) {
     "use strict";
 
     function installMyScenes(services) {
@@ -35,11 +35,25 @@ G.installMyScenes = (function (Scenes, MVVMScene, Start, Scene, Event, Game, Map
             };
             next();
         };
+        gameCallbacks['rocky_pirate'] = function (next) {
+            var chance = range(0, 100);
+            if (chance < 80) {
+                next();
+                return;
+            }
+            if (!gameState.flags['mission_briefing_over'] && gameState.flags['defeated_rocky_pirates'] >= 3) {
+                next();
+                return;
+            }
+
+            gameState.flags['rocky_pirate_fight'] = true;
+            next();
+        };
 
         var scenes = new Scenes();
         var goFullScreen = new GoFullScreen(services);
 
-        scenes.add(goFullScreen.show.bind(goFullScreen), true);
+        // scenes.add(goFullScreen.show.bind(goFullScreen), true);
 
         var start = new Start(services, gameState);
         var startScene = new MVVMScene(services, services.scenes[Scene.START], start, Scene.START);
@@ -77,4 +91,4 @@ G.installMyScenes = (function (Scenes, MVVMScene, Start, Scene, Event, Game, Map
     }
 
     return installMyScenes;
-})(H5.Scenes, H5.MVVMScene, G.Start, G.Scene, H5.Event, G.Game, G.MapKey, G.GoFullScreen);
+})(H5.Scenes, H5.MVVMScene, G.Start, G.Scene, H5.Event, G.Game, G.MapKey, G.GoFullScreen, H5.range);
