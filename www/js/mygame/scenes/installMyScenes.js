@@ -1,4 +1,4 @@
-G.installMyScenes = (function (Scenes, MVVMScene, Start, Scene, Event, Game, MapKey) {
+G.installMyScenes = (function (Scenes, MVVMScene, Start, Scene, Event, Game, MapKey, GoFullScreen) {
     "use strict";
 
     function installMyScenes(services) {
@@ -37,6 +37,9 @@ G.installMyScenes = (function (Scenes, MVVMScene, Start, Scene, Event, Game, Map
         };
 
         var scenes = new Scenes();
+        var goFullScreen = new GoFullScreen(services);
+
+        scenes.add(goFullScreen.show.bind(goFullScreen), true);
 
         var start = new Start(services, gameState);
         var startScene = new MVVMScene(services, services.scenes[Scene.START], start, Scene.START);
@@ -74,4 +77,4 @@ G.installMyScenes = (function (Scenes, MVVMScene, Start, Scene, Event, Game, Map
     }
 
     return installMyScenes;
-})(H5.Scenes, H5.MVVMScene, G.Start, G.Scene, H5.Event, G.Game, G.MapKey);
+})(H5.Scenes, H5.MVVMScene, G.Start, G.Scene, H5.Event, G.Game, G.MapKey, G.GoFullScreen);

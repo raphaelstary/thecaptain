@@ -1,5 +1,5 @@
 G.Game = (function (PlayFactory, installPlayerKeyBoard, installPlayerGamePad, Scene, MVVMScene, Dialog, Tile, Event,
-    Strings, Menu, localStorage, saveObject, Storage, createShipFight, MapKey, Sound) {
+    Strings, Menu, localStorage, saveObject, Storage, createShipFight, MapKey, Sound, Key) {
     "use strict";
 
     function Game(services, map, dialog, npc, walls, background, directions, fights, gameEvents, mapKey, prevMapKey,
@@ -215,6 +215,40 @@ G.Game = (function (PlayFactory, installPlayerKeyBoard, installPlayerGamePad, Sc
                     saveObject(Storage.SHIP, self.ship);
                     localStorage.setItem(Storage.SAVED, true);
                     interaction('saved', callback, true);
+                },
+                fullScreen: function (callback) {
+                    var goFullScreen = true;
+
+                    function oneTimeKeyListener(e) {
+                        if (goFullScreen && (e.keyCode == Key.SPACE || e.keyCode == Key.ENTER)) {
+                            goFullScreen = false;
+                            toggleFullScreen();
+                            document.removeEventListener('keydown', oneTimeKeyListener);
+                        }
+                    }
+
+                    document.addEventListener('keydown', oneTimeKeyListener);
+
+                    function toggleFullScreen() {
+                        if (self.device.isFullScreen()) {
+                            self.device.exitFullScreen();
+                        } else {
+                            self.device.requestFullScreen();
+                        }
+                    }
+
+                    interaction(self.device.isFullScreen() ? 'exit_fullscreen' : 'go_fullscreen', callback, true);
+                },
+                mute: function (callback) {
+                    interaction(self.sounds.isMute ? 'unmute' : 'mute', function () {
+                        if (self.sounds.isMute) {
+                            self.sounds.unmuteAll();
+                        } else {
+                            self.sounds.muteAll();
+                        }
+                        if (callback)
+                            callback();
+                    }, true);
                 }
             };
             var menu = new Menu(self.services, callbacks);
@@ -337,4 +371,4 @@ G.Game = (function (PlayFactory, installPlayerKeyBoard, installPlayerGamePad, Sc
 
     return Game;
 })(G.PlayFactory, G.installPlayerKeyBoard, G.installPlayerGamePad, G.Scene, H5.MVVMScene, G.Dialog, G.Tile, H5.Event,
-    H5.Strings, G.Menu, H5.lclStorage, H5.saveObject, G.Storage, G.createShipFight, G.MapKey, G.Sound);
+    H5.Strings, G.Menu, H5.lclStorage, H5.saveObject, G.Storage, G.createShipFight, G.MapKey, G.Sound, H5.Key);

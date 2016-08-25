@@ -24,25 +24,23 @@ G.Menu = (function (Event, Key) {
             {
                 selection: this.selectionA,
                 drawable: this.textA,
-                text: 'save',
-                fn: this.callbacks['save']
+                text: 'mute - unmute',
+                fn: this.callbacks['mute']
             }, {
                 selection: this.selectionB,
                 drawable: this.textB,
-                text: 'resume',
-                fn: this.__resume.bind(this)
+                text: 'fullscreen',
+                fn: this.callbacks['fullScreen']
             }, {
                 selection: this.selectionC,
                 drawable: this.textC,
-                text: 'save game',
-                hidden: true,
-                fn: undefined
+                text: 'save',
+                fn: this.callbacks['save']
             }, {
                 selection: this.selectionD,
                 drawable: this.textD,
-                text: 'save game',
-                hidden: true,
-                fn: undefined
+                text: 'resume',
+                fn: this.__resume.bind(this)
             }, {
                 selection: this.selectionE,
                 drawable: this.textE,
