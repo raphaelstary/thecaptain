@@ -1,5 +1,5 @@
 G.Game = (function (PlayFactory, installPlayerKeyBoard, installPlayerGamePad, Scene, MVVMScene, Dialog, Tile, Event,
-    Strings, Menu, localStorage, saveObject, Storage, createShipFight) {
+    Strings, Menu, localStorage, saveObject, Storage, createShipFight, MapKey, Sound) {
     "use strict";
 
     function Game(services, map, dialog, npc, walls, background, directions, fights, gameEvents, mapKey, prevMapKey,
@@ -9,6 +9,7 @@ G.Game = (function (PlayFactory, installPlayerKeyBoard, installPlayerGamePad, Sc
         this.sceneStorage = services.sceneStorage;
         this.stage = services.stage;
         this.timer = services.timer;
+        this.sounds = services.sounds;
 
         this.scenes = services.scenes;
         this.map = map;
@@ -92,10 +93,7 @@ G.Game = (function (PlayFactory, installPlayerKeyBoard, installPlayerGamePad, Sc
             self.interactButton.show = false;
         }
 
-        function interaction(dialogId, callback, ignoreIcons) {
-            if (self.__itIsOver)
-                return;
-
+        function interact(ignoreIcons, dialogId, callback) {
             if (!ignoreIcons) {
                 if (menuIconVisible) {
                     self.menuButton.show = false;
@@ -126,7 +124,30 @@ G.Game = (function (PlayFactory, installPlayerKeyBoard, installPlayerGamePad, Sc
             });
         }
 
+        function interaction(dialogId, callback, ignoreIcons) {
+            if (self.__itIsOver)
+                return;
+
+            if (Strings.startsWidth(dialogId, Tile.NPC + 'S')) {
+                // read
+                self.sounds.play(Sound.INTERACT);
+            } else if (Strings.startsWidth(dialogId, Tile.NPC + 'C')) {
+                // scan
+                self.sounds.play(Sound.INTERACT);
+            } else if (Strings.startsWidth(dialogId, Tile.NPC + 'I')) {
+                // take
+                self.sounds.play(Sound.TAKE);
+            } else if (Strings.startsWidth(dialogId, Tile.NPC)) {
+                // talk
+                self.sounds.play(Sound.INTERACT);
+            }
+
+            self.timer.doLater(interact.bind(undefined, ignoreIcons, dialogId, callback), 30);
+        }
+
         function fight(enemyId, callback) {
+            self.__stopMusic();
+
             if (menuIconVisible) {
                 self.menuButton.show = false;
                 self.menuText.show = false;
@@ -166,6 +187,8 @@ G.Game = (function (PlayFactory, installPlayerKeyBoard, installPlayerGamePad, Sc
                 }
 
                 self.ship.hull = hull;
+
+                self.__startMusic();
 
                 if (callback)
                     callback();
@@ -222,10 +245,10 @@ G.Game = (function (PlayFactory, installPlayerKeyBoard, installPlayerGamePad, Sc
             });
         }
 
-        this.world = PlayFactory.createWorld(this.stage, this.timer, this.device, this.map, this.npc, this.walls,
-            this.background, this.directions, this.gameEvents, this.flags, this.gameCallbacks, possibleInteractionStart,
-            possibleInteractionEnd, interaction, fight, showMenu, endMap, this.prevMapKey, this.__pause.bind(this),
-            this.__resume.bind(this));
+        this.world = PlayFactory.createWorld(this.stage, this.timer, this.sounds, this.device, this.map, this.npc,
+            this.walls, this.background, this.directions, this.gameEvents, this.flags, this.gameCallbacks,
+            possibleInteractionStart, possibleInteractionEnd, interaction, fight, showMenu, endMap, this.prevMapKey,
+            this.__pause.bind(this), this.__resume.bind(this));
 
         this.world.init(function () {
             if (self.__itIsOver)
@@ -256,6 +279,36 @@ G.Game = (function (PlayFactory, installPlayerKeyBoard, installPlayerGamePad, Sc
 
         this.interactSymbol.show = false;
         self.interactButton.show = false;
+
+        this.__startMusic();
+    };
+
+    Game.prototype.__startMusic = function () {
+        var self = this;
+        self.stopMusic = false;
+        self.lastLoop = 0;
+
+        function loopMusic(sound) {
+            if (self.stopMusic)
+                return;
+
+            var loop = self.lastLoop = self.sounds.play(sound);
+            self.sounds.notifyOnce(loop, 'end', loopMusic.bind(undefined, sound));
+        }
+
+        if (this.mapKey == MapKey.BLUE) {
+            loopMusic(Sound.MUSIC_BLUE);
+        } else if (this.mapKey == MapKey.RED) {
+            loopMusic(Sound.MUSIC_RED);
+        } else {
+            loopMusic(Sound.MUSIC_SPACE);
+        }
+    };
+
+    Game.prototype.__stopMusic = function () {
+        this.stopMusic = true;
+        if (this.lastLoop !== 0)
+            this.sounds.fadeOut(this.lastLoop);
     };
 
     Game.prototype.preDestroy = function () {
@@ -264,6 +317,8 @@ G.Game = (function (PlayFactory, installPlayerKeyBoard, installPlayerGamePad, Sc
         this.events.unsubscribe(this.gamePadHandler);
         this.events.unsubscribe(this.cameraListener);
         this.world.preDestroy();
+
+        this.__stopMusic();
     };
 
     Game.prototype.menuUp = function () {
@@ -282,4 +337,4 @@ G.Game = (function (PlayFactory, installPlayerKeyBoard, installPlayerGamePad, Sc
 
     return Game;
 })(G.PlayFactory, G.installPlayerKeyBoard, G.installPlayerGamePad, G.Scene, H5.MVVMScene, G.Dialog, G.Tile, H5.Event,
-    H5.Strings, G.Menu, H5.lclStorage, H5.saveObject, G.Storage, G.createShipFight);
+    H5.Strings, G.Menu, H5.lclStorage, H5.saveObject, G.Storage, G.createShipFight, G.MapKey, G.Sound);

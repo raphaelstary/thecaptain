@@ -7,6 +7,8 @@ G.Bridge = (function (MVVMScene, BridgeScreen, BridgeCrew, BridgeOrders, Scene, 
         this.crew = crew;
 
         this.events = services.events;
+
+        this.sounds = services.sounds;
     }
 
     Bridge.prototype.show = function (next) {
@@ -82,6 +84,13 @@ G.Bridge = (function (MVVMScene, BridgeScreen, BridgeCrew, BridgeOrders, Scene, 
 
     Bridge.prototype.setHullEnemy = function (current, max) {
         this.screen.setHullEnemy(current, max);
+    };
+
+    Bridge.prototype.play = function (sound, callback, thisArg) {
+        var id = this.sounds.play(sound);
+
+        if (callback)
+            this.sounds.notifyOnce(id, 'end', callback.bind(thisArg));
     };
 
     Bridge.prototype.__showScreen = function () {

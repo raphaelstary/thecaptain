@@ -1,4 +1,4 @@
-G.World = (function (iterateEntries, Tile, Image) {
+G.World = (function (iterateEntries, Tile, Image, Sound) {
     "use strict";
 
     function World(worldView, domainGridHelper, camera, timer, directions, gameEvents, npcInfo, flags, gameCallbacks,
@@ -335,8 +335,14 @@ G.World = (function (iterateEntries, Tile, Image) {
         }
 
         var self = this;
+        var isPlaying = false;
+        var lastSound;
 
         function handleNextWayPoint() {
+            if (isPlaying) {
+                self.worldView.stop(lastSound);
+            }
+
             if (nextWayPoints.length > 0) {
                 self.autoMove(entity, nextWayPoints, noLoop, callback);
                 return;
@@ -350,6 +356,11 @@ G.World = (function (iterateEntries, Tile, Image) {
         }
 
         function moveForever(move, entity, callback) {
+            if (!isPlaying) {
+                isPlaying = true;
+                lastSound = self.worldView.play(Sound.ATTACK_FLIGHT_LONG);
+            }
+
             function currentMoveCallback() {
                 if (success)
                     moveForever(move, entity, callback)
@@ -426,4 +437,4 @@ G.World = (function (iterateEntries, Tile, Image) {
     };
 
     return World;
-})(H5.iterateEntries, G.Tile, G.Image);
+})(H5.iterateEntries, G.Tile, G.Image, G.Sound);

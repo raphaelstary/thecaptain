@@ -1,10 +1,11 @@
-G.Background = (function (Event, ScreenShaker) {
+G.Background = (function (Event, ScreenShaker, Sound) {
     "use strict";
 
     function Background(services, crew) {
         this.events = services.events;
         this.device = services.device;
         this.stage = services.stage;
+        this.sounds = services.sounds;
         this.crew = crew;
     }
 
@@ -32,12 +33,30 @@ G.Background = (function (Event, ScreenShaker) {
                 this[key].remove();
             }
         }, this);
+
+        var self = this;
+        self.stopMusic = false;
+        self.lastLoop = 0;
+
+        function loopMusic(sound) {
+            if (self.stopMusic)
+                return;
+
+            var loop = self.lastLoop = self.sounds.play(sound);
+            self.sounds.notifyOnce(loop, 'end', loopMusic.bind(undefined, sound));
+        }
+
+        loopMusic(Sound.MUSIC_RED);
     };
 
     Background.prototype.preDestroy = function () {
         // un-register screen shake
         this.events.unsubscribe(this.shakerTickId);
         this.events.unsubscribe(this.shakerResizeId);
+
+        this.stopMusic = true;
+        if (this.lastLoop !== 0)
+            this.sounds.fadeOut(this.lastLoop);
     };
 
     Background.prototype.bigShake = function () {
@@ -49,4 +68,4 @@ G.Background = (function (Event, ScreenShaker) {
     };
 
     return Background;
-})(H5.Event, H5.ScreenShaker);
+})(H5.Event, H5.ScreenShaker, G.Sound);

@@ -1,6 +1,7 @@
 G.MapKey = {
-    BASIC: 'map_basic',
     OUTPOST: 'map_outpost',
+    BLUE: 'map_blue',
+    RED: 'map_red',
 
     REPAIR_SHIP: 'repair_ship',
     

@@ -1,9 +1,10 @@
-G.WorldView = (function (Image, Math, iterateEntries, Tile) {
+G.WorldView = (function (Image, Math, iterateEntries, Tile, Sound) {
     "use strict";
 
-    function WorldView(stage, timer, gridViewHelper, npcInfo, wallInfo, backgroundInfo) {
+    function WorldView(stage, timer, sounds, gridViewHelper, npcInfo, wallInfo, backgroundInfo) {
         this.stage = stage;
         this.timer = timer;
+        this.sounds = sounds;
         this.gridViewHelper = gridViewHelper;
         this.npcInfo = npcInfo;
         this.wallInfo = wallInfo;
@@ -132,6 +133,7 @@ G.WorldView = (function (Image, Math, iterateEntries, Tile) {
                 if (callback)
                     callback();
             });
+            this.sounds.play(Sound.WON_THE_BATTLE);
             return;
         }
 
@@ -141,6 +143,15 @@ G.WorldView = (function (Image, Math, iterateEntries, Tile) {
             npc.drawable.remove();
         if (callback)
             callback();
+    };
+
+    WorldView.prototype.play = function (name) {
+        return this.sounds.play(name);
+    };
+
+    WorldView.prototype.stop = function (id) {
+        if (this.sounds.isPlaying(id))
+            this.sounds.fadeOut(id);
     };
 
     WorldView.prototype.add = function (npc) {
@@ -161,4 +172,4 @@ G.WorldView = (function (Image, Math, iterateEntries, Tile) {
     };
 
     return WorldView;
-})(G.Image, Math, H5.iterateEntries, G.Tile);
+})(G.Image, Math, H5.iterateEntries, G.Tile, G.Sound);

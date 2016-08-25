@@ -1,4 +1,4 @@
-G.ShipFight = (function (range, isNaN, Math, DecisionAI) {
+G.ShipFight = (function (range, isNaN, Math, DecisionAI, Sound) {
     "use strict";
 
     function ShipFight(bridgeView, dialogs, ship, enemy, shipStats) {
@@ -18,7 +18,14 @@ G.ShipFight = (function (range, isNaN, Math, DecisionAI) {
         this.bridge.setShieldsEnemy(this.enemy.shields, this.enemy.shields);
         this.bridge.setHullEnemy(this.enemy.hull, this.enemy.hull);
 
-        this.__dialog('FS1', this.waitForOrders.bind(this));
+        var self = this;
+        this.__dialog('FS1', function () {
+            self.__dialog('FS2', function () {
+                self.__dialog('FS3', self.waitForOrders.bind(self));
+            });
+            self.bridge.play(Sound.ALERT_LONG);
+        });
+        this.bridge.play(Sound.ALERT_SHORT);
     };
 
     ShipFight.prototype.waitForOrders = function () {
@@ -49,7 +56,15 @@ G.ShipFight = (function (range, isNaN, Math, DecisionAI) {
 
         if (command.type == 'setter') {
             this.__dialog(command.dialog, this.execute.bind(this, command));
-            return;
+
+            if (command.sound) {
+                var isAttack = command.actions.some(function (action) {
+                    return action.property == 'damage';
+                });
+
+                if (isAttack)
+                    this.bridge.play(command.sound);
+            }
         }
 
         if (command.type == 'dialog') {
@@ -84,11 +99,15 @@ G.ShipFight = (function (range, isNaN, Math, DecisionAI) {
             if (this.enemy.hull > 1) {
                 this.__dialog('hit', this.initCounterAttack.bind(this));
                 this.bridge.hitEnemy();
+                this.bridge.play(Sound.WON_THE_BATTLE);
             } else {
                 this.__dialog('hit', this.success.bind(this));
                 this.bridge.hitEnemy();
+                this.bridge.play(Sound.WON_THE_BATTLE);
             }
         } else {
+            if (command.sound)
+                this.bridge.play(command.sound);
             this.initCounterAttack();
         }
     };
@@ -103,6 +122,7 @@ G.ShipFight = (function (range, isNaN, Math, DecisionAI) {
         var command = DecisionAI.selectCommand(this.enemy.commands, DecisionAI.getRandom());
 
         this.__dialog(command.dialog, this.counterAttack.bind(this, command));
+        this.bridge.play(command.sound);
     };
 
     ShipFight.prototype.counterAttack = function (command) {
@@ -118,9 +138,11 @@ G.ShipFight = (function (range, isNaN, Math, DecisionAI) {
         if (this.ship.hull > 1) {
             this.__dialog('hit', this.waitForOrders.bind(this));
             this.bridge.bigShake();
+            this.bridge.play(Sound.WON_THE_BATTLE);
         } else {
             this.__dialog('hit', this.failure.bind(this));
             this.bridge.bigShake();
+            this.bridge.play(Sound.WON_THE_BATTLE);
         }
     };
 
@@ -158,4 +180,4 @@ G.ShipFight = (function (range, isNaN, Math, DecisionAI) {
     };
 
     return ShipFight;
-})(H5.range, isNaN, Math, G.DecisionAI);
+})(H5.range, isNaN, Math, G.DecisionAI, G.Sound);

@@ -1,10 +1,11 @@
-G.Dialog = (function (Event, Key, Width, Height, Option, MVVMScene, Scene, DialogOption, ScreenShaker) {
+G.Dialog = (function (Event, Key, Width, Height, Option, MVVMScene, Scene, DialogOption, ScreenShaker, Sound) {
     "use strict";
 
     function Dialog(services, textPragraphs, flags, callbacks) {
         this.events = services.events;
         this.timer = services.timer;
         this.device = services.device;
+        this.sounds = services.sounds;
         this.textPragraphs = textPragraphs.slice();
         this.flags = flags || {};
         this.callbacks = callbacks || {};
@@ -29,6 +30,8 @@ G.Dialog = (function (Event, Key, Width, Height, Option, MVVMScene, Scene, Dialo
         self.dialogTxt.setText('');
         self.continueSign.setText('skip');
         self.__startNextCharacterIteration(self.textPragraphs.shift(), 0);
+
+        self.lastSound = self.sounds.play(Sound.TEXT_LONG);
     };
 
     Dialog.prototype.__showOptionScreen = function (paragraph) {
@@ -66,6 +69,9 @@ G.Dialog = (function (Event, Key, Width, Height, Option, MVVMScene, Scene, Dialo
         self.continueSign.setText('continue');
         self.typing = false;
         self.__showOptionScreen(paragraph);
+
+        if (self.sounds.isPlaying(self.lastSound))
+            self.sounds.fadeOut(self.lastSound);
     };
 
     Dialog.prototype.__writeNextCharacter = function (paragraph, index) {
@@ -210,4 +216,4 @@ G.Dialog = (function (Event, Key, Width, Height, Option, MVVMScene, Scene, Dialo
     };
 
     return Dialog;
-})(H5.Event, H5.Key, H5.Width, H5.Height, G.Option, H5.MVVMScene, G.Scene, G.DialogOption, H5.ScreenShaker);
+})(H5.Event, H5.Key, H5.Width, H5.Height, G.Option, H5.MVVMScene, G.Scene, G.DialogOption, H5.ScreenShaker, G.Sound);
