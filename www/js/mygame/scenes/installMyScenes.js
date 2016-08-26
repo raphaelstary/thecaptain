@@ -58,7 +58,7 @@ G.installMyScenes = (function (Scenes, MVVMScene, Start, Scene, Event, Game, Map
                 next();
                 return;
             }
-            if (!gameState.flags['mission_briefing_over'] && gameState.flags['defeated_rocky_pirates'] >= 3) {
+            if (!gameState.flags['mission_briefing_over'] && gameState.flags['defeated_rocky_pirates'] >= 2) {
                 next();
                 return;
             }

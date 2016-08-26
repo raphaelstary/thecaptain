@@ -1,5 +1,5 @@
 G.Game = (function (PlayFactory, installPlayerKeyBoard, installPlayerGamePad, Scene, MVVMScene, Dialog, Tile, Event,
-    Strings, Menu, localStorage, saveObject, Storage, createShipFight, MapKey, Sound, Key) {
+    Strings, Menu, localStorage, saveObject, Storage, createShipFight, MapKey, Sound, Key, iterateEntries) {
     "use strict";
 
     function Game(services, map, dialog, npc, walls, background, directions, fights, gameEvents, mapKey, prevMapKey,
@@ -107,6 +107,9 @@ G.Game = (function (PlayFactory, installPlayerKeyBoard, installPlayerGamePad, Sc
                 }
             }
 
+            if (!self.dialog[dialogId])
+                throw 'missing dialog with id: ' + dialogId;
+                
             var dialogScreen = new Dialog(self.services, self.dialog[dialogId], self.flags, self.gameCallbacks);
             var dialogScene = new MVVMScene(self.services, self.services.scenes[Scene.DIALOG], dialogScreen, Scene.DIALOG);
             dialogScene.show(function (eventTrigger) {
@@ -178,13 +181,63 @@ G.Game = (function (PlayFactory, installPlayerKeyBoard, installPlayerGamePad, Sc
                     });
                     return;
                 }
+                var promotions = [];
+                iterateEntries(self.bridgeCrew, function (officerKey) {
+                    if (self.flags['crew_' + officerKey + '_deployed'] === undefined)
+                        self.flags['crew_' + officerKey + '_deployed'] = 0;
+                    self.flags['crew_' + officerKey + '_deployed']++;
 
-                self.ship.hull = hull;
+                    var deployed = self.flags['crew_' + officerKey + '_deployed'];
+                    var promotionKey;
+                    if (deployed == 3) {
+                        promotionKey = 'crew_' + officerKey + '_level_2';
+                        self.flags[promotionKey] = true;
+                        if (self.dialog[promotionKey])
+                            promotions.push(promotionKey);
+                    } else if (deployed == 3 * 3) {
+                        promotionKey = 'crew_' + officerKey + '_level_3';
+                        self.flags[promotionKey] = true;
+                        if (self.dialog[promotionKey])
+                            promotions.push(promotionKey);
+                    } else if (deployed == 3 * 3 * 3) {
+                        promotionKey = 'crew_' + officerKey + '_level_4';
+                        self.flags[promotionKey] = true;
+                        if (self.dialog[promotionKey])
+                            promotions.push(promotionKey);
+                    }
+                });
 
-                self.__startMusic();
+                function getIterator(array) {
+                    var nextIndex = 0;
 
-                if (callback)
-                    callback();
+                    return {
+                        next: function () {
+                            return array[nextIndex++];
+                        },
+                        hasNext: function () {
+                            return nextIndex < array.length;
+                        }
+                    }
+                }
+
+                function endFight() {
+                    self.ship.hull = hull;
+
+                    self.__startMusic();
+
+                    if (callback)
+                        callback();
+                }
+
+                function showAllPromotions(iterator) {
+                    if (iterator.hasNext()) {
+                        interact(true, iterator.next(), showAllPromotions.bind(undefined, iterator));
+                    } else {
+                        endFight();
+                    }
+                }
+
+                showAllPromotions(getIterator(promotions));
             });
         }
 
@@ -273,7 +326,8 @@ G.Game = (function (PlayFactory, installPlayerKeyBoard, installPlayerGamePad, Sc
         }
 
         this.world = PlayFactory.createWorld(this.stage, this.timer, this.sounds, this.device, this.map, this.npc,
-            this.walls, this.background, this.directions, this.gameEvents, this.flags, this.gameCallbacks,
+            this.walls, this.background, this.directions, this.gameEvents, this.flags, this.bridgeCrew,
+            this.gameCallbacks,
             possibleInteractionStart, possibleInteractionEnd, interaction, fight, showMenu, endMap, this.prevMapKey,
             this.__pause.bind(this), this.__resume.bind(this));
 
@@ -368,4 +422,5 @@ G.Game = (function (PlayFactory, installPlayerKeyBoard, installPlayerGamePad, Sc
 
     return Game;
 })(G.PlayFactory, G.installPlayerKeyBoard, G.installPlayerGamePad, G.Scene, H5.MVVMScene, G.Dialog, G.Tile, H5.Event,
-    H5.Strings, G.Menu, H5.lclStorage, H5.saveObject, G.Storage, G.createShipFight, G.MapKey, G.Sound, H5.Key);
+    H5.Strings, G.Menu, H5.lclStorage, H5.saveObject, G.Storage, G.createShipFight, G.MapKey, G.Sound, H5.Key,
+    H5.iterateEntries);

@@ -1,9 +1,9 @@
 G.World = (function (iterateEntries, Tile, Image, Sound) {
     "use strict";
 
-    function World(worldView, domainGridHelper, camera, timer, directions, gameEvents, npcInfo, flags, gameCallbacks,
-        possibleInteractionStart, possibleInteractionEnd, interaction, fight, showMenu, endMap, prevMapKey, pause,
-        resume) {
+    function World(worldView, domainGridHelper, camera, timer, directions, gameEvents, npcInfo, flags, bridgeCrew,
+        gameCallbacks, possibleInteractionStart, possibleInteractionEnd, interaction, fight, showMenu, endMap,
+        prevMapKey, pause, resume) {
         this.worldView = worldView;
         this.domainGridHelper = domainGridHelper;
         this.camera = camera;
@@ -11,6 +11,7 @@ G.World = (function (iterateEntries, Tile, Image, Sound) {
         this.directions = directions;
         this.npcInfo = npcInfo;
         this.flags = flags;
+        this.bridgeCrew = bridgeCrew;
         this.gameCallbacks = gameCallbacks;
         this.gameEvents = gameEvents;
 
@@ -343,6 +344,25 @@ G.World = (function (iterateEntries, Tile, Image, Sound) {
 
         } else if (event.action == 'wait') {
             this.timer.doLater(next, parseInt(event.argument));
+
+        } else if (event.action == 'set_crew_engineering') {
+            this.bridgeCrew.engineering = event.argument;
+            next();
+        } else if (event.action == 'set_crew_tactics') {
+            this.bridgeCrew.tactics = event.argument;
+            next();
+        } else if (event.action == 'set_crew_navigation') {
+            this.bridgeCrew.navigation = event.argument;
+            next();
+        } else if (event.action == 'set_crew_weapons') {
+            this.bridgeCrew.weapons = event.argument;
+            next();
+        } else if (event.action == 'set_crew_science') {
+            this.bridgeCrew.science = event.argument;
+            next();
+        } else if (event.action == 'set_crew_communication') {
+            this.bridgeCrew.communication = event.argument;
+            next();
         }
     };
 
