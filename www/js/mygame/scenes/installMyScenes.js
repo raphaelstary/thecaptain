@@ -58,7 +58,7 @@ G.installMyScenes = (function (Scenes, MVVMScene, Start, Scene, Event, Game, Map
                 next();
                 return;
             }
-            if (!gameState.flags['mission_briefing_over'] && gameState.flags['defeated_rocky_pirates'] >= 2) {
+            if (!gameState.flags['mission_briefing_over'] && gameState.flags['defeated_rocky_pirates'] >= 1) {
                 next();
                 return;
             }
@@ -71,8 +71,8 @@ G.installMyScenes = (function (Scenes, MVVMScene, Start, Scene, Event, Game, Map
 
         var scenes = new Scenes();
 
-        // var goFullScreen = new GoFullScreen(services);
-        // scenes.add(goFullScreen.show.bind(goFullScreen), true);
+        var goFullScreen = new GoFullScreen(services);
+        scenes.add(goFullScreen.show.bind(goFullScreen), true);
 
         var start = new Start(services, gameState);
         var startScene = new MVVMScene(services, services.scenes[Scene.START], start, Scene.START);
