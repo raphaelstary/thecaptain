@@ -259,6 +259,7 @@ G.Game = (function (PlayFactory, installPlayerKeyBoard, installPlayerGamePad, Sc
                     localStorage.setItem(Storage.MAP, self.mapKey);
                     saveObject(Storage.STATE, self.flags);
                     saveObject(Storage.SHIP, self.ship);
+                    saveObject(Storage.CREW, self.bridgeCrew);
                     localStorage.setItem(Storage.SAVED, true);
                     interaction('saved', callback, true);
                 },

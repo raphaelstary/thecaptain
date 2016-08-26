@@ -10,10 +10,12 @@ G.Start = (function (Event, Key, Interaction, MVVMScene, Scene, loadObject, load
         this.services = services;
     }
 
+    //noinspection JSUnusedGlobalSymbols
     Start.prototype.startUp = function () {
         this.__showStartMenu();
     };
 
+    //noinspection JSUnusedGlobalSymbols
     Start.prototype.startDown = function () {
     };
 
@@ -101,6 +103,7 @@ G.Start = (function (Event, Key, Interaction, MVVMScene, Scene, loadObject, load
                 self.gameState.map = loadString(Storage.MAP);
                 self.gameState.flags = loadObject(Storage.STATE);
                 self.gameState.ship = loadObject(Storage.SHIP);
+                self.gameState.crew = loadObject(Storage.CREW);
             }
         };
         this.startBtn.show = false;
