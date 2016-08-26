@@ -1,7 +1,7 @@
-G.createShipFight = (function (Bridge, ShipFight, iterateEntries) {
+G.createShipFight = (function (Bridge, ShipFight) {
     "use strict";
 
-    function createShipFight(services, dialogs, shipStats, enemyStats, bridgeCrewInfo, crew) {
+    function createShipFight(services, dialogs, shipStats, enemyStats, bridgeCrew, crew, flags) {
 
         var ship = {
             shields: 0,
@@ -22,34 +22,56 @@ G.createShipFight = (function (Bridge, ShipFight, iterateEntries) {
             commands: enemyStats.commands
         };
 
-        var bridgeCrew = {};
+        var crewMembers = [];
+        if (bridgeCrew.engineering)
+            crewMembers.push(crew[bridgeCrew.engineering]);
+        if (bridgeCrew.tactics)
+            crewMembers.push(crew[bridgeCrew.tactics]);
+        if (bridgeCrew.navigation)
+            crewMembers.push(crew[bridgeCrew.navigation]);
+        if (bridgeCrew.weapons)
+            crewMembers.push(crew[bridgeCrew.weapons]);
+        if (bridgeCrew.science)
+            crewMembers.push(crew[bridgeCrew.science]);
+        if (bridgeCrew.communication)
+            crewMembers.push(crew[bridgeCrew.communication]);
 
-        if (bridgeCrewInfo.engineering)
-            bridgeCrew.engineering = crew[bridgeCrewInfo.engineering];
-        if (bridgeCrewInfo.tactics)
-            bridgeCrew.tactics = crew[bridgeCrewInfo.tactics];
-        if (bridgeCrewInfo.navigation)
-            bridgeCrew.navigation = crew[bridgeCrewInfo.navigation];
-        if (bridgeCrewInfo.weapons)
-            bridgeCrew.weapons = crew[bridgeCrewInfo.weapons];
-        if (bridgeCrewInfo.science)
-            bridgeCrew.science = crew[bridgeCrewInfo.science];
-        if (bridgeCrewInfo.communication)
-            bridgeCrew.communication = crew[bridgeCrewInfo.communication];
+        function isConditionMet(command) {
+            if (!command.condition)
+                return true;
+            return flags[command.condition];
+        }
 
-        iterateEntries(bridgeCrew, function (officer) {
-            officer.commands.forEach(function (command) {
-                if (command.max !== undefined) {
-                    command.count = shipStats[command.dialog + '_count'] !== undefined ?
-                        shipStats[command.dialog + '_count'] : command.max;
-                }
-            });
-        });
+        function setMax(command) {
+            if (command.max !== undefined) {
+                command.count = shipStats[command.dialog + '_count'] !== undefined ?
+                    shipStats[command.dialog + '_count'] : command.max;
+            }
+        }
 
-        var bridgeView = new Bridge(services, bridgeCrew);
+        function deepCopy(officer) {
+            var commands = officer.commands.filter(isConditionMet);
+            commands.forEach(setMax);
+            return new Officer(officer.positionKey, officer.position, officer.name, officer.asset, commands);
+        }
+
+        var bridgeView = new Bridge(services, crewMembers.map(deepCopy).reduce(toDict, {}));
 
         return new ShipFight(bridgeView, dialogs, ship, enemy, shipStats);
     }
 
+    function Officer(positionKey, position, name, asset, commands) {
+        this.positionKey = positionKey;
+        this.position = position;
+        this.name = name;
+        this.asset = asset;
+        this.commands = commands;
+    }
+
+    function toDict(prev, officer) {
+        prev[officer.positionKey] = officer;
+        return prev;
+    }
+
     return createShipFight;
-})(G.Bridge, G.ShipFight, H5.iterateEntries);
+})(G.Bridge, G.ShipFight);

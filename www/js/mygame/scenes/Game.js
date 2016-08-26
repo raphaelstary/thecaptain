@@ -159,7 +159,7 @@ G.Game = (function (PlayFactory, installPlayerKeyBoard, installPlayerGamePad, Sc
             }
 
             var fight = createShipFight(self.services, self.dialog, self.ship, self.fights[enemyId], self.bridgeCrew,
-                self.crew);
+                self.crew, self.flags);
             fight.start(function (isVictorious, hull) {
                 if (menuIconVisible) {
                     self.menuButton.show = true;

@@ -46,7 +46,7 @@ G.installMyScenes = (function (Scenes, MVVMScene, Start, Scene, Event, Game, Map
         var coolDown = 0;
         gameCallbacks['rocky_pirate'] = function (next) {
             if (gameState.flags['defeated_rocky_pirates'] !== undefined &&
-                gameState.flags['defeated_rocky_pirates'] > 0 && coolDown < 3) {
+                gameState.flags['defeated_rocky_pirates'] > 0 && coolDown < 5) {
                 //noinspection JSUnusedAssignment
                 coolDown++;
                 next();

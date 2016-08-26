@@ -30,6 +30,8 @@ G.BridgeOrders = (function (Event, Key, OrderOption, ScreenShaker) {
         }
 
         function up() {
+            if (options.length < 2)
+                return;
             var newSelection = options.pop();
             newSelection.selection.show = true;
             selection = newSelection.state;
@@ -38,6 +40,8 @@ G.BridgeOrders = (function (Event, Key, OrderOption, ScreenShaker) {
         }
 
         function down() {
+            if (options.length < 2)
+                return;
             options.push(options.shift());
             options[0].selection.show = true;
             selection = options[0].state;
@@ -81,7 +85,7 @@ G.BridgeOrders = (function (Event, Key, OrderOption, ScreenShaker) {
             });
 
         } else {
-            selection.textB.show = false;
+            this.textB.show = false;
         }
 
         if (this.optionC) {
@@ -137,6 +141,7 @@ G.BridgeOrders = (function (Event, Key, OrderOption, ScreenShaker) {
         this.shaker.startSmallShake();
     };
 
+    //noinspection JSUnusedGlobalSymbols
     BridgeOrders.prototype.aUp = function () {
         if (this.itIsOver)
             return;
@@ -145,9 +150,11 @@ G.BridgeOrders = (function (Event, Key, OrderOption, ScreenShaker) {
         this.nextScene(OrderOption.A);
     };
 
+    //noinspection JSUnusedGlobalSymbols
     BridgeOrders.prototype.aDown = function () {
     };
 
+    //noinspection JSUnusedGlobalSymbols
     BridgeOrders.prototype.bUp = function () {
         if (this.itIsOver)
             return;
@@ -156,9 +163,11 @@ G.BridgeOrders = (function (Event, Key, OrderOption, ScreenShaker) {
         this.nextScene(OrderOption.B);
     };
 
+    //noinspection JSUnusedGlobalSymbols
     BridgeOrders.prototype.bDown = function () {
     };
 
+    //noinspection JSUnusedGlobalSymbols
     BridgeOrders.prototype.cUp = function () {
         if (this.itIsOver)
             return;
@@ -167,9 +176,11 @@ G.BridgeOrders = (function (Event, Key, OrderOption, ScreenShaker) {
         this.nextScene(OrderOption.C);
     };
 
+    //noinspection JSUnusedGlobalSymbols
     BridgeOrders.prototype.cDown = function () {
     };
 
+    //noinspection JSUnusedGlobalSymbols
     BridgeOrders.prototype.dUp = function () {
         if (this.itIsOver)
             return;
@@ -178,6 +189,7 @@ G.BridgeOrders = (function (Event, Key, OrderOption, ScreenShaker) {
         this.nextScene(OrderOption.D);
     };
 
+    //noinspection JSUnusedGlobalSymbols
     BridgeOrders.prototype.dDown = function () {
     };
 
