@@ -328,19 +328,18 @@ G.World = (function (iterateEntries, Tile, Image, Sound) {
             var npc = this.npcsToAdd[event.argument];
             delete this.npcsToAdd[event.argument];
             this.domainGridHelper.add(npc);
-            this.worldView.add(npc);
+            this.worldView.add(npc).then(next);
             this.npcs.push(npc);
             this.allTiles.push(npc);
-            next();
+
         } else if (event.action == 'add_npc_next') {
             var npcTile = this.domainGridHelper.getEmptyNeighbor(this.player);
             npcTile.type = event.argument;
 
             this.domainGridHelper.add(npcTile);
-            this.worldView.add(npcTile);
+            this.worldView.add(npcTile).then(next);
             this.npcs.push(npcTile);
             this.allTiles.push(npcTile);
-            next();
 
         } else if (event.action == 'wait') {
             this.timer.doLater(next, parseInt(event.argument));

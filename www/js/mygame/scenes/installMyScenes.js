@@ -35,7 +35,16 @@ G.installMyScenes = (function (Scenes, MVVMScene, Start, Scene, Event, Game, Map
             };
             next();
         };
+        var coolDown = 0;
         gameCallbacks['rocky_pirate'] = function (next) {
+            if (gameState.flags['defeated_rocky_pirates'] !== undefined &&
+                gameState.flags['defeated_rocky_pirates'] > 0 && coolDown < 3) {
+                //noinspection JSUnusedAssignment
+                coolDown++;
+                next();
+                return;
+            }
+
             var chance = range(0, 100);
             if (chance < 80) {
                 next();
@@ -45,6 +54,8 @@ G.installMyScenes = (function (Scenes, MVVMScene, Start, Scene, Event, Game, Map
                 next();
                 return;
             }
+
+            coolDown = 0;
 
             gameState.flags['rocky_pirate_fight'] = true;
             next();

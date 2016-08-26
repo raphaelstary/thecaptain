@@ -124,7 +124,9 @@ G.WorldView = (function (Image, Math, iterateEntries, Tile, Sound) {
         if (this.npcs[npc.type])
             delete this.npcs[npc.type];
 
-        if (npc.type[1] == 'R' || npc.type[1] == 'P') {
+        var isRedFighter = npc.type[1] == 'R';
+        var isPirate = npc.type[1] == 'P';
+        if (isRedFighter || isPirate) {
             this.explode(npc, function () {
                 if (npc.entity)
                     npc.entity.remove();
@@ -164,7 +166,39 @@ G.WorldView = (function (Image, Math, iterateEntries, Tile, Sound) {
         npc.entity.show = false;
         npc.drawable = this.__createEntity(npc, this.npcInfo[npc.type].asset);
 
+        var promise = {
+            isFulfilled: false,
+            then: function (callback) {
+                this.__callback = callback;
+
+                if (this.isFulfilled)
+                    callback(this.__arg);
+            },
+            resolve: function (arg) {
+                if (this.isFulfilled)
+                    return;
+
+                this.isFulfilled = true;
+
+                if (this.__callback) {
+                    this.__callback(arg);
+                } else {
+                    this.__arg = arg;
+                }
+            }
+        };
+
+        var isPirate = npc.type[1] == 'P';
+        if (isPirate) {
+            npc.drawable.setAlpha(0);
+            npc.drawable.opacityTo(1).setDuration(30).setCallback(promise.resolve.bind(promise));
+        } else {
+            promise.resolve();
+        }
+
         this.npcs[npc.type] = npc;
+
+        return promise;
     };
 
     WorldView.prototype.explode = function (npc, callback) {
