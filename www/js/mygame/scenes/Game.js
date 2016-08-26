@@ -3,7 +3,7 @@ G.Game = (function (PlayFactory, installPlayerKeyBoard, installPlayerGamePad, Sc
     "use strict";
 
     function Game(services, map, dialog, npc, walls, background, directions, fights, gameEvents, mapKey, prevMapKey,
-        flags, ship, crew, gameCallbacks) {
+        flags, ship, bridgeCrew, crew, gameCallbacks) {
         this.device = services.device;
         this.events = services.events;
         this.sceneStorage = services.sceneStorage;
@@ -24,6 +24,7 @@ G.Game = (function (PlayFactory, installPlayerKeyBoard, installPlayerGamePad, Sc
         this.prevMapKey = prevMapKey;
         this.flags = flags;
         this.ship = ship;
+        this.bridgeCrew = bridgeCrew;
         this.crew = crew;
         this.gameCallbacks = gameCallbacks;
         this.services = services;
@@ -157,16 +158,8 @@ G.Game = (function (PlayFactory, installPlayerKeyBoard, installPlayerGamePad, Sc
                 self.interactButton.show = false;
             }
 
-            var enemyStats = self.fights[enemyId];
-            var enemy = {
-                name: enemyStats.name,
-                asset: enemyStats.asset,
-                shields: enemyStats.shields,
-                hull: enemyStats.hull,
-                commands: enemyStats.commands
-            };
-
-            var fight = createShipFight(self.services, self.dialog, self.ship, enemy, self.crew);
+            var fight = createShipFight(self.services, self.dialog, self.ship, self.fights[enemyId], self.bridgeCrew,
+                self.crew);
             fight.start(function (isVictorious, hull) {
                 if (menuIconVisible) {
                     self.menuButton.show = true;
@@ -355,17 +348,21 @@ G.Game = (function (PlayFactory, installPlayerKeyBoard, installPlayerGamePad, Sc
         this.__stopMusic();
     };
 
+    //noinspection JSUnusedGlobalSymbols
     Game.prototype.menuUp = function () {
         this.playerController.handleMenuKey();
     };
 
+    //noinspection JSUnusedGlobalSymbols
     Game.prototype.menuDown = function () {
     };
 
+    //noinspection JSUnusedGlobalSymbols
     Game.prototype.interactUp = function () {
         this.playerController.handleInteractionKey();
     };
 
+    //noinspection JSUnusedGlobalSymbols
     Game.prototype.interactDown = function () {
     };
 

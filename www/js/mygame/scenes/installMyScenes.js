@@ -10,6 +10,14 @@ G.installMyScenes = (function (Scenes, MVVMScene, Start, Scene, Event, Game, Map
                 flags: {},
                 ship: {
                     hull: 90
+                },
+                crew: {
+                    engineering: undefined,
+                    tactics: undefined,
+                    navigation: undefined,
+                    weapons: 'sputnik',
+                    science: undefined,
+                    communication: undefined
                 }
             };
         }
@@ -62,8 +70,8 @@ G.installMyScenes = (function (Scenes, MVVMScene, Start, Scene, Event, Game, Map
         };
 
         var scenes = new Scenes();
-        var goFullScreen = new GoFullScreen(services);
 
+        // var goFullScreen = new GoFullScreen(services);
         // scenes.add(goFullScreen.show.bind(goFullScreen), true);
 
         var start = new Start(services, gameState);
@@ -93,7 +101,7 @@ G.installMyScenes = (function (Scenes, MVVMScene, Start, Scene, Event, Game, Map
         }
 
         function showMapScene(nextMapKey, prevMapKey) {
-            var game = new Game(services, maps[nextMapKey], dialogs, npcs, walls, background, directions, fights, gameEvents, nextMapKey, prevMapKey, gameState.flags, gameState.ship, crew, gameCallbacks);
+            var game = new Game(services, maps[nextMapKey], dialogs, npcs, walls, background, directions, fights, gameEvents, nextMapKey, prevMapKey, gameState.flags, gameState.ship, gameState.crew, crew, gameCallbacks);
             new MVVMScene(services, services.scenes[Scene.GAME], game, Scene.GAME).show(mapCallback);
             return game;
         }

@@ -20,34 +20,44 @@ G.BridgeCrew = (function (Event, Key, ScreenShaker) {
         this.itIsOver = false;
 
         var self = this;
-        var options = [
-            {
+        var options = [];
+        if (self.engineering)
+            options.push({
                 selection: self.selectionEngineering,
                 officer: self.engineering
-            }, {
+            });
+        if (self.tactics)
+            options.push({
                 selection: self.selectionTactics,
                 officer: self.tactics
-            }, {
+            });
+        if (self.navigation)
+            options.push({
                 selection: self.selectionNavigation,
                 officer: self.navigation
-            }, {
+            });
+        if (self.weapons)
+            options.push({
                 selection: self.selectionWeapons,
                 officer: self.weapons
-            }, {
+            });
+        if (self.science)
+            options.push({
                 selection: self.selectionScience,
                 officer: self.science
-            }, {
+            });
+        if (self.communication)
+            options.push({
                 selection: self.selectionCommunication,
                 officer: self.communication
-            }
-        ];
+            });
 
-        options.forEach(function (option, index) {
-            if (index > 0)
-                option.selection.show = false;
-        });
+        this.__hideAllSelections();
+        options[0].selection.show = true;
 
         function left() {
+            if (options.length < 2)
+                return;
             var newSelection = options.pop();
             newSelection.selection.show = true;
             options[0].selection.show = false;
@@ -61,6 +71,8 @@ G.BridgeCrew = (function (Event, Key, ScreenShaker) {
         }
 
         function right() {
+            if (options.length < 2)
+                return;
             options.push(options.shift());
             options[0].selection.show = true;
             options[options.length - 1].selection.show = false;
@@ -96,23 +108,6 @@ G.BridgeCrew = (function (Event, Key, ScreenShaker) {
         });
 
         this.showOrders(options[0].officer);
-
-        right();
-        right();
-        right();
-        // if (this.weapons) {
-        //     this.weaponsUp();
-        // } else if (this.tactics) {
-        //     this.tacticsUp();
-        // } else if (this.engineering) {
-        //     this.engineeringUp();
-        // } else if (this.navigation) {
-        //     this.navigationUp();
-        // } else if (this.science) {
-        //     this.scienceUp();
-        // } else if (this.communication) {
-        //     this.communicationUp();
-        // }
 
         // register screen shake
         this.shaker = new ScreenShaker(this.device);
@@ -150,6 +145,7 @@ G.BridgeCrew = (function (Event, Key, ScreenShaker) {
         this.selectionCommunication.show = false;
     };
 
+    //noinspection JSUnusedGlobalSymbols
     BridgeCrew.prototype.engineeringUp = function () {
         if (!this.engineering)
             return;
@@ -158,9 +154,11 @@ G.BridgeCrew = (function (Event, Key, ScreenShaker) {
         this.showOrders(this.engineering);
     };
 
+    //noinspection JSUnusedGlobalSymbols
     BridgeCrew.prototype.engineeringDown = function () {
     };
 
+    //noinspection JSUnusedGlobalSymbols
     BridgeCrew.prototype.tacticsUp = function () {
         if (!this.tactics)
             return;
@@ -169,9 +167,11 @@ G.BridgeCrew = (function (Event, Key, ScreenShaker) {
         this.showOrders(this.tactics);
     };
 
+    //noinspection JSUnusedGlobalSymbols
     BridgeCrew.prototype.tacticsDown = function () {
     };
 
+    //noinspection JSUnusedGlobalSymbols
     BridgeCrew.prototype.navigationUp = function () {
         if (!this.navigation)
             return;
@@ -180,9 +180,11 @@ G.BridgeCrew = (function (Event, Key, ScreenShaker) {
         this.showOrders(this.navigation);
     };
 
+    //noinspection JSUnusedGlobalSymbols
     BridgeCrew.prototype.navigationDown = function () {
     };
 
+    //noinspection JSUnusedGlobalSymbols
     BridgeCrew.prototype.weaponsUp = function () {
         if (!this.weapons)
             return;
@@ -191,9 +193,11 @@ G.BridgeCrew = (function (Event, Key, ScreenShaker) {
         this.showOrders(this.weapons);
     };
 
+    //noinspection JSUnusedGlobalSymbols
     BridgeCrew.prototype.weaponsDown = function () {
     };
 
+    //noinspection JSUnusedGlobalSymbols
     BridgeCrew.prototype.scienceUp = function () {
         if (!this.science)
             return;
@@ -202,9 +206,11 @@ G.BridgeCrew = (function (Event, Key, ScreenShaker) {
         this.showOrders(this.science);
     };
 
+    //noinspection JSUnusedGlobalSymbols
     BridgeCrew.prototype.scienceDown = function () {
     };
 
+    //noinspection JSUnusedGlobalSymbols
     BridgeCrew.prototype.communicationUp = function () {
         if (!this.communication)
             return;
@@ -213,6 +219,7 @@ G.BridgeCrew = (function (Event, Key, ScreenShaker) {
         this.showOrders(this.communication);
     };
 
+    //noinspection JSUnusedGlobalSymbols
     BridgeCrew.prototype.communicationDown = function () {
     };
 
