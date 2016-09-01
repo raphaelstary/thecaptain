@@ -24,7 +24,7 @@ H5.MVVMScene = (function (iterateEntries, Width, Height, Event, Math, calcScreen
         this.anchorYFn = anchorYFn;
     }
 
-    MVVMScene.prototype.show = function (next) {
+    MVVMScene.prototype.show = function (next, customParam) {
         var self = this;
         var drawables = [];
         var taps = [];
@@ -954,6 +954,15 @@ H5.MVVMScene = (function (iterateEntries, Width, Height, Event, Math, calcScreen
             return true;
         }
 
+        /**
+         * @class ViewModel
+         * @property nextScene
+         * @property restartScene
+         * @property stopScene
+         * @property pauseScene
+         * @property resumeScene
+         */
+
         function nextScene(customParam) {
             if (!endScene())
                 return;
@@ -1007,7 +1016,7 @@ H5.MVVMScene = (function (iterateEntries, Width, Height, Event, Math, calcScreen
         });
 
         if (this.viewModel.postConstruct)
-            this.viewModel.postConstruct();
+            this.viewModel.postConstruct(customParam);
     };
 
     return MVVMScene;

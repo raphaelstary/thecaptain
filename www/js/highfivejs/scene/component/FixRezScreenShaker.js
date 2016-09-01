@@ -1,27 +1,27 @@
-H5.ScreenShaker = (function (Math, Object, calcScreenConst) {
+H5.FixRezScreenShaker = (function (Math, Object) {
     "use strict";
 
-    function ScreenShaker(device) {
+    function FixRezScreenShaker() {
         this.shaker = {};
-        this.device = device;
         this.__init();
     }
 
-    ScreenShaker.prototype.__init = function (is30fps) {
+    FixRezScreenShaker.prototype.__init = function (is30fps) {
         this.shaking = false;
         this.smallShaking = false;
         this.bigShaking = false;
 
         this.time = 0;
-        this.duration = is30fps ? 30 : 60;
+        this.duration = 30;
 
-        this.__150 = calcScreenConst(this.device.height, 480, 150);
-        this.__50 = calcScreenConst(this.device.height, 480, 50);
-        this.__25 = calcScreenConst(this.device.height, 480, 25);
-        this.__5 = calcScreenConst(this.device.height, 480, 5);
+        this.__150 = 150;
+        this.__75 = 75;
+        this.__50 = 50;
+        this.__25 = 25;
+        this.__5 = 5;
     };
 
-    ScreenShaker.prototype.startBigShake = function () {
+    FixRezScreenShaker.prototype.startBigShake = function () {
         if (this.shaking) {
             if (this.smallShaking) {
                 this.smallShaking = false;
@@ -47,7 +47,7 @@ H5.ScreenShaker = (function (Math, Object, calcScreenConst) {
         this.bigShaking = true;
     };
 
-    ScreenShaker.prototype.startSmallShake = function () {
+    FixRezScreenShaker.prototype.startSmallShake = function () {
         if (this.shaking) {
             if (this.bigShaking) {
                 return;
@@ -64,7 +64,7 @@ H5.ScreenShaker = (function (Math, Object, calcScreenConst) {
         this.smallShaking = true;
     };
 
-    ScreenShaker.prototype.update = function () {
+    FixRezScreenShaker.prototype.update = function () {
         if (this.shaking) {
             if (this.smallShaking) {
                 var offSet = elasticOutShake(this.time, this.duration, this.__25, this.__5);
@@ -85,7 +85,7 @@ H5.ScreenShaker = (function (Math, Object, calcScreenConst) {
             } else if (this.bigShaking) {
                 var amplitude = this.__150;
                 var period = this.__5;
-                var offSetX = elasticOutShake(this.time, this.duration, amplitude - this.__50, period + this.__5);
+                var offSetX = elasticOutShake(this.time, this.duration, amplitude - this.__25, period + this.__5);
                 var offSetY = elasticOutShake(this.time, this.duration, amplitude, period);
 
                 Object.keys(this.shaker).forEach(function (key) {
@@ -134,42 +134,22 @@ H5.ScreenShaker = (function (Math, Object, calcScreenConst) {
             return 0;
         }
 
-        return Math.floor(amplitude * Math.pow(2, -10 * currentTime) *
-            Math.sin((currentTime * duration) * (2 * Math.PI) / period));
+        return Math.floor(
+            amplitude * Math.pow(2, -10 * currentTime) * Math.sin((currentTime * duration) * (2 * Math.PI) / period));
     }
 
-    ScreenShaker.prototype.add = function (drawable) {
+    FixRezScreenShaker.prototype.add = function (drawable) {
         this.shaker[drawable.id] = drawable;
     };
 
-    ScreenShaker.prototype.remove = function (drawable) {
+    FixRezScreenShaker.prototype.remove = function (drawable) {
         delete this.shaker[drawable.id];
     };
 
-    ScreenShaker.prototype.resize = function (event) {
-        this.bigShaking = false;
-        this.smallShaking = false;
-        this.shaking = false;
-        this.time = 0;
-
-        var self = this;
-        Object.keys(this.shaker).forEach(function (key) {
-            var item = self.shaker[key];
-            if (item._startValueX) {
-                item._startValueX = item.x;
-            }
-        });
-
-        this.__150 = calcScreenConst(event.height, 480, 150);
-        this.__50 = calcScreenConst(event.height, 480, 50);
-        this.__25 = calcScreenConst(event.height, 480, 25);
-        this.__5 = calcScreenConst(event.height, 480, 5);
-    };
-
-    ScreenShaker.prototype.reset = function (is30fps) {
+    FixRezScreenShaker.prototype.reset = function (is30fps) {
         this.shaker = {};
         this.__init(is30fps);
     };
 
-    return ScreenShaker;
-})(Math, Object, H5.calcScreenConst);
+    return FixRezScreenShaker;
+})(Math, Object);

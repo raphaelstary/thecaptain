@@ -115,7 +115,7 @@ H5.Setter = (function (changeCoords) {
         setTextBaseLine: function (drawable, baseLineValue) {
             drawable.data.baseLine = baseLineValue;
         },
-        
+
         setTextAlign: function (drawable, alignValue) {
             drawable.data.align = alignValue;
         },
